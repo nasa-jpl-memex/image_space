@@ -28,52 +28,45 @@
         <![endif]-->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Image space</a>
+                <div class="col-md-9">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Image space</a>
+                        <ul class="nav navbar-nav">
+                            <li><a href="#" class="image-space-nav-size">Filter by size</a></li>
+                            <li><a href="#" class="image-space-nav-text">Text search</a></li>
+                            <li><a href="#" class="image-space-nav-graph">Similarity graph</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
 
-        <div class="jumbotron">
-            <div class="container">
-                <h2>Image size distribution</h2>
-            </div>
-        </div>
-
         <div class="container">
             <div class="row">
-                <div class="col-md-12 imgspace-sizes"></div>
+                <div class="col-md-12">
+                    <h2 class="image-space-search-heading">Heading</h2>
+                    <div class="search-ui-progress progress hidden">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    </div>
+                    <div class="image-space-search-content">Content</div>
+                </div>
             </div>
-        </div>
-
-        <div class="jumbotron">
-            <div class="container">
-                <h2>Image text search</h2>
-                <input type="text" class="form-control input-lg imgspace-text-search" placeholder="Search">
-            </div>
-        </div>
-
-        <div class="container">
             <div class="row">
-                <div class="col-md-12 imgspace-text-search-results"></div>
+                <div class="col-md-12">
+                    <h2>Search results</h2>
+                    <div class="search-progress progress hidden">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="jumbotron">
-            <div class="container">
-                <h2>Nearest neighbor graph</h2>
-            </div>
-        </div>
-
-        <div class="container">
             <div class="row">
-                <div class="col-md-12 imgspace-image-knn" style="height:400px;width:100%"></div>
+                <div class="image-space-search-results"></div>
             </div>
         </div>
 

@@ -10,10 +10,14 @@ body {
 }
 
 img.blur {
-    width: 50px;
-    height: 50px;
-    -webkit-filter: blur(300px);
-    filter: blur(300px);
+    height: 200px;
+    -webkit-filter: blur(10px);
+    filter: blur(10px);
+}
+
+img.blur:hover {
+    -webkit-filter: blur(0px);
+    filter: blur(0px);
 }
 
 * {
