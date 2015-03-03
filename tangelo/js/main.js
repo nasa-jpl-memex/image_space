@@ -29,7 +29,7 @@ $(function () {
                 "nice": false,
                 "domain": {"data": "table", "field": "data.count"},
                 // "zero": true,
-                "range": [5, 500]
+                "range": [10, 500]
             }
         ],
         "axes": [
@@ -40,11 +40,11 @@ $(function () {
             {
                 "size": "s",
                 "title": "Count",
-                "values": [1, 10, 100, 1000, 10000, 100000, 1000000],
+                "values": [1, 10000, 100000, 1000000],
                 "format": ",g",
                 "properties": {
                     "symbols": {
-                        "fillOpacity": {"value": 0.5},
+                        "fillOpacity": {"value": 0.25},
                         "fill": {"value": "steelblue"},
                         "stroke": {"value": "transparent"}
                     }
@@ -60,19 +60,42 @@ $(function () {
                         "x": {"scale": "x", "field": "data.width"},
                         "y": {"scale": "y", "field": "data.height"},
                         "size": {"scale": "s", "field": "data.count"},
-                        "fillOpacity": {"value": 0.5},
                         "stroke": {"value": "transparent"}
                     },
                     "update": {
+                        "fillOpacity": {"value": 0.25},
                         "fill": {"value": "steelblue"}
                     },
                     "hover": {
+                        "fillOpacity": {"value": 1.0},
                         "fill": {"value": "red"}
                     }
                 }
             }
         ]
     };
+
+    function showSearchResults(data) {
+        $('.image-space-search-results-row').removeClass('hidden');
+        $('.image-space-search-results').empty();
+        function imageUrl(d) {
+            var parts = d.id.split('/'),
+                file = parts[parts.length - 1]
+            return 'https://s3.amazonaws.com/roxyimages/' + file;
+        }
+        var results = d3.select('.image-space-search-results').selectAll('div')
+            .data(data)
+            .enter().append('div')
+            .attr('class', 'col-xs-6 col-md-3');
+        results.append('a')
+            .attr('href', imageUrl)
+            .attr('target', '_blank')
+            .attr('class', 'thumbnail')
+            .append('img')
+            .attr('class', 'blur')
+            .attr('src', imageUrl)
+        results.append('pre').text(function (d) { return d.content[0].trim(); });
+    }
 
     function textSearch() {
         var searchBox = $('<input type="text" class="form-control input-lg" placeholder="Search">');
@@ -82,24 +105,7 @@ $(function () {
             if (event.which === 13) {
                 $('.search-progress').removeClass('hidden');
                 d3.json('solr-query?query=' + encodeURIComponent(searchBox.val()), function (error, data) {
-                    $('.image-space-search-results').empty();
-                    function imageUrl(d) {
-                        var parts = d.id.split('/'),
-                            file = parts[parts.length - 1]
-                        return 'https://s3.amazonaws.com/roxyimages/' + file;
-                    }
-                    var results = d3.select('.image-space-search-results').selectAll('div')
-                        .data(data)
-                        .enter().append('div')
-                        .attr('class', 'col-xs-6 col-md-3');
-                    results.append('a')
-                        .attr('href', imageUrl)
-                        .attr('target', '_blank')
-                        .attr('class', 'thumbnail')
-                        .append('img')
-                        .attr('class', 'blur')
-                        .attr('src', imageUrl)
-                    results.append('pre').text(function (d) { return d.content[0].trim(); });
+                    showSearchResults(data);
                     $('.search-progress').addClass('hidden');
                 });
             }
@@ -132,7 +138,13 @@ $(function () {
                         table: sizeData
                     }
                 }).on("click", function(event, item) {
+                    $('.search-progress').removeClass('hidden');
                     console.log(item);
+                    var q = "tiff_imagelength:" + item.datum.data.height + " AND tiff_imagewidth:" + item.datum.data.width;
+                    d3.json('solr-query?query=' + encodeURIComponent(q), function (error, data) {
+                        showSearchResults(data);
+                        $('.search-progress').addClass('hidden');
+                    });
                 }).update();
             });
         }
