@@ -6,6 +6,7 @@
             nodeCharge:     tangelo.accessor({value: -130}),
             nodeColor:      tangelo.accessor({value: "steelblue"}),
             nodeSize:       tangelo.accessor({value: 10}),
+            nodeImage:      tangelo.accessor(),
             nodeLabel:      tangelo.accessor({value: ""}),
             nodeOpacity:    tangelo.accessor({value: 1}),
             nodeId:         tangelo.accessor({index: true}),
@@ -15,8 +16,8 @@
             linkOpacity:    tangelo.accessor({value: 0.2}),
             nodeX:          tangelo.accessor(),
             nodeY:          tangelo.accessor(),
-            width:          1000,
-            height:         1000,
+            width:          undefined,
+            height:         undefined,
             dynamicLabels:  false,
             data:           null
         },
@@ -41,8 +42,8 @@
             var that = this,
                 nodeIdMap = {};
 
-            this.svg.attr('width', this.options.width);
-            this.svg.attr('height', this.options.width);
+            this.svg.attr('width', this.options.width || this.element.width());
+            this.svg.attr('height', this.options.height || this.element.height());
 
             if (this.options.nodeX && !this.options.nodeX.undefined) {
                 this.xScale = d3.scale.linear()
@@ -62,6 +63,7 @@
 
             this.options.data.nodes.forEach(function (d, i) {
                 nodeIdMap[that.options.nodeId(d, i)] = d;
+                d.imageSize = 20;
                 d.degree = 0;
                 d.outgoing = [];
                 d.incoming = [];
@@ -115,10 +117,31 @@
                 .style("fill", function (d, i) {
                     return that.colorScale(that.options.nodeColor(d, i));
                 })
+                .style("stroke", function (d) {
+                    return "#fff";
+                })
                 .style("opacity", this.options.nodeOpacity);
 
             this.node.selectAll("title")
                 .text(this.options.nodeLabel);
+
+            if (!this.options.nodeImage.undefined) {
+                this.nodeImage = this.svg.selectAll(".node-image")
+                    .data(this.options.data.nodes);
+
+                this.nodeImage.enter()
+                    .append("image")
+                    .call(this.force.drag)
+                    .classed("node-image", true);
+
+                this.nodeImage.attr("xlink:href", this.options.nodeImage)
+                    .attr("width", function (d) { return d.imageSize; })
+                    .attr("height", function (d) { return d.imageSize; });
+
+                this.nodeImage.on("click", that.options.click);
+            }
+
+            this.node.on("click", that.options.click);
 
             if (!that.options.dynamicLabels) {
                 this.label = this.svg.selectAll("text")
@@ -172,16 +195,16 @@
                     });
             } else {
                 that.label.attr("x", function (d) {
-                    return d.x;
-                })
+                        return d.x;
+                    })
                     .attr("y", function (d) {
                         return d.y;
                     });
             }
 
             that.link.attr("x1", function (d) {
-                return d.source.x;
-            })
+                    return d.source.x;
+                })
                 .attr("y1", function (d) {
                     return d.source.y;
                 })
@@ -193,11 +216,21 @@
                 });
 
             that.node.attr("cx", function (d) {
-                return d.x;
-            })
+                    return d.x;
+                })
                 .attr("cy", function (d) {
                     return d.y;
                 });
+
+            if (!this.options.nodeImage.undefined) {
+                that.nodeImage
+                    .attr("x", function (d) {
+                        return d.x - d.imageSize / 2;
+                    })
+                    .attr("y", function (d) {
+                        return d.y - d.imageSize / 2;
+                    });
+            }
         },
 
         // Compute a list of objects of the form:
