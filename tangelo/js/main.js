@@ -163,7 +163,7 @@ $(function () {
     function textSearch() {
         var searchBox = $('<input type="text" class="form-control input-lg" placeholder="Search">');
         $('.image-space-search-heading').text("Search by image text")
-        $('.image-space-search-info').text("Type in a search term and hit Enter. Images whose content contains that text are populated in the search results along with the extracted text. Text was obtained using Tesseract OCR (optical character recognition).")
+        $('.image-space-search-info').text("Type in a search term and hit Enter. Images whose content contains the entered text are populated in the search results along with the extracted text.")
         $('.image-space-search-content').empty().append(searchBox);
         searchBox.keypress(function (event) {
             if (event.which === 13) {
@@ -337,5 +337,15 @@ $(function () {
         similarityGraph();
         return false;
     });
+
+    $('.navbar-brand').click(function () {
+        $('.navbar-nav li').removeClass('active');
+        $('.image-space-search-heading').text("Select a search mode above to begin")
+        $('.image-space-search-info').text("This app was developed for the JPL / Kitware / Continuum Memex team using Apache Tika and SolrCell.")
+        $('.image-space-search-content').empty();
+        return false;
+    });
+
+    $('.navbar-brand').click();
 
 });
