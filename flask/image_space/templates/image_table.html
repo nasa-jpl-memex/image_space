@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% set active_page = "Image Table" %}
+{% block content %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Images Table</h1>
+
+          <div class="table-responsive">
+            <table id="image_table" class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>img_file</th>
+                  <th>Serial Number <span class="glyphicon glyphicon-sort"></span></th>
+                  <th>Camera Serial Number <span class="glyphicon glyphicon-sort"></span></th>
+                  <th>Date-Time<span class="glyphicon glyphicon-sort"></span></th>
+                </tr>
+              </thead>
+              <tbody>
+
+              {% for image in images %}
+                <tr>
+                  <td>
+		     <a href="{{ url_for('compare', image=image['id']) }}">
+			<div id="blurdiv">
+			<img src="{{ url_for('crawled', image=image['id']) }}" height="75" width="75" class="thumbnail" alt="{{ image['id'] }}" class="blur"/>
+			</div>
+	             </a>
+                  </td>
+                  <td>{{ image['serial_number'] }}</td>
+                  <td>{{ image['camera_serial_number'] }}</td>
+                  <td>{{ image['exif_datetimeoriginal'] }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+            Steps in size of 200
+            <nav>
+              <ul class="pagination">
+                <li>
+                  <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                {% for n in range(5) %}
+                <li><a href="/image_table/{{ 200 * n + page}}">{{ 200 * n + page}}</a></li>
+                {% endfor %}
+                <li>
+                  <a href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+        </div>
+
+
+
+{% endblock content %}
+{% block extrafooter %}
+        <script>
+            $(document).ready(function() {
+                $('#image_table').dataTable();
+             } );
+        </script>
+{% endblock extrafooter %}

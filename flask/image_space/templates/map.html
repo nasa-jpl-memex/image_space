@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% set active_page = "map" %}
+
+{% block content %}
+
+<script src="{{ url_for('static', filename="js/geo.ext.min.js") }}"></script>
+<script src="{{ url_for('static', filename="js/geo.min.js") }}"></script>
+
+<script type="text/javascript">
+var myMap;
+$(function() {
+    var mapOptions = {
+        node: '#map',
+        zoom : 2,
+        center : [39.8, -98.6]
+    }, layer, feature;
+
+    // Create the map
+    myMap = geo.map(mapOptions);
+
+    // Create the background layer with locally served tiles
+    myMap.createLayer('osm', {
+        baseUrl: '{{ url_for('static', filename="data/tiles/") }}'
+    });
+
+    /// Resize the canvas to fill browser window dynamically
+    window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+        myMap.resize(0, 0, 800, 500);//$('#map').width(), $('#map').height());
+        myMap.draw();
+    }
+    resizeCanvas();
+
+    // create a catagorical coloring to make the map look more interesting
+    //var stateCategory = {"WA": 0, "DE": 1, "DC": 2, "WI": 3, "WV": 4, "HI": 5, "FL": 6, "FM": 7, "WY": 8, "NH": 9, "NJ": 10, "NM": 11, "TX": 12, "LA": 13, "NC": 14, "ND": 15, "NE": 16, "TN": 17, "NY": 18, "PA": 19, "CT": 19, "AK": 7, "NV": 1, "VA": 2, "GU": 3, "CO": 4, "VI": 6, "CA": 0, "AL": 8, "AS": 9, "AR": 10, "VT": 11, "IL": 12, "GA": 13, "IN": 14, "IA": 15, "OK": 2, "AZ": 17, "ID": 18, "PW": 5, "ME": 0, "MD": 1, "MA": 16, "OH": 3, "UT": 4, "MO": 5, "MN": 6, "MI": 7, "MH": 8, "RI": 9, "KS": 10, "MT": 11, "MP": 12, "MS": 13, "PR": 14, "SC": 15, "KY": 16, "OR": 17, "SD": 18};
+    //var stateColor = d3.scale.category20().domain(d3.range(20));
+
+    // Load csv data
+    $.ajax({
+        type: 'GET',
+        url: '{{ url_for('static', filename="data/points.csv") }}',
+        dataType: 'text',
+        success: function (csv) {
+            // When loaded add the data as points in the feature layer
+            var i, j, lines, row, data = [], item;
+
+            // convert csv to an array of objects
+            lines = csv.split(/\r\n|\n/);
+
+            for (i = 0; i < lines.length; i += 1) {
+                row = lines[i].split(',');
+                item = [];
+                if (row.length) {
+                    for (j = 0; j < row.length; j += 1) {
+                        item.push(
+                            row[j].replace(/"/g, '')
+                        );
+                    }
+                    data.push(item);
+                }
+            }
+            // create the point feature
+            // Create a feature layer
+            layer = myMap.createLayer('feature', {'renderer' : 'd3Renderer'});
+            feature = layer.createFeature('point')
+                .data(data)
+                .position(function (d) {
+                    // need to customize for data schema
+                    //console.log(d);
+                    return {
+                        x: Number(d[2]), // longitude
+                        y: Number(d[1]), // latitude
+                        z: 0             // elevation
+                    };
+                })
+            myMap.draw();
+
+        }
+    });
+
+});
+</script>
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <h1>Map</h1>
+    <div id='map'></div>
+</div>
+
+{% endblock content %}
+
+
+
+
+

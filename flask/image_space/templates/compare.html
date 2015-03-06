@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% set active_page = "compare" %}
+{% block content %}
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+  <h3>{{ image }}</h3>
+  <div class="row vertical-align clear-bottom">
+    <div class="col-xs-7">
+      <script src="{{ url_for('static', filename='js/dropzone.js') }}"></script>
+      <div id="blurdiv">
+      {% if crawled_image_flag %}
+      <img src="{{ url_for('crawled', image=image) }}" alt="Generic placeholder thumbnail" height="200" width="200" class="img-responsive"/>
+      {% else %}
+      <img src="{{ url_for('uploaded', image=image) }}" alt="Generic placeholder thumbnail" height="200" width="200" class="img-responsive"/>
+      {% endif %}
+      </div>
+    </div>
+    <div class="col-xs-5">
+      <div>
+        <!-- <dl class="dl-horizontal"> -->
+        <dl>
+          {% for key, value in exif_info.iteritems() %}
+          <dt>{{ key }}</dt>
+          <dd>{{ value }}</dd>
+          {% endfor %}
+        </dl>
+      </div>
+    </div>
+  </div>
+
+
+{% if solr_docs %}
+  <h3>Matched Images from Crawl</h3>
+  <div class="row">
+  {% for d in solr_docs %}
+       <div class="col-xs-6 col-sm-3">
+	<div id="blurdiv">
+        <img src="{{ url_for('crawled', image=d['id']) }}" height="200" width="200" class="thumbnail" alt="{{ d['id'] }}">
+	</div>
+        <h4>SerialNumber: {{ d['serial_number_solr'] }}</h4>
+      </div>
+  {% endfor %}
+  </div>
+{% endif %}
+
+{% if lost_camera_matches %}
+  <h3>Matched Images Lost Camera</h3>
+  <div class="row">
+  {% for img in lost_camera_matches %}
+       <div class="col-xs-6 col-sm-3">
+	<div id="blurdiv">
+        <img src="{{ url_for('static', filename = img[0]) }}" height="200" width="200" class="thumbnail" alt="{{ img[1] }}">
+	</div>
+        <h4>{{ img[1] }} <small>(from {{ img[2] }})</small></h4>
+      </div>
+  {% endfor %}
+  </div>
+{% endif %}
+
+{% endblock content %}

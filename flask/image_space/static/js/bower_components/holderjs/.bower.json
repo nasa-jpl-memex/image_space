@@ -1,0 +1,16 @@
+{
+  "name": "holderjs",
+  "main": "holder.js",
+  "homepage": "https://github.com/imsky/holder",
+  "version": "2.4.0",
+  "_release": "2.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.4.0",
+    "commit": "79785500bc17ca6c4c2faec7f6aac07156ea82dc"
+  },
+  "_source": "git://github.com/imsky/holder.git",
+  "_target": "~2.4.0",
+  "_originalSource": "holderjs",
+  "_direct": true
+}

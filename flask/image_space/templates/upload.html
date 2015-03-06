@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% set active_page = "compare" %}
+
+{% block title %}Compare an Upload Image{% endblock %}
+
+{% block extrahead %}
+  <script src="{{ url_for('static', filename='js/dropzone.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dropzone.css') }}">
+{% endblock %}
+
+{% block content %}
+  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <h3>Upload new image</h3>
+    <form class="dropzone" id="filedrop"></form>
+
+    <hr/>
+    
+    <h3> Uploaded images </h3>
+    
+    {% if image_pages %}
+    <ul class="list-group">
+      {% for img in image_pages %}
+      <li class="list-group-item"><a href="{{img.url}}">{{img.name}}</a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p> No images have been uploaded yet. </p>
+    {% endif %}
+
+
+
+  </div>
+
+{% endblock %}

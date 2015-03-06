@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>{% block title %}{{ config.TITLE }}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename="css/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename="css/dataTables.css") }}" rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename="css/dashboard.css") }}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+      <script src="{{ url_for('static', filename="js/ie8-responsive-file-warning.js") }}"></script>
+      <script src="{{ url_for('static', filename="js/ie-emulation-modes-warning.js") }}"></script>
+    <![endif]-->
+
+    {%- block extrahead %}{% endblock %}
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">{{ config.TITLE }}</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right nav-pills">
+            <li class="active"><a href="/reset">Reset Demo</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <!--<input type="text" class="form-control" placeholder="Search...">-->
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+          {% set nav_bar_1 = [
+                ('/compare', 'compare', 'Compare'),
+                ('/image_table', 'image_table', 'Image Table')
+          ] -%}
+          {% for href, id, caption in nav_bar_1 %}
+            <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+          {% endfor %}
+
+          </ul>
+        </div>
+        {% block content %}
+        {% endblock content %}
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename="js/jquery.dataTables.min.js") }}"></script>
+    <script src="{{ url_for('static', filename="js/bootstrap.min.js") }}"></script>
+    <script src="{{ url_for('static', filename="js/doc.min.js") }}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{{ url_for('static', filename="js/ie10-viewport-bug-workaround.js") }}"></script>
+    <script src="{{ url_for('static', filename="js/holder.js") }}"></script>
+    <script src="{{ url_for('static', filename="js/dataTables.bootstrap.js") }}"></script>
+    {%- block extrafooter %}{% endblock %}
+
+  </body>
+</html>
