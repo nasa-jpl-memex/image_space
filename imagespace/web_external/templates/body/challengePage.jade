@@ -1,0 +1,34 @@
+.c-challenge-header
+  if (challenge.getAccessLevel() >= girder.AccessType.WRITE)
+    .btn-group.pull-right
+      button.c-challenge-actions-button.btn.btn-default.dropdown-toggle(
+          data-toggle="dropdown", title="Challenge actions")
+        i.icon-menu
+        |  Actions
+        i.icon-down-dir
+      ul.c-challenge-actions-menu.dropdown-menu.pull-right(role="menu")
+        li(role="presentation")
+          a.c-edit-challenge(role="menuitem")
+            i.icon-edit
+            | Edit info
+        li(role="presentation")
+          a.c-create-phase(role="menuitem")
+            i.icon-plus
+            | Create new phase
+        if (challenge.getAccessLevel() >= girder.AccessType.ADMIN)
+          li.divider(role="presentation")
+          li(role="presentation")
+            a.c-challenge-access-control(role="menuitem")
+              i.icon-lock
+              | Access control
+          li(role="presentation")
+            a.c-delete-challenge(role="menuitem")
+              i.icon-trash
+              | Delete challenge
+
+  .c-challenge-title= challenge.get('name')
+  .c-challenge-description= challenge.get('description')
+
+.c-challenge-instructions-container
+
+.c-challenge-phase-container

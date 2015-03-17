@@ -1,0 +1,59 @@
+.c-metrics-header
+  .g-body-title.c-breadcrumb-list
+    a.c-challenge-link(href="#challenge/#{challenge.get('_id')}")= challenge.get('name')
+    i.icon-angle-right
+    a.c-phase-link(href="#phase/#{phase.get('_id')}")= phase.get('name')
+    i.icon-angle-right
+    span Scoring metrics
+
+  .btn-group.pull-right
+    button.c-phase-actions-button.btn.btn-default.dropdown-toggle(
+          data-toggle="dropdown", title="Actions")
+      i.icon-cog
+      i.icon-down-dir
+    ul.c-phase-actions-menu.dropdown-menu.pull-right(role="menu")
+      li(role="presentation")
+        a.c-add-metric(role="menuitem")
+          i.icon-plus
+          | Add new metric
+      li(role="presentation")
+        a.c-copy-metrics(role="menuitem")
+          i.icon-paste
+          | Copy metrics from other phase
+
+if phase.get('metrics') && !_.isEmpty(phase.get('metrics'))
+  .c-metric-list.panel-group(role="tablist")
+    - var i = 0
+    each metric, id in phase.get('metrics')
+      - i += 1
+      .c-metric-container.panel.panel-default
+        .panel-heading(role="tab")
+          h4.panel-title
+            a.c-metric-id-panel-title(data-toggle="collapse" data-parent=".c-metric-list"
+              href="#c-metric-#{i}")= id
+          .c-metric-remove-button(title="Remove metric"): i.icon-cancel
+        .c-metric-panel.panel-collapse.collapse(
+            id="c-metric-#{i}" role="tabpanel" class="#{id === openMetric ? 'in' : ''}")
+          .panel-body
+            .c-metric-info-label.c-first Short identifier
+            input.form-control.input-sm.c-metric-id(value="#{id}")
+            .c-metric-info-label Full metric name
+            input.form-control.input-sm.c-metric-title(value="#{metric.title}")
+            .c-metric-info-label
+              | Description (supports
+              a(target="_blank", href="http://daringfireball.net/projects/markdown")  Markdown
+              |  syntax)
+            textarea.form-control.input-sm.c-metric-description(rows="4")= metric.description
+            .c-metric-info-label
+              | Numeric weighting factor
+            input.form-control.input-sm.c-metric-weight(type="text", value="#{metric.weight}")
+
+  .g-validation-failed-message
+  button.c-save-metrics.btn.btn-primary(type="submit")
+    i.icon-ok
+    | Save
+else
+  .c-empty-metrics-message.
+    There are currently no metrics for this phase. You can add new metrics
+    manually or copy an existing set of metrics from a different phase using
+    the action menu in the top right corner.

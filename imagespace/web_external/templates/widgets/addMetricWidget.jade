@@ -1,0 +1,16 @@
+.modal-dialog
+  .modal-content
+    form#c-metric-add-form.modal-form(role="form")
+      .modal-header
+        button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+        h4.modal-title Add new metric
+      .modal-body
+        .form-group
+          label.control-label(for="c-phase-name") Unique short identifier for this metric
+          input.input-sm#c-metric-id.form-control(type="text", placeholder="Enter identifier")
+        .g-validation-failed-message
+      .modal-footer
+        a.btn.btn-small.btn-default(data-dismiss="modal") Cancel
+        button.c-add-metric.btn.btn-small.btn-primary(type="submit")
+          i.icon-ok
+          |  Ok

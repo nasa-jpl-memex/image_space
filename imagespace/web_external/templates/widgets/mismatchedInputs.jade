@@ -1,0 +1,35 @@
+if !matchInfo.ok
+  .c-mismatch-info-container
+    .c-mismatch-info-title Error: invalid input files
+    p.c-mismatch-info-description.
+      Your input files must exactly match the expected set of ground truth files.
+      Your files may have different extensions, but the prefix before the extension
+      has to match one-to-one with the ground truth files. Use the "Browse or drop
+      files here" button to try again.
+
+    if matchInfo.unmatchedInputs.length
+      .c-mismatch-extra-inputs
+        p
+        | Your selection contained the following
+        b  invalid
+        |  files:
+        ul
+          each name in matchInfo.unmatchedInputs
+            li= name
+
+    if matchInfo.unmatchedGroundtruths.length
+      .c-mismatch-missing-inputs
+        p
+        | Your selection was
+        b  missing
+        |  the following files:
+        ul
+          each name in matchInfo.unmatchedGroundtruths
+            li= name
+
+    if matchInfo.matched.length
+      .c-matched-inputs
+        p The following inputs were correctly matched:
+        ul
+          each name in matchInfo.matched
+            li= name

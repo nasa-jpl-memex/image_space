@@ -1,0 +1,9 @@
+.c-phase-list-title Phases for this challenge
+
+ul.c-phase-list
+  each phase in phases
+    li.c-phase-list-entry
+      .c-challenge-phase-header
+      a.c-phase-link(c-phase-cid="#{phase.cid}")
+        i.icon-clock
+        | #{phase.get('name')}

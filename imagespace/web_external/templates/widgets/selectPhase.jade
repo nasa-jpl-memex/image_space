@@ -1,0 +1,16 @@
+.modal-dialog
+  .modal-content
+    form#c-phase-select-form.modal-form(role="form")
+      .modal-header
+        button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+        h4.modal-title= title
+      .modal-body
+        .form-group
+          label.control-label(for="c-phase-id") Phase ID
+          input.input-sm#c-phase-id.form-control(type="text", placeholder="Enter phase ID")
+        .g-validation-failed-message
+      .modal-footer
+        a.btn.btn-small.btn-default(data-dismiss="modal") Cancel
+        button.btn.btn-small.btn-primary(type="submit")
+          i.icon-ok
+          |  Ok

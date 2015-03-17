@@ -1,0 +1,38 @@
+.modal-dialog
+  .modal-content
+    form#c-phase-edit-form.modal-form(role="form")
+      .modal-header
+        button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+        h4.modal-title
+          if (phase)
+            | Edit phase
+          else
+            | Create phase
+      .modal-body
+        .form-group
+          label.control-label(for="c-phase-name") Name
+          input.input-sm#c-phase-name.form-control(type="text", placeholder="Enter phase name")
+        .form-group
+          label.control-label(for="c-phase-description") Description (optional)
+          textarea.input-sm#c-phase-description.form-control(placeholder="Enter phase description")
+        .form-group
+          label.control-label(for="c-phase-instructions")
+            | Instructions (supports
+            a(target="_blank", href="http://daringfireball.net/projects/markdown")  Markdown
+            |  syntax)
+          textarea.input-sm#c-phase-instructions.form-control(
+            placeholder="Enter phase instructions", rows="4")
+        .checkbox
+          label
+            input#c-phase-active(type="checkbox")
+            |  Active (accepting submissions)
+        .g-validation-failed-message
+      .modal-footer
+        a.btn.btn-small.btn-default(data-dismiss="modal") Cancel
+        button.c-save-phase.btn.btn-small.btn-primary(type="submit")
+          if (phase)
+            i.icon-edit
+            | Save
+          else
+            i.icon-plus-squared
+            | Create

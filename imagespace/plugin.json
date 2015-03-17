@@ -1,0 +1,14 @@
+{
+    "name": "Image Space",
+    "description": "Image corpus exploration.",
+    "version": "0.1.0",
+    "dependencies": [
+        "gravatar"
+    ],
+    "grunt": {
+        "file": "Gruntfile.js",
+        "defaultTargets": [
+            "imagespace-web"
+        ]
+    }
+}

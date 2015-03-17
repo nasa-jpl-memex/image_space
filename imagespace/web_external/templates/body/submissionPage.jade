@@ -1,0 +1,28 @@
+.c-submission-header-bar
+  .c-submission-right-buttons.pull-right
+    a.c-leaderboard-button(href="#phase/#{submission.get('phaseId')}")
+      |  View leaderboard&nbsp;
+      i.icon-right-big
+
+  .c-header-info-wrapper
+    .c-user-portrait
+    .c-details-area
+      if submission.get('title')
+        .c-submission-title-text= submission.get('title')
+      .c-submission-subtitle Submitted
+        b  #{created}
+        |  by
+        b  #{submission.get('creatorName')}
+
+.c-submission-display-body
+  if submission.has('overallScore')
+    .c-submission-overall-score-container
+      .c-pre-text Overall score:
+      .c-overall-score= Math.round(submission.get('overallScore') * 1000) / 1000
+  else
+    .c-score-pending-container
+      i.icon-spin1.animate-spin
+      .c-text Your submission is being scored, please wait...
+    .c-score-progress-container
+
+  .c-submission-score-detail-container

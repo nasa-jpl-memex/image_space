@@ -1,0 +1,8 @@
+tmp
+*.py[cod]
+.DS_Store
+.*.swp
+.*.swo
+*.local.cfg
+.worker_pids
+*~
