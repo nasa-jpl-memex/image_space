@@ -1,0 +1,8 @@
+.c-task-progress-bar.progress(class="#{progressClass}")
+  .progress-bar(class="#{barClass}", style="width: #{width};")
+    .progress-status
+      .progress-percent= percentText
+.c-task-progress-bottom
+  .c-task-progress-message
+    i.icon-right-dir
+    | #{progress.data.message}

@@ -1,0 +1,25 @@
+.c-submit-page-title Submit to #{phase.get('name')}
+
+.c-submit-page-description
+  p.
+    To submit to this phase of the challenge, upload your output files here. The
+    output files must map one-to-one to each file from the input dataset. Your
+    files may have different file extensions, but otherwise the names should match
+    each corresponding input file.
+  p.
+    Before you upload your submission, please add a short title that identifies
+    either your organization or your algorithm. This title doesn't have to be
+    unique, but it will appear in the leaderboard with your submission. The title
+    should be no more than #{maxTitleLength} characters.
+  p.
+    Use the button below to select all of the files, or drag and drop them onto
+    the button. If the selection is valid, you can upload them. Once done, your
+    submission is complete and your result will be scored. When the scoring is
+    done, it will appear on this page and in the leaderboard for this phase.
+
+.c-submit-uploader-container
+  .c-submission-mismatch-container
+  label Enter submission title
+  input.c-submission-title-input.form-control(type="text", maxlength="#{maxTitleLength}")
+  .c-submission-title-error
+  .c-submit-upload-widget

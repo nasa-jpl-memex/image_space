@@ -1,0 +1,34 @@
+.modal-dialog
+  .modal-content
+    form#c-challenge-edit-form.modal-form(role="form")
+      .modal-header
+        button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+        h4.modal-title
+          if (challenge)
+            | Edit challenge
+          else
+            | Create challenge
+      .modal-body
+        .form-group
+          label.control-label(for="c-challenge-name") Name
+          input.input-sm#c-challenge-name.form-control(type="text", placeholder="Enter challenge name")
+        .form-group
+          label.control-label(for="c-challenge-description") Short description (optional)
+          textarea.input-sm#c-challenge-description.form-control(placeholder="Enter short description")
+        .form-group
+          label.control-label(for="c-challenge-long-description")
+            | Instructions (supports
+            a(target="_blank", href="http://daringfireball.net/projects/markdown")  Markdown
+            |  syntax)
+          textarea.input-sm#c-challenge-instructions.form-control(
+            placeholder="Enter instructions", rows="4")
+        .g-validation-failed-message
+      .modal-footer
+        a.btn.btn-small.btn-default(data-dismiss="modal") Cancel
+        button.c-save-challenge.btn.btn-small.btn-primary(type="submit")
+          if (challenge)
+            i.icon-edit
+            | Save
+          else
+            i.icon-plus-squared
+            | Create

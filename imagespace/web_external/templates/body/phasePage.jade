@@ -1,0 +1,59 @@
+.c-phase-header
+    .c-phase-name.g-body-title
+        a.c-challenge-link(href="#challenge/#{challenge.get('_id')}")
+            b #{challenge.get('name')}
+        i.icon-angle-right
+        | #{phase.get('name')}
+        .c-phase-properties.pull-right
+            if (phase.getAccessLevel() >= girder.AccessType.WRITE)
+                .btn-group.pull-right
+                    button.c-phase-actions-button.btn.btn-default.dropdown-toggle(
+                            data-toggle="dropdown", title="Actions")
+                        i.icon-cog
+                        i.icon-down-dir
+                    ul.c-phase-actions-menu.dropdown-menu.pull-right(role="menu")
+                        li(role="presentation")
+                            a.c-edit-phase(role="menuitem")
+                                i.icon-edit
+                                | Edit phase
+                        li(role="presentation")
+                            a.c-edit-metrics(role="menuitem", href="#phase/#{phase.get('_id')}/metrics")
+                                i.icon-chart-bar
+                                | Scoring metrics
+                        if (phase.getAccessLevel() >= girder.AccessType.ADMIN)
+                            li.divider(role="presentation")
+                            li(role="presentation")
+                                a.c-phase-access-control(role="menuitem")
+                                    i.icon-lock
+                                    | Access control
+                            li(role="presentation")
+                                a.c-delete-phase(role="menuitem")
+                                    i.icon-trash
+                                    | Delete phase
+
+        .c-phase-description.g-body-subtitle #{phase.get('description')}
+        .g-clear-right
+
+if phase.get('instructions')
+  .c-phase-instructions-container
+    .c-phase-instructions
+
+.c-phase-submit-container
+    if userInChallenge
+        if phase.get('active')
+            a#c-submit-phase-dataset.btn.btn-lg.btn-success(
+              href="#phase/#{phase.get('_id')}/submit")
+                i.icon-upload-cloud
+                |  Submit your results
+        else
+            button#c-submit-phase-disabled.disabled.btn.btn-lg
+                i.icon-upload-cloud
+                |  Submissions disabled currently
+    else
+        button#c-join-phase.btn.btn-lg.btn-primary
+            i.icon-thumbs-up-alt
+            | Participate in this phase
+
+.c-leaderboard-container
+  .c-title Leaderboard
+  .c-leaderboard-widget-container

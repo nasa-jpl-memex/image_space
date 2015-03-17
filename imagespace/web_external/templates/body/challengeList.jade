@@ -1,0 +1,17 @@
+.c-challenge-list-header
+  .c-challenge-pagination
+  form.c-challenge-search-form.form-inline(role="form")
+    .form-group.c-challenges-search-container
+
+  if (admin)
+    button.c-challenge-create-button.btn.btn-sm.btn-default
+      i.icon-plus-squared
+      |  New challenge
+
+each challenge in challenges
+  .c-challenge-list-entry
+    .c-challenge-right-column
+    .c-challenge-title
+      a.c-challenge-link(c-challenge-cid="#{challenge.cid}")= challenge.get('name')
+    .c-challenge-description= challenge.get('description')
+    .g-clear-right

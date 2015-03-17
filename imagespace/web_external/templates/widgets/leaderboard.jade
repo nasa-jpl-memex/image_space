@@ -1,0 +1,24 @@
+table.c-leaderboard-table
+  thead
+    tr
+      th.c-rank Rank
+      th User
+      th Title
+      th Date
+      th Score
+  tbody
+    - var i = 1
+    each submission in submissions
+      tr.c-stripe(stripe="#{(i + start) % 2 ? 'even' : 'odd'}")
+        td.c-rank= i + start
+        td
+          a.c-user-link(
+            user-id="#{submission.get('creatorId')}")= submission.get('creatorName')
+        td= submission.get('title') || '--'
+        td(title="#{submission.get('created')}")= girder.formatDate(submission.get('created'), girder.DATE_DAY)
+        td
+          a.c-score-link(
+            href="#submission/#{submission.get('_id')}")= Math.round(submission.get('overallScore') * 1000) / 1000
+      - i ++
+
+.c-leaderboard-pagination
