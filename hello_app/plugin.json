@@ -1,0 +1,14 @@
+{
+    "name": "Hello world application",
+    "description": "A minimal template for a custom Girder front-end application",
+    "version": "0.1.0",
+    "dependencies": [
+        "gravatar"
+    ],
+    "grunt": {
+        "file": "Gruntfile.js",
+        "defaultTargets": [
+            "hello-app"
+        ]
+    }
+}
