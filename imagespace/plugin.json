@@ -1,0 +1,14 @@
+{
+    "name": "Image Space application",
+    "description": "Image exploration and query interface",
+    "version": "0.1.0",
+    "dependencies": [
+        "gravatar"
+    ],
+    "grunt": {
+        "file": "Gruntfile.js",
+        "defaultTargets": [
+            "imagespace"
+        ]
+    }
+}
