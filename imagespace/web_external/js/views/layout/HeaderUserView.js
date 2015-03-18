@@ -1,4 +1,4 @@
-hello_app.views.LayoutHeaderUserView = hello_app.View.extend({
+imagespace.views.LayoutHeaderUserView = imagespace.View.extend({
 
 
     events: {
@@ -32,7 +32,7 @@ hello_app.views.LayoutHeaderUserView = hello_app.View.extend({
     },
 
     render: function () {
-        this.$el.html(hello_app.templates.layoutHeaderUser({
+        this.$el.html(imagespace.templates.layoutHeaderUser({
             user: girder.currentUser
         }));
 

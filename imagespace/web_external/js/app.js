@@ -1,9 +1,9 @@
-hello_app.App = girder.App.extend({
+imagespace.App = girder.App.extend({
 
     render: function() {
-        this.$el.html(hello_app.templates.layout());
+        this.$el.html(imagespace.templates.layout());
 
-        new hello_app.views.LayoutHeaderView({
+        new imagespace.views.LayoutHeaderView({
             el: this.$('#c-app-header-container'),
             parentView: this
         }).render();

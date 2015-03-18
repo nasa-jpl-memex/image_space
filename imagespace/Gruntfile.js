@@ -1,8 +1,8 @@
 module.exports = function (grunt) {
     var fs = require('fs');
     var defaultTasks = [];
-    var pluginName = 'hello_app';
-    var pluginDir = 'plugins/hello_app';
+    var pluginName = 'imagespace';
+    var pluginDir = 'plugins/imagespace';
     var staticDir = 'clients/web/static/built/plugins/' + pluginName;
     var sourceDir = 'web_external';
 
@@ -67,5 +67,5 @@ module.exports = function (grunt) {
         defaultTasks.push('uglify:' + pluginName);
     }
 
-    grunt.registerTask('hello-app', defaultTasks);
+    grunt.registerTask('imagespace', defaultTasks);
 };

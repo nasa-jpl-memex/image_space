@@ -1,6 +1,6 @@
 {
-    "name": "Hello world application",
-    "description": "A minimal template for a custom Girder front-end application",
+    "name": "Image Space application",
+    "description": "Image exploration and query interface",
     "version": "0.1.0",
     "dependencies": [
         "gravatar"
@@ -8,7 +8,7 @@
     "grunt": {
         "file": "Gruntfile.js",
         "defaultTargets": [
-            "hello-app"
+            "imagespace"
         ]
     }
 }

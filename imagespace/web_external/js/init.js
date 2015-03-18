@@ -1,6 +1,6 @@
-var hello_app = hello_app || {};
+var imagespace = imagespace || {};
 
-_.extend(hello_app, {
+_.extend(imagespace, {
     models: {},
     collections: {},
     views: {},
