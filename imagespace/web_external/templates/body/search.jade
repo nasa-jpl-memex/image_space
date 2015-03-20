@@ -1,0 +1,11 @@
+.container-fluid
+    if results.length > 0
+        for result in results
+            .col-xs-6.col-md-3
+                a.im-thumbnail(href=result.imageUrl, target="_blank")
+                    img.im-blur(src=result.imageUrl)
+                if showText
+                    .im-caption
+                        = result.content[0].trim().replace(/\s+/g, ' ')
+    else
+        h1 No search results found.

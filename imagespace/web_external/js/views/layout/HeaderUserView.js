@@ -18,11 +18,6 @@ imagespace.views.LayoutHeaderUserView = imagespace.View.extend({
                 girder.currentUser=null;
                 girder.events.trigger('g:login');
             },this));
-        },
-
-        'click a.g-my-settings':function(){
-            girder.router.navigate('useraccount/'+girder.currentUser.get('_id')+
-                                    '/info',{trigger:true});
         }
     },
 

@@ -18,7 +18,8 @@
 ###############################################################################
 
 import mako
-from .hello_rest import Hello
+from .imagesearch_rest import ImageSearch
+from .imagefeatures_rest import ImageFeatures
 
 
 class CustomAppRoot(object):
@@ -80,8 +81,9 @@ class CustomAppRoot(object):
 
 
 def load(info):
-    # Bind our hello REST resource
-    info['apiRoot'].hello = Hello()
+    # Bind our REST resources
+    info['apiRoot'].imagesearch = ImageSearch()
+    info['apiRoot'].imagefeatures = ImageFeatures()
 
     # Move girder app to /girder, serve our custom app from /
     info['serverRoot'], info['serverRoot'].girder = (CustomAppRoot(),

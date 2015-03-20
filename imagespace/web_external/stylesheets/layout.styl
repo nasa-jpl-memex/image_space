@@ -59,6 +59,7 @@ $portraitHeight = 38px
       border-radius 3px
       padding 3px
 
+/*
       &:hover
         color #449
         border 1px solid #e2e2e2
@@ -66,12 +67,40 @@ $portraitHeight = 38px
 
       &:active
         background linear-gradient(bottom, white 60%, #f6f6f6 100%)
+*/
+
+.im-brand
+    padding-top 14px
+    padding-bottom 10px
+    padding-right 20px
+    font-size 20px
+    float left
+
+.im-search-form
+    padding-top 10px
+    padding-bottom 10px
+    width 60%
+    float left
+
+#im-upload
+    overflow hidden
 
 #g-app-body-container
-  margin 0
-  margin-top $headerHeight
-  min-height 0
-  padding 12px 15px
+    margin 0
+    margin-top $headerHeight
+    min-height 0
+    padding 12px 15px
 
-.h-body-nopad
-  padding 0 !important
+img.im-blur
+    height 200px
+    -webkit-filter blur(10px)
+    filter blur(10px)
+
+img.im-blur:hover
+    -webkit-filter blur(0px)
+    filter blur(0px)
+
+.im-caption
+    height 70px
+    overflow scroll
+    margin-top 10px

@@ -12,7 +12,12 @@ imagespace.App = girder.App.extend({
     },
 
     navigateTo: function (view, settings) {
-        this.$('#g-app-body-container').removeClass('c-body-nopad');
+        console.log(view);
+        console.log(settings);
+
+        this.$('.im-nav-li').removeClass('active');
+
+        // this.$('#g-app-body-container').removeClass('c-body-nopad');
         return girder.App.prototype.navigateTo.apply(this, arguments)
     }
 });
