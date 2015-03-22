@@ -19,11 +19,11 @@ $portraitHeight = 38px
     background-color white
 
   .h-user-link
-    color #444
+    // color #444
     font-size 16px
 
-    &:hover
-      color #66a
+    // &:hover
+    //   color #66a
 
   .h-login-link-wrapper
     font-size 16px
@@ -69,6 +69,81 @@ $portraitHeight = 38px
         background linear-gradient(bottom, white 60%, #f6f6f6 100%)
 */
 
+
+
+#wrapper
+    padding-left 0
+    -webkit-transition all 0.5s ease
+    -moz-transition all 0.5s ease
+    -o-transition all 0.5s ease
+    transition all 0.5s ease
+
+#wrapper.toggled
+    padding-left 250px
+
+#sidebar-wrapper
+    z-index 1000
+    position fixed
+    left 250px
+    width 0
+    height 100%
+    margin-left -250px
+    overflow-y auto
+    padding-bottom $headerHeight
+    // background #fff
+    -webkit-transition all 0.5s ease
+    -moz-transition all 0.5s ease
+    -o-transition all 0.5s ease
+    transition all 0.5s ease
+    border-right 1px solid #e6e6e6
+
+#im-app-user-data-container
+    padding 15px
+
+#wrapper.toggled #sidebar-wrapper
+    width 250px
+
+#page-content-wrapper
+    width 100%
+    position absolute
+    padding 15px
+
+#wrapper.toggled #page-content-wrapper
+    position absolute
+    margin-right -250px
+
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 250px;
+    }
+
+    #wrapper.toggled {
+        padding-left: 0;
+    }
+
+    #sidebar-wrapper {
+        width: 250px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 0;
+    }
+
+    #page-content-wrapper {
+        padding: 20px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}
+
+.im-instructions
+    padding-top 20px
+
 .im-brand
     padding-top 14px
     padding-bottom 10px
@@ -82,17 +157,31 @@ $portraitHeight = 38px
     width 60%
     float left
 
-#im-upload
-    overflow hidden
-
-#g-app-body-container
+#im-app-main-container
     margin 0
     margin-top $headerHeight
     min-height 0
     padding 12px 15px
 
+#g-app-body-container
+    margin 0
+    min-height 0
+    padding 12px 15px
+
+#im-upload
+    padding 20px 50px
+    margin-bottom 20px
+
+.im-attributes
+    padding-top 30px
+
+img.im-image-thumbnail
+    height 100px
+
+img.im-image-detail
+    height 250px
+
 img.im-blur
-    height 200px
     -webkit-filter blur(10px)
     filter blur(10px)
 

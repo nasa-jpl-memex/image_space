@@ -29,11 +29,15 @@ class ImageSearch(Resource):
         self.resourceName = 'imagesearch'
         self.route('GET', (), self.getImageSearch)
 
+
     @access.public
     def getImageSearch(self, params):
         query = params['query'] if 'query' in params else '*'
         limit = params['limit'] if 'limit' in params else '10'
         base = os.environ['IMAGE_SPACE_SOLR'] + '/select?wt=json&indent=true'
-        result = requests.get(base + '&q=' + query + '&rows=' + str(limit)).json()
+        try:
+            result = requests.get(base + '&q=' + query + '&rows=' + str(limit)).json()
+        except ValueError:
+            return []
         return result['response']['docs']
     getImageSearch.description = Description('Searches image database')

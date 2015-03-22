@@ -63,16 +63,38 @@ class ImageFeatures(Resource):
 
     @access.public
     def getImageFeatures(self, params):
-        data = cherrypy.request.body.read()
+        if 'url' in params:
+            data = requests.get(params['url']).content
+        else:
+            data = str(cherrypy.request.body.read())
 
-        # Run Tika
+        # Run Tika metadata
         cmd = ['java', '-jar', os.environ['IMAGE_SPACE_TIKA'], '-j']
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE,
-                                  stdin=subprocess.PIPE)
+        p = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE
+        )
         out, err = p.communicate(data)
 
-        tika_attributes = [data for data in json_parse(StringIO(out))][1]
+        tika_attributes = [d for d in json_parse(StringIO(out))][1]
+        tika = {}
+        for (k, v) in tika_attributes.iteritems():
+            k = k.lower().replace(':', '_').replace(' ', '_').replace('-', '_')
+            tika[k] = v
+
+        # Run Tika text extraction
+        cmd = ['java', '-jar', os.environ['IMAGE_SPACE_TIKA'], '-t']
+        p = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE
+        )
+        out, err = p.communicate(data)
+
+        tika['content'] = out
 
         # img = Image.open(StringIO(data))
         # if len(img.split()) == 4:
@@ -80,9 +102,7 @@ class ImageFeatures(Resource):
         #     r, g, b, a = img.split()
         #     img = Image.merge("RGB", (r, g, b))
 
-        return {
-            'tika': tika_attributes
-        }
+        return tika
     getImageFeatures.description = (Description('Extracts image features')
         .param('body', 'The image content in the body of the request.',
                paramType='body'))

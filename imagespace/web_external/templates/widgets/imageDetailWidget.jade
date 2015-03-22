@@ -1,0 +1,19 @@
+.modal-dialog
+    .modal-content
+        .modal-header
+            button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+            h4.modal-title= title
+        .modal-body
+            img.im-image-detail.im-blur(src="#{image.imageUrl}")
+            ul.list-group.im-attributes
+                for val, key in image
+                    li.list-group-item
+                        span.badge.btn.btn-default(im-search='#{query} AND #{key}:"#{val}"', title="Narrow search by this attribute")
+                            i.icon-plus
+                        span.badge.btn.btn-default(im-search='#{key}:"#{val}"', title="Start a new search with this attribute")
+                            i.icon-search
+                        b= key + ': '
+                        = val
+        .modal-footer
+            a.btn.btn-small.btn-default(data-dismiss="modal")
+                | Close

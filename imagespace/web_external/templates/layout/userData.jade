@@ -1,0 +1,35 @@
+.container-fluid
+    .hide
+        input#im-files(type="file", multiple="multiple")
+    #im-upload.btn.btn-primary
+        i.icon-image
+        |  Drop image
+    if userData.images.length > 0
+        for result in userData.images
+            a.im-thumbnail(href=result.imageUrl, target="_blank")
+                img.im-image-thumbnail.im-blur(src=result.imageUrl)
+            .im-caption
+                .im-details.btn.btn-link.btn-default(im-id="#{result.id}") Details
+    .im-instructions
+        h4 Instructions
+        p.
+            Use the search box above to search the text content of images
+            or image attributes.
+        p.
+            Use the button above to drag-and-drop an image from the image
+            search results or your computer.
+            Images from your computer are temporarily sent to the
+            server for feature extraction, but no uploaded images or metadata
+            are stored on the server.
+        p.
+            Login and registration are currently placeholder functionality
+            that will eventually allow per-user settings and data.
+            Currently, data on the left pane will be lost when the page is refreshed
+            or closed.
+        p.
+            The back button on your browser will move you to a prior search.
+            Copy the content of the web address bar to save or share a
+            search.
+        p.
+            This app will function best on latest Chrome, Firefox, and Safari.
+            Internet Explorer has not been tested.

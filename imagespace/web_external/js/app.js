@@ -4,7 +4,12 @@ imagespace.App = girder.App.extend({
         this.$el.html(imagespace.templates.layout());
 
         new imagespace.views.LayoutHeaderView({
-            el: this.$('#c-app-header-container'),
+            el: this.$('#im-app-header-container'),
+            parentView: this
+        }).render();
+
+        imagespace.userDataView = new imagespace.views.LayoutUserDataView({
+            el: this.$('#im-app-user-data-container'),
             parentView: this
         }).render();
 

@@ -33,7 +33,7 @@ class CustomAppRoot(object):
     vars = {
         'apiRoot': '/api/v1',
         'staticRoot': '/static',
-        'title': 'Image Space'
+        'title': 'Image Space 2'
     }
 
     template = r"""
