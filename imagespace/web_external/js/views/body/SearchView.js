@@ -25,6 +25,30 @@ imagespace.views.SearchView = imagespace.View.extend({
             result.imageUrl = 'https://s3.amazonaws.com/roxyimages/' + file;
             this.imageIdMap[result.id] = result;
         }, this));
+
+        // Place in order if ids are explicit
+        var queryParts = $('.im-search').val().split(' '),
+            idResults = [],
+            idResultMap = {},
+            remaining = [];
+        queryParts.forEach(_.bind(function (part) {
+            var partId = part.match(/id:\"(.*)\"/);
+            if (partId && partId.length === 2 && this.imageIdMap[partId[1]]) {
+                idResults.push(this.imageIdMap[partId[1]]);
+                idResultMap[partId[1]] = true;
+            }
+        }, this));
+
+        // Gather the rest
+        this.results.forEach(function (result) {
+            if (!idResultMap[result.id]) {
+                remaining.push(result);
+            }
+        });
+
+        // Construct new result list with id results first
+        this.results = idResults.concat(remaining);
+
         this.render();
     },
 

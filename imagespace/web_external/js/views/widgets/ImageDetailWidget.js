@@ -67,7 +67,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                 if (result.id.indexOf('cmuImages') !== -1) {
                     file = 'cmuImages/' + file;
                 }
-                query += 'id:"/data/roxyimages/' + file + '" ';
+                file = '/data/roxyimages/' + file;
+                query += 'id:"' + file + '" ';
             }, this));
             imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
         }, this));
