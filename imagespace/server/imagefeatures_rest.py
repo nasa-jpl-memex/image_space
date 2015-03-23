@@ -24,18 +24,19 @@ from girder.api.rest import Resource
 import cherrypy
 
 
-# import exifread
 import json
 import requests
 import subprocess
 import os
 from StringIO import StringIO
+import cv2
 
 try:
     import Image
 except ImportError:
     from PIL import Image
-# import pytesseract
+
+import numpy as np
 
 from json import JSONDecoder
 from functools import partial
@@ -96,11 +97,23 @@ class ImageFeatures(Resource):
 
         tika['content'] = out
 
-        # img = Image.open(StringIO(data))
-        # if len(img.split()) == 4:
+        # image = Image.open(StringIO(data))
+        # if len(image.split()) == 4:
         #     # prevent IOError: cannot write mode RGBA as BMP
-        #     r, g, b, a = img.split()
-        #     img = Image.merge("RGB", (r, g, b))
+        #     r, g, b, a = image.split()
+        #     image = Image.merge("RGB", (r, g, b))
+
+        file_bytes = np.asarray(bytearray(data), dtype=np.uint8)
+        image = cv2.imdecode(file_bytes, flags=cv2.CV_LOAD_IMAGE_UNCHANGED);
+
+        if image is not None:
+            if image.shape[2] == 1:
+                image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+
+            v = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+            v = v.flatten()
+            hist = v / sum(v)
+            tika['histogram'] = hist.tolist()
 
         return tika
     getImageFeatures.description = (Description('Extracts image features')

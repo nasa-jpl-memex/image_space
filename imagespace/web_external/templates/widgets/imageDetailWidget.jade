@@ -5,6 +5,9 @@
             h4.modal-title= title
         .modal-body
             img.im-image-detail.im-blur(src="#{image.imageUrl}")
+            .im-actions
+                .im-similar-images.btn.btn-default(title="Search for images with similar content")
+                    | Find similar images
             ul.list-group.im-attributes
                 for val, key in image
                     li.list-group-item

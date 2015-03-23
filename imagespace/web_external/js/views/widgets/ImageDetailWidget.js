@@ -7,6 +7,27 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             var query = $(event.currentTarget).attr('im-search');
             this.$el.modal('hide');
             imagespace.router.navigate('search/' + query, {trigger: true});
+        },
+
+        'click .im-similar-images': function(event) {
+            this.$('.im-similar-images')
+                .addClass('btn-info disabled')
+                .removeClass('btn-default')
+                .html('<i class="icon-spin5 animate-spin"></i> Processing ...');
+            if (this.image.histogram) {
+                this.findSimilarImages();
+            } else {
+                girder.restRequest({
+                    path: 'imagefeatures',
+                    data: {
+                        url: this.image.imageUrl
+                    },
+                    method: 'POST'
+                }).done(_.bind(function (features) {
+                    image.histogram = features.histogram;
+                    this.findSimilarImages();
+                }, this));
+            }
         }
     },
 
@@ -27,5 +48,28 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
 
         return this;
+    },
+
+    findSimilarImages: function() {
+        girder.restRequest({
+            path: 'imagesearch',
+            data: {
+                histogram: JSON.stringify(this.image.histogram),
+                limit: 20
+            }
+        }).done(_.bind(function (results) {
+            console.log(results);
+            this.$el.modal('hide');
+            var query = '';
+            results.forEach(_.bind(function (result) {
+                var parts = result.id.split('/'),
+                    file = parts[parts.length - 1];
+                if (result.id.indexOf('cmuImages') !== -1) {
+                    file = 'cmuImages/' + file;
+                }
+                query += 'id:"/data/roxyimages/' + file + '" ';
+            }, this));
+            imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
+        }, this));
     }
 });

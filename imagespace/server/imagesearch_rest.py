@@ -32,8 +32,12 @@ class ImageSearch(Resource):
 
     @access.public
     def getImageSearch(self, params):
-        query = params['query'] if 'query' in params else '*'
         limit = params['limit'] if 'limit' in params else '10'
+        if 'histogram' in params:
+            return requests.get(
+                os.environ['IMAGE_SPACE_FLANN_INDEX'] +
+                '?query=' + params['histogram'] + '&k=' + str(limit)).json()
+        query = params['query'] if 'query' in params else '*'
         base = os.environ['IMAGE_SPACE_SOLR'] + '/select?wt=json&indent=true'
         try:
             result = requests.get(base + '&q=' + query + '&rows=' + str(limit)).json()
