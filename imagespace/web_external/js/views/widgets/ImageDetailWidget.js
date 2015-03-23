@@ -9,6 +9,17 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             imagespace.router.navigate('search/' + query, {trigger: true});
         },
 
+        'click .im-permalink': function(event) {
+            var parts = this.image.id.split('/'),
+                file = parts[parts.length - 1];
+            if (this.image.id.indexOf('cmuImages') !== -1) {
+                file = 'cmuImages/' + file;
+            }
+            file = '/data/roxyimages/' + file;
+            this.$el.modal('hide');
+            imagespace.router.navigate('search/' + encodeURIComponent('id:"' + file + '"'), {trigger: true});
+        },
+
         'click .im-similar-images': function(event) {
             this.$('.im-similar-images')
                 .addClass('btn-info disabled')
@@ -24,7 +35,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                     },
                     method: 'POST'
                 }).done(_.bind(function (features) {
-                    image.histogram = features.histogram;
+                    this.image.histogram = features.histogram;
                     this.findSimilarImages();
                 }, this));
             }
@@ -55,7 +66,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             path: 'imagesearch',
             data: {
                 histogram: JSON.stringify(this.image.histogram),
-                limit: 20
+                limit: 100
             }
         }).done(_.bind(function (results) {
             console.log(results);
