@@ -3,7 +3,7 @@
  */
 imagespace.views.ImageDetailWidget = imagespace.View.extend({
     events: {
-        'click .badge': function(event) {
+        'click .im-search-mod': function(event) {
             var query = $(event.currentTarget).attr('im-search');
             this.$el.modal('hide');
             imagespace.router.navigate('search/' + query, {trigger: true});
