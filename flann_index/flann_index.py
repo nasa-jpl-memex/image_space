@@ -53,7 +53,7 @@ flann.train()
 vec = np.ones((1, 512), dtype=np.float32) / 512
 matches = flann.knnMatch(vec, k=10)
 
-def run(query, k=10):
+def run(query, k=10, mode='bruteforce'):
     if query.startswith('['):
         vec = json.loads(query)
         vec = np.array(vec, dtype=np.float32).reshape(1, 512)
@@ -61,13 +61,32 @@ def run(query, k=10):
         vec = image_map[query].reshape(1, 512)
     else:
         return {'error': 'Could not find data for image: ' + query}
-    # vec = np.ones((1, 512), dtype=np.float32) / 512
-    matches = flann.knnMatch(vec, k=int(k))
+
     images = []
-    for dm in matches[0]:
-        file_id = image_files[dm.imgIdx]
-        images.append({
-            'id': file_id,
-            'features': image_map[file_id].tolist()
-        })
+    if mode == 'bruteforce':
+        hist = vec.reshape(512)
+        dists = []
+        for (i, file) in enumerate(image_files):
+            dist = cv2.compareHist(hist, image_map[file], cv2.cv.CV_COMP_INTERSECT)
+            dists.append((dist, i))
+
+        top = sorted(dists, reverse=True)[:int(k)]
+
+        for distance, index in top:
+            images.append({
+                'id': image_files[index],
+                'features': image_map[image_files[index]].tolist(),
+                'distance': distance
+            })
+    elif mode == 'flann':
+        matches = flann.knnMatch(vec, k=int(k))
+        for dm in matches[0]:
+            file_id = image_files[dm.imgIdx]
+            images.append({
+                'id': file_id,
+                'features': image_map[file_id].tolist(),
+                'distance': dm.distance
+            })
+
+    print images
     return images
