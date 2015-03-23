@@ -3,6 +3,7 @@ imagespace.views.FrontPageView = girder.views.FrontPageView.extend({
     },
 
     initialize: function () {
+        $('.im-search').val('*');
         girder.cancelRestRequests('fetch');
         this.render();
     },

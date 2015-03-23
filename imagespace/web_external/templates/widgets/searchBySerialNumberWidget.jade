@@ -1,0 +1,12 @@
+.modal-dialog
+    .modal-content
+        .modal-header
+            button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+            h4.modal-title= title + ' '
+                span.im-working.icon-spin5.animate-spin
+        .modal-body
+            h4 Click a bar to refine your search by camera serial number
+            .im-chart-content
+        .modal-footer
+            a.btn.btn-small.btn-default(data-dismiss="modal")
+                | Close

@@ -4,6 +4,9 @@
     #im-upload.btn.btn-primary
         i.icon-image
         |  Drop image
+    .im-searches
+        .im-search-by-size.btn.btn-default.btn-link Image size distribution
+        .im-search-by-serial-number.btn.btn-default.btn-link Serial number distribution
     if userData.images.length > 0
         for result in userData.images
             a.im-thumbnail(href=result.imageUrl, target="_blank")
@@ -21,6 +24,13 @@
             Images from your computer are temporarily sent to the
             server for feature extraction, but no uploaded images or metadata
             are stored on the server.
+        p.
+            The links above show summary plots within the current search
+            results by size and camera serial number,
+            and allow you to refine your search by selecting items on the plots.
+        p.
+            Return to the <a href="#search/*">full set of images</a> at any
+            time by clicking the Image Space text in the upper left.
         p.
             Login and registration are currently placeholder functionality
             that will eventually allow per-user settings and data.

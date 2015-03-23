@@ -1,5 +1,21 @@
 imagespace.views.LayoutUserDataView = imagespace.View.extend({
     events: {
+        'click .im-search-by-size': function () {
+            this.searchBySizeWidget = new imagespace.views.SearchBySizeWidget({
+                el: $('#g-dialog-container'),
+                parentView: this
+            });
+            this.searchBySizeWidget.render();
+        },
+
+        'click .im-search-by-serial-number': function () {
+            this.searchBySerialNumberWidget = new imagespace.views.SearchBySerialNumberWidget({
+                el: $('#g-dialog-container'),
+                parentView: this
+            });
+            this.searchBySerialNumberWidget.render();
+        },
+
         'change #im-files': function () {
             var files = $('#im-files')[0].files;
             _.each(files, function (file) {
