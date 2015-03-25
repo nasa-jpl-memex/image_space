@@ -16,6 +16,14 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             this.searchBySerialNumberWidget.render();
         },
 
+        'click .im-instructions': function () {
+            this.instructionsWidget = new imagespace.views.InstructionsWidget({
+                el: $('#g-dialog-container'),
+                parentView: this
+            });
+            this.instructionsWidget.render();
+        },
+
         'change #im-files': function () {
             var files = $('#im-files')[0].files;
             _.each(files, function (file) {
