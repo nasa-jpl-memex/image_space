@@ -1,5 +1,22 @@
 imagespace.views.LayoutHeaderView = imagespace.View.extend({
     events: {
+        'click .im-nav-link': function (event) {
+            var link = $(event.currentTarget);
+            console.log('click');
+
+            imagespace.router.navigate(link.attr('im-target'), {trigger: true});
+
+            // Must call this after calling navigateTo, since that
+            // deactivates all global nav links.
+            link.addClass('active');
+        },
+
+        'keypress .im-search': function (event) {
+            if (event.which === 13) {
+                var query = encodeURIComponent($(event.currentTarget).val());
+                imagespace.router.navigate('search/' + query, {trigger: true});
+            }
+        },
     },
 
     render: function () {
@@ -14,5 +31,6 @@ imagespace.views.LayoutHeaderView = imagespace.View.extend({
             el: this.$('.h-current-user-wrapper'),
             parentView: this
         }).render();
-    }
+    },
+
 });

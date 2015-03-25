@@ -21,13 +21,27 @@ from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
 
+import requests
+import os
 
-class Hello(Resource):
+class ImageSearch(Resource):
     def __init__(self):
-        self.resourceName = 'hello'
-        self.route('GET', (), self.getHello)
+        self.resourceName = 'imagesearch'
+        self.route('GET', (), self.getImageSearch)
+
 
     @access.public
-    def getHello(self, params):
-        return 'hello world!'
-    getHello.description = Description('Returns "hello world!"')
+    def getImageSearch(self, params):
+        limit = params['limit'] if 'limit' in params else '10'
+        if 'histogram' in params:
+            return requests.get(
+                os.environ['IMAGE_SPACE_FLANN_INDEX'] +
+                '?query=' + params['histogram'] + '&k=' + str(limit)).json()
+        query = params['query'] if 'query' in params else '*'
+        base = os.environ['IMAGE_SPACE_SOLR'] + '/select?wt=json&indent=true'
+        try:
+            result = requests.get(base + '&q=' + query + '&rows=' + str(limit)).json()
+        except ValueError:
+            return []
+        return result['response']['docs']
+    getImageSearch.description = Description('Searches image database')

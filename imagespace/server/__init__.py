@@ -18,7 +18,9 @@
 ###############################################################################
 
 import mako
-from .hello_rest import Hello
+from .imagefeatures_rest import ImageFeatures
+from .imagepivot_rest import ImagePivot
+from .imagesearch_rest import ImageSearch
 
 
 class CustomAppRoot(object):
@@ -32,7 +34,7 @@ class CustomAppRoot(object):
     vars = {
         'apiRoot': '/api/v1',
         'staticRoot': '/static',
-        'title': 'Image Space'
+        'title': 'Image Space 2'
     }
 
     template = r"""
@@ -60,6 +62,14 @@ class CustomAppRoot(object):
       <body>
         <div id="g-global-info-apiroot" class="hide">${apiRoot}</div>
         <div id="g-global-info-staticroot" class="hide">${staticRoot}</div>
+
+
+        <script src="http://trifacta.github.io/vega/lib/d3.v3.min.js"></script>
+        <script src="http://trifacta.github.io/vega/lib/d3.geo.projection.min.js"></script>
+        <script src="http://trifacta.github.io/vega/lib/topojson.js"></script>
+        <script src="http://trifacta.github.io/vega/vega.js"></script>
+
+
         <script src="${staticRoot}/built/libs.min.js"></script>
         <script src="${staticRoot}/built/app.min.js"></script>
         <script src="${staticRoot}/built/plugins/gravatar/plugin.min.js">
@@ -80,8 +90,10 @@ class CustomAppRoot(object):
 
 
 def load(info):
-    # Bind our hello REST resource
-    info['apiRoot'].hello = Hello()
+    # Bind our REST resources
+    info['apiRoot'].imagesearch = ImageSearch()
+    info['apiRoot'].imagefeatures = ImageFeatures()
+    info['apiRoot'].imagepivot = ImagePivot()
 
     # Move girder app to /girder, serve our custom app from /
     info['serverRoot'], info['serverRoot'].girder = (CustomAppRoot(),

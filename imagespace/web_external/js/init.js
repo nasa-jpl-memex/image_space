@@ -5,7 +5,10 @@ _.extend(imagespace, {
     collections: {},
     views: {},
     router: new Backbone.Router(),
-    events: _.clone(Backbone.Events)
+    events: _.clone(Backbone.Events),
+    userData: {
+        images: []
+    }
 });
 
 girder.router.enabled(false);

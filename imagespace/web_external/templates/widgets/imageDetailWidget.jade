@@ -1,0 +1,27 @@
+.modal-dialog
+    .modal-content
+        .modal-header
+            button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+            h4.modal-title= title
+        .modal-body
+            img.im-image-detail.im-blur(src="#{image.imageUrl}")
+            .im-actions
+                .im-similar-images.btn.btn-default(title="Search for images with similar content")
+                    | Find similar images
+                .im-permalink.btn.btn-link(title="Links to a search containing just this image. This does not function for custom imported images.")
+                    | Permalink
+            ul.list-group.im-attributes
+                for val, key in image
+                    li.list-group-item
+                        span.badge.im-search-mod.btn.btn-default(im-search='#{query} AND #{key}:"#{val}"', title="Narrow search by this attribute")
+                            i.icon-plus
+                        span.badge.im-search-mod.btn.btn-default(im-search='#{key}:"#{val}"', title="Start a new search with this attribute")
+                            i.icon-search
+                        if key == 'camera_serial_number'
+                            a.badge.btn.btn-default(href='http://www.stolencamerafinder.com/search?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
+                                i.icon-picture
+                        b= key + ': '
+                        = val
+        .modal-footer
+            a.btn.btn-small.btn-default(data-dismiss="modal")
+                | Close
