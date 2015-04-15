@@ -32,8 +32,8 @@ class CustomAppRoot(object):
     indexHtml = None
 
     vars = {
-        'apiRoot': '/api/v1',
-        'staticRoot': '/static',
+        'apiRoot': 'api/v1',
+        'staticRoot': 'static',
         'title': 'Image Space 2'
     }
 
