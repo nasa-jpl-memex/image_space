@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import json
 import random
+import os
 
 FLANN_INDEX_KDTREE = 0
 index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
