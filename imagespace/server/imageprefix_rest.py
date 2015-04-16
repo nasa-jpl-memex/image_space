@@ -31,5 +31,8 @@ class ImagePrefix(Resource):
 
     @access.public
     def getImagePrefix(self, params):
-        return {'prefix': os.environ['IMAGE_SPACE_PREFIX']}
+        return {
+            'prefix': os.environ['IMAGE_SPACE_PREFIX'],
+            'stolenCameraPrefix': os.environ['IMAGE_SPACE_STOLEN_CAMERA'] if 'IMAGE_SPACE_STOLEN_CAMERA' in os.environ else 'http://www.stolencamerafinder.com/search'
+        }
     getImagePrefix.description = Description('Returns image URL prefix')

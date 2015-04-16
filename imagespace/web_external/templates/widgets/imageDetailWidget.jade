@@ -18,7 +18,7 @@
                         span.badge.im-search-mod.btn.btn-default(im-search='#{key}:"#{val}"', title="Start a new search with this attribute")
                             i.icon-search
                         if key == 'camera_serial_number'
-                            a.badge.btn.btn-default(href='http://www.stolencamerafinder.com/search?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
+                            a.badge.btn.btn-default(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
                                 i.icon-picture
                         b= key + ': '
                         = val
