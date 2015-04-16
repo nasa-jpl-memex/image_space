@@ -15,7 +15,7 @@ random.seed(0)
 
 count = 0
 
-with open('lists.txt') as lists:
+with open(os.environ['IMAGE_SPACE_LISTS']) as lists:
     for listing in lists:
         f = open(listing.strip())
 
