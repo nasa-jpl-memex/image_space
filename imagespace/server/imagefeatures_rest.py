@@ -88,7 +88,7 @@ class ImageFeatures(Resource):
         print "err:"
         print err
 
-        tika_attributes = [d for d in json_parse(StringIO(out))][1]
+        tika_attributes = [d for d in json_parse(StringIO(out))][-1]
         tika = {}
         for (k, v) in tika_attributes.iteritems():
             k = k.lower().replace(':', '_').replace(' ', '_').replace('-', '_')
