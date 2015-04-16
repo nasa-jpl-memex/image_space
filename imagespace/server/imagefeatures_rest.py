@@ -69,6 +69,9 @@ class ImageFeatures(Resource):
         else:
             data = str(cherrypy.request.body.read())
 
+        print "data:"
+        print data
+
         # Run Tika metadata
         cmd = ['java', '-jar', os.environ['IMAGE_SPACE_TIKA'], '-j']
         p = subprocess.Popen(
@@ -78,6 +81,12 @@ class ImageFeatures(Resource):
             stdin=subprocess.PIPE
         )
         out, err = p.communicate(data)
+
+        print "out:"
+        print out
+
+        print "err:"
+        print err
 
         tika_attributes = [d for d in json_parse(StringIO(out))][1]
         tika = {}
