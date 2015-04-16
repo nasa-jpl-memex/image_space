@@ -21,6 +21,7 @@ import mako
 from .imagefeatures_rest import ImageFeatures
 from .imagepivot_rest import ImagePivot
 from .imagesearch_rest import ImageSearch
+from .imageprefix_rest import ImagePrefix
 
 
 class CustomAppRoot(object):
@@ -87,6 +88,7 @@ def load(info):
     info['apiRoot'].imagesearch = ImageSearch()
     info['apiRoot'].imagefeatures = ImageFeatures()
     info['apiRoot'].imagepivot = ImagePivot()
+    info['apiRoot'].imageprefix = ImagePrefix()
 
     # Move girder app to /girder, serve our custom app from /
     info['serverRoot'], info['serverRoot'].girder = (CustomAppRoot(),
