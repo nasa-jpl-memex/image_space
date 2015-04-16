@@ -61,16 +61,11 @@ class CustomAppRoot(object):
         <div id="g-global-info-apiroot" class="hide">${apiRoot}</div>
         <div id="g-global-info-staticroot" class="hide">${staticRoot}</div>
 
-
-        <script src="http://trifacta.github.io/vega/lib/d3.v3.min.js"></script>
-        <script src="http://trifacta.github.io/vega/lib/d3.geo.projection.min.js"></script>
-        <script src="http://trifacta.github.io/vega/lib/topojson.js"></script>
-        <script src="http://trifacta.github.io/vega/vega.js"></script>
-
-
         <script src="${staticRoot}/built/libs.min.js"></script>
         <script src="${staticRoot}/built/app.min.js"></script>
         <script src="${staticRoot}/built/plugins/gravatar/plugin.min.js">
+        </script>
+        <script src="${staticRoot}/built/plugins/imagespace/imagespace-libs.min.js">
         </script>
         <script src="${staticRoot}/built/plugins/imagespace/imagespace.min.js">
         </script>
