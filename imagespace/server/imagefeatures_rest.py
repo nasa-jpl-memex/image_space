@@ -116,7 +116,7 @@ class ImageFeatures(Resource):
         image = cv2.imdecode(file_bytes, flags=cv2.CV_LOAD_IMAGE_UNCHANGED);
 
         if image is not None:
-            if image.shape[2] == 1:
+            if len(image.shape) < 3 or image.shape[2] == 1:
                 image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
             v = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
