@@ -146,6 +146,14 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         reader.readAsArrayBuffer(file);
     },
 
+    addUserImage: function (image) {
+        this.imageIdMap[image.id] = image;
+
+        console.log(image);
+        imagespace.userData.images.unshift(image);
+        this.render();
+    },
+
     loadUrl: function (url) {
         $('#im-upload')
             .addClass('btn-info disabled')
@@ -162,11 +170,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             image.imageUrl = url;
             image.id = url;
 
-            this.imageIdMap[image.id] = image;
-
-            console.log(image);
-            imagespace.userData.images.unshift(image);
-            this.render();
+            this.addUserImage(image);
         }, this));
     },
 

@@ -5,5 +5,8 @@
                 .im-details.btn.btn-link.btn-default(im-id="#{result.id}")
                     .im-thumbnail
                         img.im-image-thumbnail.im-blur(src=result.imageUrl)
+                .im-caption
+                    .im-add-user-data.btn.btn-link.btn-default(im-id="#{result.id}") Save
+                    .im-details.btn.btn-link.btn-default(im-id="#{result.id}") Details
     else
         h1 No search results found.
