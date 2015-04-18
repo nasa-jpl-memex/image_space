@@ -81,6 +81,14 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 parentView: this
             });
             this.imageDetailWidget.render();
+        },
+
+        'click .im-remove': function (event) {
+            var id = $(event.currentTarget).attr('im-id'),
+                ids = imagespace.userData.images.map(function (d) { return d.id; }),
+                removeIndex = ids.indexOf(id);
+            imagespace.userData.images.splice(removeIndex, 1);
+            this.render();
         }
     },
 

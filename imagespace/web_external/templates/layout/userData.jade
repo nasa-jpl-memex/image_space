@@ -10,7 +10,8 @@
         .im-search-by-serial-number.btn.btn-default.btn-link Serial number distribution
     if userData.images.length > 0
         for result in userData.images
-            a.im-thumbnail(href=result.imageUrl, target="_blank")
-                img.im-image-thumbnail.im-blur(src=result.imageUrl)
+            .im-details.btn.btn-link.btn-default(im-id="#{result.id}")
+                .im-thumbnail
+                    img.im-image-thumbnail.im-blur(src=result.imageUrl)
             .im-caption
-                .im-details.btn.btn-link.btn-default(im-id="#{result.id}") Details
+                .im-remove.btn.btn-link.btn-default(im-id="#{result.id}") Remove
