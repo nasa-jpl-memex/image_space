@@ -52,7 +52,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         var modal = this.$el.html(imagespace.templates.imageDetailWidget({
             title: this.title,
             image: this.image,
-            query: $('.im-search').val()
+            query: $('.im-search').val(),
+            stolenCameraPrefix: imagespace.stolenCameraPrefix
         })).girderModal(this).on('shown.bs.modal', function () {
         });
 

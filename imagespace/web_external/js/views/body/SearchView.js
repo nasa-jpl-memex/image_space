@@ -22,7 +22,7 @@ imagespace.views.SearchView = imagespace.View.extend({
             if (result.id.indexOf('cmuImages') !== -1) {
                 file = 'cmuImages/' + file;
             }
-            result.imageUrl = 'https://s3.amazonaws.com/roxyimages/' + file;
+            result.imageUrl = imagespace.prefix + file;
             this.imageIdMap[result.id] = result;
         }, this));
 

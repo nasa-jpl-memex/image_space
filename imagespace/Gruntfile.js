@@ -41,9 +41,16 @@ module.exports = function (grunt) {
         defaultTasks.push('stylus:' + pluginName);
     }
 
-    var jsDir = pluginDir + '/' + sourceDir + '/js';
+    var jsDir = pluginDir + '/' + sourceDir + '/js',
+        libDir = pluginDir + '/' + sourceDir + '/lib';
     if (fs.existsSync(jsDir)) {
         var files = {};
+        files[staticDir + '/' + pluginName + '-libs.min.js'] = [
+            libDir + '/js/d3.v3.min.js',
+            libDir + '/js/d3.geo.projection.min.js',
+            libDir + '/js/topojson.js',
+            libDir + '/js/vega.js'
+        ];
         files[staticDir + '/' + pluginName + '.min.js'] = [
             jsDir + '/init.js',
             staticDir + '/templates.js',

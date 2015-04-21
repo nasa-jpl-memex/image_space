@@ -21,6 +21,7 @@ import mako
 from .imagefeatures_rest import ImageFeatures
 from .imagepivot_rest import ImagePivot
 from .imagesearch_rest import ImageSearch
+from .imageprefix_rest import ImagePrefix
 
 
 class CustomAppRoot(object):
@@ -32,8 +33,8 @@ class CustomAppRoot(object):
     indexHtml = None
 
     vars = {
-        'apiRoot': '/api/v1',
-        'staticRoot': '/static',
+        'apiRoot': 'api/v1',
+        'staticRoot': 'static',
         'title': 'Image Space 2'
     }
 
@@ -42,8 +43,6 @@ class CustomAppRoot(object):
     <html lang="en">
       <head>
         <title>${title}</title>
-        <link rel="stylesheet"
-              href="//fonts.googleapis.com/css?family=Droid+Sans:400,700">
         <link rel="stylesheet"
               href="${staticRoot}/lib/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet"
@@ -63,16 +62,11 @@ class CustomAppRoot(object):
         <div id="g-global-info-apiroot" class="hide">${apiRoot}</div>
         <div id="g-global-info-staticroot" class="hide">${staticRoot}</div>
 
-
-        <script src="http://trifacta.github.io/vega/lib/d3.v3.min.js"></script>
-        <script src="http://trifacta.github.io/vega/lib/d3.geo.projection.min.js"></script>
-        <script src="http://trifacta.github.io/vega/lib/topojson.js"></script>
-        <script src="http://trifacta.github.io/vega/vega.js"></script>
-
-
         <script src="${staticRoot}/built/libs.min.js"></script>
         <script src="${staticRoot}/built/app.min.js"></script>
         <script src="${staticRoot}/built/plugins/gravatar/plugin.min.js">
+        </script>
+        <script src="${staticRoot}/built/plugins/imagespace/imagespace-libs.min.js">
         </script>
         <script src="${staticRoot}/built/plugins/imagespace/imagespace.min.js">
         </script>
@@ -94,6 +88,7 @@ def load(info):
     info['apiRoot'].imagesearch = ImageSearch()
     info['apiRoot'].imagefeatures = ImageFeatures()
     info['apiRoot'].imagepivot = ImagePivot()
+    info['apiRoot'].imageprefix = ImagePrefix()
 
     # Move girder app to /girder, serve our custom app from /
     info['serverRoot'], info['serverRoot'].girder = (CustomAppRoot(),
