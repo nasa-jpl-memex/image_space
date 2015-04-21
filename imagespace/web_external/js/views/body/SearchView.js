@@ -1,5 +1,11 @@
 imagespace.views.SearchView = imagespace.View.extend({
     events: {
+        'click .im-add-user-data': function (event) {
+            var id = $(event.currentTarget).attr('im-id'),
+                image = this.imageIdMap[id];
+            imagespace.userDataView.addUserImage(image);
+        },
+
         'click .im-details': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
                 image = this.imageIdMap[id];
