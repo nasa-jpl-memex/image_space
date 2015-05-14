@@ -1,0 +1,18 @@
+.container-fluid
+    .hide
+        input#im-files(type="file", multiple="multiple")
+    #im-upload.btn.btn-primary
+        i.icon-image
+        |  Drop image
+    .im-searches
+        .im-instructions.btn.btn-default.btn-link Instructions
+        .im-search-by-size.btn.btn-default.btn-link Image size distribution
+        .im-search-by-serial-number.btn.btn-default.btn-link Serial number distribution
+    if userData.images.length > 0
+        for result in userData.images
+            .im-details.btn.btn-link.btn-default(im-id="#{result.id}")
+                .im-thumbnail
+                    img.im-image-thumbnail.im-blur(src=result.imageUrl)
+            .im-caption
+                .im-remove.btn.btn-link.btn-default(im-id="#{result.id}") Remove
+                .im-details.btn.btn-link.btn-default(im-id="#{result.id}") Details
