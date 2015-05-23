@@ -4,7 +4,7 @@ ImageSpace is an application built on top of [ImageCat](http://github.com/chrism
 that allows a user to browse a rich catalog of EXIF-metadata extracted and OCR extracted information
 from images. It allows histogram and D3-based visual search, free text search and retrieval and 
 performs image similarity metrics using computer vision techniques and metadata-techniques (e.g., 
-[Jaccard Similarity](http://github.com/chrismattmann/tika-img-similarity).
+[Jaccard Similarity](http://github.com/chrismattmann/tika-img-similarity)).
 
 Credits
 =======
@@ -17,7 +17,7 @@ Send them to [Chris A. Mattmann](mailto:chris.a.mattmann@jpl.nasa.gov).
 
 Authors
 =======
-Jeff Baumes, Kitware
+Jeff Baumes, Kitware  
 Chris Mattmann, JPL
 
 License
