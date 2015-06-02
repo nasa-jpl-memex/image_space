@@ -67,7 +67,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             path: 'imagesearch',
             data: {
                 url: this.image.imageUrl,
-                histogram: JSON.stringify(this.image.histogram),
+                histogram: JSON.stringify(this.image.histogram || []),
                 limit: 100
             }
         }).done(_.bind(function (results) {

@@ -21,7 +21,10 @@
                             a.badge.btn.btn-default(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
                                 i.icon-picture
                         b= key + ': '
-                        = val
+                        if (typeof val[0] === 'string' && val[0].startsWith('http'))
+                            a(href=val[0], target='_blank')= val[0]
+                        else
+                            span= val
         .modal-footer
             a.btn.btn-small.btn-default(data-dismiss="modal")
                 | Close
