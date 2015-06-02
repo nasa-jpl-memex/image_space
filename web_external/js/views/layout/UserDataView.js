@@ -81,6 +81,14 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 removeIndex = ids.indexOf(id);
             imagespace.userData.images.splice(removeIndex, 1);
             this.render();
+        },
+
+        'mouseover .im-image-area': function (event) {
+            $(event.currentTarget).find('.im-caption-content').removeClass('hidden');
+        },
+
+        'mouseout .im-image-area': function (event) {
+            $(event.currentTarget).find('.im-caption-content').addClass('hidden');
         }
     },
 
