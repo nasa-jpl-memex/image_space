@@ -73,7 +73,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         }).done(_.bind(function (results) {
             console.log(results);
             this.$el.modal('hide');
-            var query = '', count = 0;
+            var query = '(', count = 0;
             results.forEach(_.bind(function (result, index) {
                  var parts = result.id.split('/'),
                      file = parts[parts.length - 1];
@@ -89,6 +89,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                     count += 1;
                 }
             }, this));
+            query += ')';
             imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
         }, this));
     }
