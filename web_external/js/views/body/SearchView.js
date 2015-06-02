@@ -15,6 +15,14 @@ imagespace.views.SearchView = imagespace.View.extend({
                 parentView: this
             });
             this.imageDetailWidget.render();
+        },
+
+        'mouseover .im-image-area': function (event) {
+            $(event.currentTarget).find('.im-caption-content').removeClass('hidden');
+        },
+
+        'mouseout .im-image-area': function (event) {
+            $(event.currentTarget).find('.im-caption-content').addClass('hidden');
         }
     },
 

@@ -15,6 +15,7 @@ imagespace.views.FrontPageView = girder.views.FrontPageView.extend({
     }
 });
 
-imagespace.router.route('', 'index', function () {
+imagespace.router.route('', 'index', function (query) {
+    $('.im-search').val('*');
     girder.events.trigger('g:navigateTo', imagespace.views.FrontPageView);
 });
