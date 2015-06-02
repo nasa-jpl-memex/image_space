@@ -55,9 +55,6 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             if (files.length === 0) {
                 this.loadUrl(e.originalEvent.dataTransfer.getData('URL'));
             } else {
-                // d3.select('#im-upload')
-                //     .classed('btn-success', false)
-                //     .classed('btn-primary', true);
                 _.each(files, function (file) {
                     this.upload(file);
                 }, this);
@@ -121,17 +118,12 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 data: data,
                 method: 'POST',
                 processData: false,
-                contentType: 'application/octet-stream',
-                headers: {
-                    // 'Content-Type': 'application/octet-stream'
-                    // 'X-HTTP-Method-Override': 'GET'
-                }
+                contentType: 'application/octet-stream'
             }).done(_.bind(function (image) {
                 var dataURLReader = new FileReader();
 
                 dataURLReader.onloadend = _.bind(function () {
                     image.imageUrl = dataURLReader.result;
-                    console.log(image);
                     imagespace.userData.images.unshift(image);
                     this.render();
                 }, this);
@@ -147,9 +139,9 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
     },
 
     addUserImage: function (image) {
+        image.source_query = window.location.href;
         this.imageIdMap[image.id] = image;
 
-        console.log(image);
         imagespace.userData.images.unshift(image);
         this.render();
     },

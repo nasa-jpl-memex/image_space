@@ -23,6 +23,8 @@
                         b= key + ': '
                         if (typeof val[0] === 'string' && val[0].startsWith('http'))
                             a(href=val[0], target='_blank')= val[0]
+                        else if (typeof val === 'string' && val.startsWith('http'))
+                            a(href=val, target='_blank')= val
                         else
                             span= val
         .modal-footer

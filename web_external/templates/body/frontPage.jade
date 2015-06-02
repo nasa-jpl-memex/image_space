@@ -1,15 +1,35 @@
 .container-fluid
     .col-md-6
-        h4 Instructions
+        h4 Overview
+        p.
+            Image Space is a DARPA Memex application for browsing large image
+            collections based on image content (e.g. extracted text from the image,
+            image content similarity) or metadata (e.g. EXIF camera identifier,
+            image encoding).
         p.
             Type search terms in the search box above and press Enter
             to search the text content of images and image attributes.
+            Searches are in Solr/Lucene format, see
+            <a href="http://lucene.apache.org/core/4_0_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Overview" target="_blank">Lucene's query syntax</a>
+            for details. Some examples include:
+        ul
+            li Basic text search across all fields including text within images: <a href="#search/kitty">kitty</a>
+            li Search by IST ad id: <a href="#search/ads_id:4037421">ads_id:4037421</a>
+            li Search by ad URL: <a href="#search/ad_url%3A%22http%3A%2F%2Fhamilton.backpage.com%2FFemaleEscorts%2Fvip-sexy-bombshell-blonde-24%2F21585363%22">ad_url:"http://hamilton.backpage.com/FemaleEscorts/vip-sexy-bombshell-blonde-24/21585363"</a>
+            li Search by image size: <a href="#search/tiff_imagewidth:200 AND tiff_imagelength:200">tiff_imagewidth:200 AND tiff_imagelength:200</a>
+            li Search by image serial number: <a href="#search/camera_serial_number:3007670">camera_serial_number:3007670</a>
         p.
-            Use the Drop image button to the left to drag-and-drop an
-            image from the image search results or your computer.
-            Images from your computer are temporarily sent to the
+            Use the "Browse or drop image" button to the left to drag-and-drop an
+            image or browse your computer for an image to upload.
+            All uploaded images appear in the left panel (see Limitations below).
+            Note: Images from your computer are temporarily sent to the
             server for feature extraction, but no uploaded images or metadata
             are stored on the server.
+        p.
+            Use the <span class="icon-floppy"></span> to save an image from
+            search results to the left panel. The search in which the saved image
+            appeared in is saved to the <b>source_query</b> field in the
+            Image details.
         p.
             The links to the left show summary plots within the current search
             results by size and camera serial number,
@@ -18,20 +38,36 @@
             Return to the instructions and unfiltered search ("*" wildcard)
             at any time by clicking the Image Space text in the upper left.
         p.
+            The back button on your browser will move you to a prior search.
+            Copy the content of the web address bar to save or share a
+            search.
+        p.
+            Click the <span class="icon-info"></span> under an image to show
+            the image details.
+
+        h4 Image details
+        p.
+            The image details window displays all properties of the image
+            that have been extracted through the Apache Tika metadata parser.
+            These properties vary from image to image, though some, such as
+            width and height, are universal. Click the <span class="icon-search"></span>
+            button to the right of a property to start a new search for all
+            images matching that property value. Click the <span class="icon-plus"></span>
+            button to narrow the current search by that property value.
+        p.
             Some images contain EXIF data that can link images to other images
             taken with the same camera. For example, in this
             <a href="#search/id%3A%22%2Fdata%2Froxyimages%2F35e9fa60967f700ca3415ea4546fcd81fd1ef779.jpg%22">image</a>,
             click the Details link and find the <b>camera_serial_number</b> tag.
-            Clicking the <span class="icon-picture"> icon will launch a search
+            Clicking the <span class="icon-picture"></span> icon will launch a search
             on stolencamerafinder.com and discover other images taken by the
             same camera.
         p.
-            Finding similar images utilizes Columbia's DeepSentibank
-            image similarity service to search across all images.
+            Click "Find similar images" to launch Columbia's DeepSentibank
+            image similarity search across all images.
         p.
-            The back button on your browser will move you to a prior search.
-            Copy the content of the web address bar to save or share a
-            search.
+            The Permalink button brings you to a search for that image alone.
+            The URL of this search serves as a permalink to the image.
 
         h4 Limitations
         p.
