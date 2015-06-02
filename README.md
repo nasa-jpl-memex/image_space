@@ -51,6 +51,8 @@ Now ensure Girder is stopped, and set the following environment variables
 export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint
 export IMAGE_SPACE_TIKA=/path/to/your/tika/tika-app-1.7.jar
 export IMAGE_SPACE_FLANN_INDEX=http://localhost:9220/flann_index
+export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server
+export IMAGE_SPACE_PREFIX=http://path_to_image_repository
 ```
 
 Finally start the Girder server with

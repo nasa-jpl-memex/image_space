@@ -22,22 +22,11 @@ from girder.api.describe import Description
 from girder.api.rest import Resource
 
 import cherrypy
-
-
 import json
 import requests
 import subprocess
 import os
 from StringIO import StringIO
-import cv2
-
-try:
-    import Image
-except ImportError:
-    from PIL import Image
-
-import numpy as np
-
 from json import JSONDecoder
 from functools import partial
 
@@ -64,6 +53,13 @@ class ImageFeatures(Resource):
 
     @access.public
     def getImageFeatures(self, params):
+        try:
+            import cv2
+            import numpy as np
+            cv2_available = True
+        except ImportError:
+            cv2_available = False
+
         if 'url' in params:
             data = requests.get(params['url']).content
         else:
@@ -106,23 +102,18 @@ class ImageFeatures(Resource):
 
         tika['content'] = out
 
-        # image = Image.open(StringIO(data))
-        # if len(image.split()) == 4:
-        #     # prevent IOError: cannot write mode RGBA as BMP
-        #     r, g, b, a = image.split()
-        #     image = Image.merge("RGB", (r, g, b))
+        if cv2_available:
+            file_bytes = np.asarray(bytearray(data), dtype=np.uint8)
+            image = cv2.imdecode(file_bytes, flags=cv2.CV_LOAD_IMAGE_UNCHANGED);
 
-        file_bytes = np.asarray(bytearray(data), dtype=np.uint8)
-        image = cv2.imdecode(file_bytes, flags=cv2.CV_LOAD_IMAGE_UNCHANGED);
+            if image is not None:
+                if len(image.shape) < 3 or image.shape[2] == 1:
+                    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
-        if image is not None:
-            if len(image.shape) < 3 or image.shape[2] == 1:
-                image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
-
-            v = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
-            v = v.flatten()
-            hist = v / sum(v)
-            tika['histogram'] = hist.tolist()
+                v = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+                v = v.flatten()
+                hist = v / sum(v)
+                tika['histogram'] = hist.tolist()
 
         return tika
     getImageFeatures.description = (Description('Extracts image features')

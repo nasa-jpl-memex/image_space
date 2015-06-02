@@ -66,21 +66,28 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         girder.restRequest({
             path: 'imagesearch',
             data: {
+                url: this.image.imageUrl,
                 histogram: JSON.stringify(this.image.histogram),
                 limit: 100
             }
         }).done(_.bind(function (results) {
             console.log(results);
             this.$el.modal('hide');
-            var query = '';
-            results.forEach(_.bind(function (result) {
-                var parts = result.id.split('/'),
-                    file = parts[parts.length - 1];
-                if (result.id.indexOf('cmuImages') !== -1) {
-                    file = 'cmuImages/' + file;
+            var query = '', count = 0;
+            results.forEach(_.bind(function (result, index) {
+                 var parts = result.id.split('/'),
+                     file = parts[parts.length - 1];
+                 if (file.length < 30) {
+                     return;
+                 }
+                 if (result.id.indexOf('cmuImages') !== -1) {
+                     file = 'cmuImages/' + file;
+                 }
+                 file = '/data/roxyimages/' + file;
+                 if (count < 100) {
+                    query += 'id:"' + file + '" ';
+                    count += 1;
                 }
-                file = '/data/roxyimages/' + file;
-                query += 'id:"' + file + '" ';
             }, this));
             imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
         }, this));

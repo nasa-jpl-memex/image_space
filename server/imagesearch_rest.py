@@ -34,9 +34,15 @@ class ImageSearch(Resource):
     def getImageSearch(self, params):
         limit = params['limit'] if 'limit' in params else '10'
         if 'histogram' in params:
-            return requests.get(
-                os.environ['IMAGE_SPACE_FLANN_INDEX'] +
-                '?query=' + params['histogram'] + '&k=' + str(limit)).json()
+            if 'IMAGE_SPACE_FLANN_INDEX' in os.environ:
+                return requests.get(
+                    os.environ['IMAGE_SPACE_FLANN_INDEX'] +
+                    '?query=' + params['histogram'] + '&k=' + str(limit)).json()
+            return [{'id': d} for d in requests.get(
+                os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] +
+                '?url=' + params['url'] + '&num=' + str(limit))
+                    .json()['images'][0]['similar_images']['image_urls']
+            ]
         query = params['query'] if 'query' in params else '*'
         base = os.environ['IMAGE_SPACE_SOLR'] + '/select?wt=json&indent=true'
         try:
