@@ -95,10 +95,12 @@ imagespace.views.SearchBySizeWidget = imagespace.View.extend({
                     query: (query.trim().length === 0 ? '*' : query)
                 }
             }).done(_.bind(function (result) {
+                var hasData = false;
                 sizeData = [];
                 console.log(result);
                 result.forEach(function (d1) {
                     d1.pivot.forEach(function (d2) {
+                        hasData = true;
                         sizeData.push({
                             height: +d1.value,
                             width: +d2.value,
@@ -106,6 +108,12 @@ imagespace.views.SearchBySizeWidget = imagespace.View.extend({
                         });
                     });
                 });
+
+                if (!hasData) {
+                    this.$('.im-working').addClass('hidden');
+                    $('<h3/>').text('No results. Please broaden your search.').appendTo(this.$('.im-search-by-size-content'));
+                    return;
+                }
 
                 vg.parse.spec(scatterplot, _.bind(function(chart) {
                     this.$('.im-working').addClass('hidden');

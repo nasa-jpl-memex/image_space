@@ -4,7 +4,8 @@
             button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
             h4.modal-title= title
         .modal-body
-            img.im-image-detail.im-blur(src="#{image.imageUrl}")
+            a(href="#{image.imageUrl}", target="_blank")
+                img.im-image-detail.im-blur(src="#{image.imageUrl}")
             .im-actions
                 .im-similar-images.btn.btn-default(title="Search for images with similar content")
                     | Find similar images

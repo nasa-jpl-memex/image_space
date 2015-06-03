@@ -17,6 +17,29 @@ imagespace.views.SearchView = imagespace.View.extend({
             this.imageDetailWidget.render();
         },
 
+        'click .im-find-similar': function (event) {
+            var id = $(event.currentTarget).attr('im-id'),
+                image = this.imageIdMap[id];
+            this.$('.im-find-similar')
+                .addClass('btn-info disabled')
+                .removeClass('btn-default')
+                .html('<i class="icon-spin5 animate-spin"></i>');
+            if (image.histogram) {
+                this.findSimilarImages(image);
+            } else {
+                girder.restRequest({
+                    path: 'imagefeatures',
+                    data: {
+                        url: image.imageUrl
+                    },
+                    method: 'POST'
+                }).done(_.bind(function (features) {
+                    image.histogram = features.histogram;
+                    this.findSimilarImages(image);
+                }, this));
+            }
+        },
+
         'mouseover .im-image-area': function (event) {
             $(event.currentTarget).find('.im-caption-content').removeClass('hidden');
         },
@@ -72,7 +95,38 @@ imagespace.views.SearchView = imagespace.View.extend({
             showText: true
         }));
         return this;
+    },
+
+    findSimilarImages: function(image) {
+        girder.restRequest({
+            path: 'imagesearch',
+            data: {
+                url: image.imageUrl,
+                histogram: JSON.stringify(image.histogram || []),
+                limit: 100
+            }
+        }).done(_.bind(function (results) {
+            var query = '(', count = 0;
+            results.forEach(_.bind(function (result, index) {
+                 var parts = result.id.split('/'),
+                     file = parts[parts.length - 1];
+                 if (file.length < 30) {
+                     return;
+                 }
+                 if (result.id.indexOf('cmuImages') !== -1) {
+                     file = 'cmuImages/' + file;
+                 }
+                 file = '/data/roxyimages/' + file;
+                 if (count < 100) {
+                    query += 'id:"' + file + '" ';
+                    count += 1;
+                }
+            }, this));
+            query += ')';
+            imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
+        }, this));
     }
+
 });
 
 imagespace.router.route('search/:query', 'search', function (query) {

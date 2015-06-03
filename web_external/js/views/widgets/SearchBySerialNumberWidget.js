@@ -80,16 +80,24 @@ imagespace.views.SearchBySerialNumberWidget = imagespace.View.extend({
                     query: (query.trim().length === 0 ? '*' : query)
                 }
             }).done(_.bind(function (result) {
+                var hasData = false;
                 cameraData = [];
                 console.log(result);
                 result.forEach(function (d1) {
                     if (d1.value.trim().length > 0) {
+                        hasData = true;
                         cameraData.push({
                             x: d1.value,
                             y: d1.count
                         });
                     }
                 });
+
+                if (!hasData) {
+                    this.$('.im-working').addClass('hidden');
+                    $('<h3/>').text('No results. Please broaden your search.').appendTo(this.$('.im-chart-content'));
+                    return;
+                }
 
                 vg.parse.spec(bar, _.bind(function(chart) {
                     this.$('.im-working').addClass('hidden');

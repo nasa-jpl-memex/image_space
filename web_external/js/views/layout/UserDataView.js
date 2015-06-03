@@ -125,13 +125,32 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 dataURLReader.onloadend = _.bind(function () {
                     image.imageUrl = dataURLReader.result;
                     imagespace.userData.images.unshift(image);
-                    this.render();
+                    if (girder.currentUser) {
+                        girder.restRequest({
+                            path: 'folder?text=Private'
+                        }).done(_.bind(function (folders) {
+                            var privateFolder = null;
+                            folders.forEach(function (folder) {
+                                if (folder.parentId === girder.currentUser.id) {
+                                    privateFolder = folder;
+                                }
+                            })
+                            if (privateFolder) {
+                                this.girderUpload(this.dataURLToBlob(dataURLReader.result), file.name, privateFolder._id, null, _.bind(function (fileObject) {
+                                    var location = window.location;
+                                    image.imageUrl = location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken');
+                                    this.render();
+                                }, this));
+                            }
+                        }, this));
+                    }
                 }, this);
 
                 dataURLReader.readAsDataURL(file);
 
                 image.id = file.name;
                 this.imageIdMap[image.id] = image;
+
             }, this));
         }, this);
 
@@ -165,5 +184,61 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             this.addUserImage(image);
         }, this));
     },
+
+    girderUpload: function (data, name, folderId, itemToOverwrite, success, error) {
+        success = success || function () {};
+        error = error || function () {};
+
+        var file, bindEvents = function (file) {
+            file.on('g:upload.complete', function () {
+                success(file);
+            }).on('g:upload.error', function () {
+            }).on('g:upload.error g:upload.errorStarting', function () {
+                error(file);
+            });
+            return file;
+        };
+
+        if (itemToOverwrite) {
+            // We have the dataset's itemid, but we need its fileid.
+            var files = new girder.collections.FileCollection();
+            files.altUrl = 'item/' + itemToOverwrite + '/files';
+
+            files.on('g:changed', function () {
+                file = bindEvents(files.models[0]);
+                file.updateContents(data);
+            }).fetch();
+        } else {
+            var folder = new girder.models.FolderModel({_id: folderId});
+            file = bindEvents(new girder.models.FileModel());
+            file.uploadToFolder(folder, data, name);
+        }
+
+        return file;
+    },
+
+    dataURLToBlob: function(dataURL) {
+        var BASE64_MARKER = ';base64,';
+        if (dataURL.indexOf(BASE64_MARKER) == -1) {
+            var parts = dataURL.split(',');
+            var contentType = parts[0].split(':')[1];
+            var raw = decodeURIComponent(parts[1]);
+
+            return new Blob([raw], {type: contentType});
+        }
+
+        var parts = dataURL.split(BASE64_MARKER);
+        var contentType = parts[0].split(':')[1];
+        var raw = window.atob(parts[1]);
+        var rawLength = raw.length;
+
+        var uInt8Array = new Uint8Array(rawLength);
+
+        for (var i = 0; i < rawLength; ++i) {
+            uInt8Array[i] = raw.charCodeAt(i);
+        }
+
+        return new Blob([uInt8Array], {type: contentType});
+    }
 
 });
