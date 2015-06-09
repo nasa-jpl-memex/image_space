@@ -61,7 +61,7 @@ class ImageFeatures(Resource):
             cv2_available = False
 
         if 'url' in params:
-            data = requests.get(params['url']).content
+            data = requests.get(params['url'], verify=False).content
         else:
             data = str(cherrypy.request.body.read())
 
