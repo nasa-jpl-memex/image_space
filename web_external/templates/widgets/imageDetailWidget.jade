@@ -22,9 +22,9 @@
                             a.badge.btn.btn-default(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
                                 i.icon-picture
                         b= key + ': '
-                        if (typeof val[0] === 'string' && val[0].startsWith('http'))
+                        if (val !== undefined && typeof val[0] === 'string' && val[0].startsWith('http'))
                             a(href=val[0], target='_blank')= val[0]
-                        else if (typeof val === 'string' && val.startsWith('http'))
+                        else if (val !== undefined && typeof val === 'string' && val.startsWith('http'))
                             a(href=val, target='_blank')= val
                         else
                             span= val
