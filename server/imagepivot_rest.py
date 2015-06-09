@@ -36,6 +36,6 @@ class ImagePivot(Resource):
         query = params['query'] if 'query' in params else '*'
         base = os.environ['IMAGE_SPACE_SOLR'] + '/select?wt=json&indent=true'
         url = base + '&q=' + query + '&rows=1&facet=on&facet.pivot=' + pivot
-        result = requests.get(url).json()
+        result = requests.get(url, verify=False).json()
         return result['facet_counts']['facet_pivot'][pivot]
     getImagePivot.description = Description('Performs pivot aggregation on image database')

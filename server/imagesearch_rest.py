@@ -38,15 +38,16 @@ class ImageSearch(Resource):
                 return requests.get(
                     os.environ['IMAGE_SPACE_FLANN_INDEX'] +
                     '?query=' + params['histogram'] + '&k=' + str(limit)).json()
+            print os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] + '?url=' + params['url'] + '&num=' + str(limit)
             return [{'id': d} for d in requests.get(
                 os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] +
-                '?url=' + params['url'] + '&num=' + str(limit))
+                '?url=' + params['url'] + '&num=' + str(limit), verify=False)
                     .json()['images'][0]['similar_images']['image_urls']
             ]
         query = params['query'] if 'query' in params else '*'
         base = os.environ['IMAGE_SPACE_SOLR'] + '/select?wt=json&indent=true'
         try:
-            result = requests.get(base + '&q=' + query + '&rows=' + str(limit)).json()
+            result = requests.get(base + '&q=' + query + '&rows=' + str(limit), verify=False).json()
         except ValueError:
             return []
         return result['response']['docs']
