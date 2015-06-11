@@ -4,7 +4,8 @@
             button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
             h4.modal-title= title
         .modal-body
-            img.im-image-detail.im-blur(src="#{image.imageUrl}")
+            a(href="#{image.imageUrl}", target="_blank")
+                img.im-image-detail.im-blur(src="#{image.imageUrl}")
             .im-actions
                 .im-similar-images.btn.btn-default(title="Search for images with similar content")
                     | Find similar images
@@ -21,7 +22,12 @@
                             a.badge.btn.btn-default(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
                                 i.icon-picture
                         b= key + ': '
-                        = val
+                        if (val !== undefined && typeof val[0] === 'string' && val[0].startsWith('http'))
+                            a(href=val[0], target='_blank')= val[0]
+                        else if (val !== undefined && typeof val === 'string' && val.startsWith('http'))
+                            a(href=val, target='_blank')= val
+                        else
+                            span= val
         .modal-footer
             a.btn.btn-small.btn-default(data-dismiss="modal")
                 | Close
