@@ -13,7 +13,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             this.$('.im-similar-images')
                 .addClass('btn-info disabled')
                 .removeClass('btn-default')
-                .html('<i class="icon-spin5 animate-spin"></i> Processing ...');
+                .html('Finding similar images <i class="icon-spin5 animate-spin"></i>');
             if (this.image.histogram) {
                 this.findSimilarImages();
             } else {
@@ -32,7 +32,6 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
     },
 
     initialize: function (settings) {
-        console.log(settings.image);
         this.image = settings.image || null;
         this.title = settings.title || 'Image details';
     },

@@ -83,6 +83,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         'click .im-find-similar': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
                 image = this.imageIdMap[id];
+            $('.alert-info').html('Finding similar images <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
             $('.btn-lg').addClass('disabled');
             $(event.currentTarget).parent().find('.im-find-similar')
                 .html('<i class="icon-spin5 animate-spin"></i>');
@@ -156,6 +157,11 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             $('.btn-lg').removeClass('disabled');
             $('.im-find-similar').html('<i class="icon-search"></i>');
 
+            $('.alert-info').addClass('hidden');
+            $('.alert-success').text('Search complete.').removeClass('hidden');
+            setTimeout(function () {
+                $('.alert-success').addClass('hidden')
+            }, 5000);
         }, this));
     },
 
