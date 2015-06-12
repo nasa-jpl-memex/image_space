@@ -9,17 +9,6 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
         },
 
-        'click .im-permalink': function(event) {
-            var parts = this.image.id.split('/'),
-                file = parts[parts.length - 1];
-            if (this.image.id.indexOf('cmuImages') !== -1) {
-                file = 'cmuImages/' + file;
-            }
-            file = '/data/roxyimages/' + file;
-            this.$el.modal('hide');
-            imagespace.router.navigate('search/' + encodeURIComponent('id:"' + file + '"'), {trigger: true});
-        },
-
         'click .im-similar-images': function(event) {
             this.$('.im-similar-images')
                 .addClass('btn-info disabled')
