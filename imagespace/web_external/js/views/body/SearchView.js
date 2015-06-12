@@ -123,6 +123,10 @@ imagespace.views.SearchView = imagespace.View.extend({
             }, this));
             query += ')';
             imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
+
+            $('.btn-lg').removeClass('disabled');
+            $('.im-find-similar').html('<i class="icon-search"></i>');
+
         }, this));
     }
 
