@@ -15,7 +15,9 @@
                         img.im-image-thumbnail.im-blur(src=result.imageUrl)
                 .im-caption
                     .im-caption-content.hidden
-                        .im-remove.btn.btn-link.btn-lg(im-id="#{result.id}")
+                        .im-remove.btn.btn-link.btn-lg(im-id="#{result.id}", title="Delete")
                             i.icon-trash
-                        .im-details.btn.btn-link.btn-lg(im-id="#{result.id}")
+                        .im-find-similar.btn.btn-link.btn-lg(im-id="#{result.id}", title="Find similar images")
+                            i.icon-search
+                        .im-details.btn.btn-link.btn-lg(im-id="#{result.id}", title="Info")
                             i.icon-info
