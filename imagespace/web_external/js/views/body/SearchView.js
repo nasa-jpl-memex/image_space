@@ -20,9 +20,8 @@ imagespace.views.SearchView = imagespace.View.extend({
         'click .im-find-similar': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
                 image = this.imageIdMap[id];
-            this.$('.im-find-similar')
-                .addClass('btn-info disabled')
-                .removeClass('btn-default')
+            $(event.currentTarget).parent().find('.im-find-similar')
+                .addClass('disabled')
                 .html('<i class="icon-spin5 animate-spin"></i>');
             if (image.histogram) {
                 this.findSimilarImages(image);
