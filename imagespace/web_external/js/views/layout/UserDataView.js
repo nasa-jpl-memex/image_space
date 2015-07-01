@@ -74,10 +74,16 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
         'click .im-remove': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
-                ids = imagespace.userData.images.map(function (d) { return d.id; }),
-                removeIndex = ids.indexOf(id);
-            imagespace.userData.images.splice(removeIndex, 1);
-            this.render();
+                image = this.imageIdMap[id],
+                item = new girder.models.ItemModel({
+                    _id: image.item_id
+                });
+
+            if (image.item_id) {
+                item.once('g:deleted', function () {
+                    this.render();
+                }, this).destroy();
+            }
         },
 
         'click .im-find-similar': function (event) {
@@ -118,15 +124,46 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         this.render();
     },
 
+    updateUserData: function (done) {
+        girder.restRequest({
+            path: 'folder?text=Private'
+        }).done(_.bind(function (folders) {
+            var privateFolder = null;
+            folders.forEach(function (folder) {
+                if (folder.parentId === girder.currentUser.id) {
+                    privateFolder = folder;
+                }
+            });
+            if (privateFolder) {
+                console.log(privateFolder);
+                girder.restRequest({
+                    path: 'item?limit=100&offset=0&sort=created&sortdir=-1&folderId=' + privateFolder._id
+                }).done(_.bind(function (items) {
+                    imagespace.userData.images = [];
+                    console.log(items);
+                    items.forEach(_.bind(function (item) {
+                        if (item.meta && item.meta.item_id) {
+                            imagespace.userData.images.push(item.meta);
+                            this.imageIdMap[item.meta.id] = item.meta;
+                        }
+                    }, this));
+                    done();
+                }, this));
+            }
+        }, this));
+    },
+
     render: function () {
-        this.$el.html(imagespace.templates.userData({
-            userData: imagespace.userData,
-            showText: true
-        }));
+        this.updateUserData(_.bind(function () {
+            this.$el.html(imagespace.templates.userData({
+                userData: imagespace.userData,
+                showText: true
+            }));
+        }, this));
         return this;
     },
 
-    findSimilarImages: function(image) {
+    findSimilarImages: function (image) {
         girder.restRequest({
             path: 'imagesearch',
             data: {
@@ -137,16 +174,16 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         }).done(_.bind(function (results) {
             var query = '(', count = 0;
             results.forEach(_.bind(function (result, index) {
-                 var parts = result.id.split('/'),
-                     file = parts[parts.length - 1];
-                 if (file.length < 30) {
-                     return;
-                 }
-                 if (result.id.indexOf('cmuImages') !== -1) {
-                     file = 'cmuImages/' + file;
-                 }
-                 file = '/data/roxyimages/' + file;
-                 if (count < 100) {
+                var parts = result.id.split('/'),
+                    file = parts[parts.length - 1];
+                if (file.length < 30) {
+                    return;
+                }
+                if (result.id.indexOf('cmuImages') !== -1) {
+                    file = 'cmuImages/' + file;
+                }
+                file = '/data/roxyimages/' + file;
+                if (count < 100) {
                     query += 'id:"' + file + '" ';
                     count += 1;
                 }
@@ -199,9 +236,17 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                             })
                             if (privateFolder) {
                                 this.girderUpload(this.dataURLToBlob(dataURLReader.result), file.name, privateFolder._id, null, _.bind(function (fileObject) {
-                                    var location = window.location;
+                                    var location = window.location, item;
                                     image.imageUrl = location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken');
-                                    this.render();
+
+                                    console.log('fileObject');
+                                    console.log(fileObject);
+
+                                    item = new girder.models.ItemModel({_id: fileObject.attributes.itemId});
+                                    image.item_id = fileObject.attributes.itemId;
+                                    item._sendMetadata(image, _.bind(function () {
+                                        this.render();
+                                    }, this));
                                 }, this));
                             }
                         }, this));
@@ -209,10 +254,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 }, this);
 
                 dataURLReader.readAsDataURL(file);
-
                 image.id = file.name;
-                this.imageIdMap[image.id] = image;
-
             }, this));
         }, this);
 
@@ -221,10 +263,36 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
     addUserImage: function (image) {
         image.source_query = window.location.href;
-        this.imageIdMap[image.id] = image;
 
-        imagespace.userData.images.unshift(image);
-        this.render();
+        girder.restRequest({
+            path: 'folder?text=Private'
+        }).done(_.bind(function (folders) {
+            var privateFolder = null;
+            folders.forEach(function (folder) {
+                if (folder.parentId === girder.currentUser.id) {
+                    privateFolder = folder;
+                }
+            })
+            if (privateFolder) {
+                var item = new girder.models.ItemModel({
+                    name: image.id,
+                    folderId: privateFolder._id
+                });
+
+                item.once('g:saved', _.bind(function () {
+                    console.log(item);
+                    image.item_id = item.attributes._id;
+                    console.log(image);
+                    item._sendMetadata(image, _.bind(function () {
+                        this.render();
+                    }, this), function (error) {
+                        // TODO report error
+                    })
+                }, this)).once('g:error', function (error) {
+                    console.log(error);
+                }, this).save();
+            }
+        }, this));
     },
 
     loadUrl: function (url) {
@@ -279,22 +347,21 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         return file;
     },
 
-    dataURLToBlob: function(dataURL) {
+    dataURLToBlob: function (dataURL) {
         var BASE64_MARKER = ';base64,';
         if (dataURL.indexOf(BASE64_MARKER) == -1) {
-            var parts = dataURL.split(',');
-            var contentType = parts[0].split(':')[1];
-            var raw = decodeURIComponent(parts[1]);
+            var parts = dataURL.split(','),
+                contentType = parts[0].split(':')[1],
+                raw = decodeURIComponent(parts[1]);
 
             return new Blob([raw], {type: contentType});
         }
 
-        var parts = dataURL.split(BASE64_MARKER);
-        var contentType = parts[0].split(':')[1];
-        var raw = window.atob(parts[1]);
-        var rawLength = raw.length;
-
-        var uInt8Array = new Uint8Array(rawLength);
+        var parts = dataURL.split(BASE64_MARKER),
+            contentType = parts[0].split(':')[1],
+            raw = window.atob(parts[1]),
+            rawLength = raw.length,
+            uInt8Array = new Uint8Array(rawLength);
 
         for (var i = 0; i < rawLength; ++i) {
             uInt8Array[i] = raw.charCodeAt(i);
