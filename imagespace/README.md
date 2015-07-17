@@ -13,7 +13,8 @@ Start Mongo normally on the default port.
 ### Image similarity server
 
 The image similarity server requires a set of images to load and process into the index.
-The server will look at the file located here:
+The server will look at the file located in the `IMAGE_SPACE_LISTS` environment variable.
+An example lists file is here:
 ```
 image_space/flann_index/lists.txt
 ```
