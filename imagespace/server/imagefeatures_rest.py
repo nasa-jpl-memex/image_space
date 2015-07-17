@@ -22,29 +22,8 @@ from girder.api.describe import Description
 from girder.api.rest import Resource
 
 import cherrypy
-import json
 import requests
-import subprocess
-import os
-from StringIO import StringIO
-from json import JSONDecoder
-from functools import partial
-
-# Capable of reading multi-record JSON files by yielding each
-# parsed JSON record
-def json_parse(fileobj, decoder=JSONDecoder(), buffersize=2048):
-    buffer = ''
-    for chunk in iter(partial(fileobj.read, buffersize), ''):
-         buffer += chunk
-         while buffer:
-             try:
-                 result, index = decoder.raw_decode(buffer)
-                 yield result
-                 buffer = buffer[index:]
-             except ValueError:
-                 # Not enough data to decode, read more
-                 break
-
+from tika import parser
 
 class ImageFeatures(Resource):
     def __init__(self):
@@ -65,33 +44,13 @@ class ImageFeatures(Resource):
         else:
             data = str(cherrypy.request.body.read())
 
-        # Run Tika metadata
-        cmd = ['java', '-jar', os.environ['IMAGE_SPACE_TIKA'], '-j']
-        p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            stdin=subprocess.PIPE
-        )
-        out, err = p.communicate(data)
-
-        tika_attributes = [d for d in json_parse(StringIO(out))][-1]
+        # Run Tika once
+        parsed = parser.from_buffer(data)
         tika = {}
-        for (k, v) in tika_attributes.iteritems():
+        for (k, v) in parsed["metadata"].iteritems():
             k = k.lower().replace(':', '_').replace(' ', '_').replace('-', '_')
             tika[k] = v
-
-        # Run Tika text extraction
-        cmd = ['java', '-jar', os.environ['IMAGE_SPACE_TIKA'], '-t']
-        p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            stdin=subprocess.PIPE
-        )
-        out, err = p.communicate(data)
-
-        tika['content'] = out
+        tika['content'] = parsed["content"]
 
         if cv2_available:
             file_bytes = np.asarray(bytearray(data), dtype=np.uint8)

@@ -36,6 +36,13 @@ tangelo --port 9220
 First ensure you have the proper [prerequisites](http://girder.readthedocs.org/en/latest/prerequisites.html),
 then [install Girder from a Git checkout](http://girder.readthedocs.org/en/latest/installation.html#install-from-git-checkout).
 
+Note that you also need to install [Tika-Python](http://github.com/chrismattmann/tika-python).
+You can do so by:
+
+```bash
+pip2.7 install tika
+```
+
 To enable the imagespace plugin, first create a symbolic link to the imagespace plugin
 and rebuild the app.
 
