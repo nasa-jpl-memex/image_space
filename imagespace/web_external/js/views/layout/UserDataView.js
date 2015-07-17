@@ -119,6 +119,9 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
     },
 
     initialize: function (settings) {
+	this.imagePathRoot = '/data/roxyimages/';
+	this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/';
+	this.resLimit = 30;
         this.imageIdMap = {};
         girder.cancelRestRequests('fetch');
         this.render();
@@ -169,7 +172,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             data: {
                 url: image.imageUrl,
                 histogram: JSON.stringify(image.histogram || []),
-                limit: 100
+                limit: this.resLimit
             }
         }).done(_.bind(function (results) {
             var query = '(', count = 0;
@@ -182,8 +185,8 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 if (result.id.indexOf('cmuImages') !== -1) {
                     file = 'cmuImages/' + file;
                 }
-                file = '/data/roxyimages/' + file;
-                if (count < 100) {
+		file = this.imagePathRoot + file;
+                if (count < this.resLimit) {
                     query += 'id:"' + file + '" ';
                     count += 1;
                 }

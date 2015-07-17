@@ -51,6 +51,9 @@ imagespace.views.SearchView = imagespace.View.extend({
 
     initialize: function (settings) {
         girder.cancelRestRequests('fetch');
+	this.resLimit = 30;
+	this.imagePathRoot = '/data/roxyimages/';
+	this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/' 
         this.results = settings.results;
         this.imageIdMap = {};
         this.results.forEach(_.bind(function (result) {
@@ -103,7 +106,7 @@ imagespace.views.SearchView = imagespace.View.extend({
             data: {
                 url: image.imageUrl,
                 histogram: JSON.stringify(image.histogram || []),
-                limit: 100
+                limit: this.resLimit
             }
         }).done(_.bind(function (results) {
             var query = '(', count = 0;
@@ -116,8 +119,8 @@ imagespace.views.SearchView = imagespace.View.extend({
                  if (result.id.indexOf('cmuImages') !== -1) {
                      file = 'cmuImages/' + file;
                  }
-                 file = '/data/roxyimages/' + file;
-                 if (count < 100) {
+		 file = this.imagePathRoot + file;
+                 if (count < this.resLimit) {
                     query += 'id:"' + file + '" ';
                     count += 1;
                 }
@@ -140,12 +143,13 @@ imagespace.views.SearchView = imagespace.View.extend({
 });
 
 imagespace.router.route('search/:query', 'search', function (query) {
+    this.initImgLimit = 100;
     $('.im-search').val(query);
     girder.restRequest({
         path: 'imagesearch',
         data: {
             query: query,
-            limit: 100
+            limit: this.initImgLimit
         }
     }).done(function (results) {
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {

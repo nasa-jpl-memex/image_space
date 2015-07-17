@@ -32,6 +32,9 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
     },
 
     initialize: function (settings) {
+	this.resLimit = 30;
+        this.imagePathRoot = '/data/roxyimages/';
+        this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/'
         this.image = settings.image || null;
         this.title = settings.title || 'Image details';
     },
@@ -56,7 +59,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             data: {
                 url: this.image.imageUrl,
                 histogram: JSON.stringify(this.image.histogram || []),
-                limit: 100
+                limit: this.resLimit
             }
         }).done(_.bind(function (results) {
             console.log(results);
@@ -71,8 +74,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                  if (result.id.indexOf('cmuImages') !== -1) {
                      file = 'cmuImages/' + file;
                  }
-                 file = '/data/roxyimages/' + file;
-                 if (count < 100) {
+		 file = this.imagePathRoot + file;
+                 if (count < this.resLimit) {
                     query += 'id:"' + file + '" ';
                     count += 1;
                 }
