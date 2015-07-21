@@ -40,7 +40,6 @@ class ImageBackgroundSearch(Resource):
         return self._imageSearch(params)
 
     def _imageSearch(self, params):
-        print params
         return [{'id': d[0], 'score': d[1]} for d in requests.post(
             os.environ['IMAGE_SPACE_CMU_BACKGROUND_SEARCH'],
             data=params['url'],
