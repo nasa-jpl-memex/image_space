@@ -18,6 +18,7 @@
 ###############################################################################
 
 import mako
+from .imagebackgroundsearch_rest import ImageBackgroundSearch
 from .imagefeatures_rest import ImageFeatures
 from .imagepivot_rest import ImagePivot
 from .imagesearch_rest import ImageSearch
@@ -57,6 +58,13 @@ class CustomAppRoot(object):
               type="image/png"
               href="${staticRoot}/img/Girder_Favicon.png">
 
+        <style id="blur-style">
+            img.im-blur {
+                -webkit-filter: blur(10px);
+                filter blur(10px)
+            }
+        </style>
+
       </head>
       <body>
         <div id="g-global-info-apiroot" class="hide">${apiRoot}</div>
@@ -85,6 +93,7 @@ class CustomAppRoot(object):
 
 def load(info):
     # Bind our REST resources
+    info['apiRoot'].imagebackgroundsearch = ImageBackgroundSearch()
     info['apiRoot'].imagesearch = ImageSearch()
     info['apiRoot'].imagefeatures = ImageFeatures()
     info['apiRoot'].imagepivot = ImagePivot()

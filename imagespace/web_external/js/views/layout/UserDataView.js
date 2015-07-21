@@ -8,6 +8,20 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             this.searchBySizeWidget.render();
         },
 
+        'click .im-blur': function () {
+            $('#blur-style').text('img.im-blur { -webkit-filter: blur(10px); filter blur(10px) }');
+        },
+
+        'click .im-unblur-hover': function () {
+            $('#blur-style').text(
+                'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }'
+                + '\nimg.im-blur:hover { -webkit-filter: blur(0px); filter: blur(0px) }');
+        },
+
+        'click .im-unblur': function () {
+            $('#blur-style').text('');
+        },
+
         'click .im-search-by-serial-number': function () {
             this.searchBySerialNumberWidget = new imagespace.views.SearchBySerialNumberWidget({
                 el: $('#g-dialog-container'),
@@ -119,9 +133,9 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
     },
 
     initialize: function (settings) {
-	this.imagePathRoot = '/data/roxyimages/';
-	this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/';
-	this.resLimit = 30;
+        this.imagePathRoot = '/data/roxyimages/';
+        // this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/';
+        this.resLimit = 30;
         this.imageIdMap = {};
         girder.cancelRestRequests('fetch');
         this.render();

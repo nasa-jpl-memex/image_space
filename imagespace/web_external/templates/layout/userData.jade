@@ -7,6 +7,18 @@
     .im-searches
         .im-search-by-size.btn.btn-default.btn-link Image size distribution
         .im-search-by-serial-number.btn.btn-default.btn-link Serial number distribution
+        .im-blur-controls
+            | Unblur&nbsp;
+            .btn-group(role="group", data-toggle="buttons")
+                label.im-blur.btn.btn-default.active
+                    input(type="radio", name="blur-options")
+                    | Never
+                label.im-unblur-hover.btn.btn-default
+                    input(type="radio", name="blur-options")
+                    | On hover
+                label.im-unblur.btn.btn-default
+                    input(type="radio", name="blur-options")
+                    | Always
     if userData.images.length > 0
         for result in userData.images
             .im-image-area

@@ -9,6 +9,10 @@
             .im-actions
                 .im-similar-images.btn.btn-default(title="Search for images with similar content")
                     | Find similar images
+                | &nbsp;
+                .im-similar-background-images.btn.btn-default(title="Search for images with similar background content")
+                    | Find images with similar background
+                | &nbsp;
                 a.im-permalink.btn.btn-link(href='#search/' + encodeURIComponent('id:"#{image.id}"'), target="_blank", title="Links to a search containing just this image. This does not function for custom imported images.")
                     | Permalink
             ul.list-group.im-attributes
