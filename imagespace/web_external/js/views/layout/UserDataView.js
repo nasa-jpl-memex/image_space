@@ -159,9 +159,16 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                     imagespace.userData.images = [];
                     console.log(items);
                     items.forEach(_.bind(function (item) {
+                        var parts;
                         if (item.meta && item.meta.item_id) {
                             imagespace.userData.images.push(item.meta);
                             this.imageIdMap[item.meta.id] = item.meta;
+
+                            // Replace Girder token with current session's token if necessary
+                            parts = item.meta.imageUrl.split('&token=');
+                            if (parts.length === 2) {
+                                item.meta.imageUrl = parts[0] + '&token=' + girder.cookie.find('girderToken');
+                            }
                         }
                     }, this));
                     done();
