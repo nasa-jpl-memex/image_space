@@ -151,13 +151,11 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                     privateFolder = folder;
                 }
             });
+            imagespace.userData.images = [];
             if (privateFolder) {
-                console.log(privateFolder);
                 girder.restRequest({
                     path: 'item?limit=100&offset=0&sort=created&sortdir=-1&folderId=' + privateFolder._id
                 }).done(_.bind(function (items) {
-                    imagespace.userData.images = [];
-                    console.log(items);
                     items.forEach(_.bind(function (item) {
                         var parts;
                         if (item.meta && item.meta.item_id) {
@@ -173,6 +171,8 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                     }, this));
                     done();
                 }, this));
+            } else {
+                done();
             }
         }, this));
     },
