@@ -61,6 +61,7 @@ export IMAGE_SPACE_TIKA=/path/to/your/tika/tika-app-1.7.jar
 export IMAGE_SPACE_FLANN_INDEX=http://localhost:9220/flann_index
 export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server
 export IMAGE_SPACE_PREFIX=http://path_to_image_repository
+export IMAGE_SPACE_CMU_BACKGROUND_SEARCH=http://path_to_cmu_background_search_server
 ```
 
 Finally start the Girder server with
