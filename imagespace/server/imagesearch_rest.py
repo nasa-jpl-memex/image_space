@@ -25,11 +25,11 @@ from girder import logger
 import requests
 import os
 
+
 class ImageSearch(Resource):
     def __init__(self):
         self.resourceName = 'imagesearch'
         self.route('GET', (), self.getImageSearch)
-
 
     @access.public
     def getImageSearch(self, params):
@@ -43,12 +43,12 @@ class ImageSearch(Resource):
         limit = params['limit'] if 'limit' in params else '10'
         if 'histogram' in params:
             if 'IMAGE_SPACE_FLANN_INDEX' in os.environ:
-                logger.info('Using FLANN INDEX at '+os.environ['IMAGE_SPACE_FLANN_INDEX'])
+                logger.info('Using FLANN INDEX at ' + os.environ['IMAGE_SPACE_FLANN_INDEX'])
                 return requests.get(
                     os.environ['IMAGE_SPACE_FLANN_INDEX'] +
                     '?query=' + params['histogram'] + '&k=' + str(limit)).json()
             logger.info('Using COLUMBIA INDEX at '+os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] + '?url=' + params['url'] + '&num=' + str(limit))
-            return [{'id:' : d} for d in requests.get(
+            return [{'id' : d} for d in requests.get(
                 os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] +
                 '?url=' + params['url'] + '&num=' + str(limit), verify=False).json()['images'][0]['similar_images']['image_urls']]
 

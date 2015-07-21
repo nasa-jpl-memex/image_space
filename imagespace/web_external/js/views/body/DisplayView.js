@@ -1,4 +1,4 @@
-imagespace.views.SearchView = imagespace.View.extend({
+imagespace.views.DisplayView = imagespace.View.extend({
     events: {
         'click .im-add-user-data': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
@@ -57,37 +57,9 @@ imagespace.views.SearchView = imagespace.View.extend({
         this.results = settings.results;
         this.imageIdMap = {};
         this.results.forEach(_.bind(function (result) {
-            var parts = result.id.split('/'),
-                file = parts[parts.length - 1];
-            if (result.id.indexOf('cmuImages') !== -1) {
-                file = 'cmuImages/' + file;
-            }
-            result.imageUrl = imagespace.prefix + file;
+            result.imageUrl = result.id;
             this.imageIdMap[result.id] = result;
         }, this));
-
-        // Place in order if ids are explicit
-        var queryParts = $('.im-search').val().split(' '),
-            idResults = [],
-            idResultMap = {},
-            remaining = [];
-        queryParts.forEach(_.bind(function (part) {
-            var partId = part.match(/id:\"(.*)\"/);
-            if (partId && partId.length === 2 && this.imageIdMap[partId[1]]) {
-                idResults.push(this.imageIdMap[partId[1]]);
-                idResultMap[partId[1]] = true;
-            }
-        }, this));
-
-        // Gather the rest
-        this.results.forEach(function (result) {
-            if (!idResultMap[result.id]) {
-                remaining.push(result);
-            }
-        });
-
-        // Construct new result list with id results first
-        this.results = idResults.concat(remaining);
 
         this.render();
     },
@@ -100,7 +72,7 @@ imagespace.views.SearchView = imagespace.View.extend({
         return this;
     },
 
-    findSimilarImages: function(image) {
+    findSimilarImages: function (image) {
         girder.restRequest({
             path: 'imagesearch',
             data: {
@@ -111,16 +83,16 @@ imagespace.views.SearchView = imagespace.View.extend({
         }).done(_.bind(function (results) {
             var query = '(', count = 0;
             results.forEach(_.bind(function (result, index) {
-                 var parts = result.id.split('/'),
-                     file = parts[parts.length - 1];
-                 if (file.length < 30) {
-                     return;
-                 }
-                 if (result.id.indexOf('cmuImages') !== -1) {
-                     file = 'cmuImages/' + file;
-                 }
-		 file = this.imagePathRoot + file;
-                 if (count < this.resLimit) {
+                var parts = result.id.split('/'),
+                    file = parts[parts.length - 1];
+                if (file.length < 30) {
+                    return;
+                }
+                if (result.id.indexOf('cmuImages') !== -1) {
+                    file = 'cmuImages/' + file;
+                }
+                file = this.imagePathRoot + file;
+                if (count < this.resLimit) {
                     query += 'id:"' + file + '" ';
                     count += 1;
                 }
@@ -142,18 +114,9 @@ imagespace.views.SearchView = imagespace.View.extend({
 
 });
 
-imagespace.router.route('search/:query', 'search', function (query) {
-    this.initImgLimit = 100;
-    $('.im-search').val(query);
-    girder.restRequest({
-        path: 'imagesearch',
-        data: {
-            query: query,
-            limit: this.initImgLimit
-        }
-    }).done(function (results) {
-        girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
-            results: results
-        });
+imagespace.router.route('display/:content', 'display', function (content) {
+    $('.im-search').val(content);
+    girder.events.trigger('g:navigateTo', imagespace.views.DisplayView, {
+        results: JSON.parse(content)
     });
 });

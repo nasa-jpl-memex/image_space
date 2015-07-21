@@ -3,13 +3,13 @@
  */
 imagespace.views.ImageDetailWidget = imagespace.View.extend({
     events: {
-        'click .im-search-mod': function(event) {
+        'click .im-search-mod': function (event) {
             var query = $(event.currentTarget).attr('im-search');
             this.$el.modal('hide');
             imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
         },
 
-        'click .im-similar-images': function(event) {
+        'click .im-similar-images': function (event) {
             this.$('.im-similar-images')
                 .addClass('btn-info disabled')
                 .removeClass('btn-default')
@@ -28,13 +28,29 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                     this.findSimilarImages();
                 }, this));
             }
+        },
+
+        'click .im-similar-background-images': function (event) {
+            this.$('.im-similar-background-images')
+                .addClass('btn-info disabled')
+                .removeClass('btn-default')
+                .html('Finding images with similar background <i class="icon-spin5 animate-spin"></i>');
+            girder.restRequest({
+                path: 'imagebackgroundsearch',
+                data: {
+                    url: this.image.imageUrl
+                }
+            }).done(_.bind(function (results) {
+                console.log(results);
+                imagespace.router.navigate('display/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
+            }, this));
         }
     },
 
     initialize: function (settings) {
-	this.resLimit = 30;
+        this.resLimit = 30;
         this.imagePathRoot = '/data/roxyimages/';
-        this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/'
+        // this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/'
         this.image = settings.image || null;
         this.title = settings.title || 'Image details';
     },
@@ -53,7 +69,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         return this;
     },
 
-    findSimilarImages: function() {
+    findSimilarImages: function () {
         girder.restRequest({
             path: 'imagesearch',
             data: {
@@ -66,16 +82,16 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             this.$el.modal('hide');
             var query = '(', count = 0;
             results.forEach(_.bind(function (result, index) {
-                 var parts = result.id.split('/'),
-                     file = parts[parts.length - 1];
-                 if (file.length < 30) {
-                     return;
-                 }
-                 if (result.id.indexOf('cmuImages') !== -1) {
-                     file = 'cmuImages/' + file;
-                 }
-		 file = this.imagePathRoot + file;
-                 if (count < this.resLimit) {
+                var parts = result.id.split('/'),
+                    file = parts[parts.length - 1];
+                if (file.length < 30) {
+                    return;
+                }
+                if (result.id.indexOf('cmuImages') !== -1) {
+                    file = 'cmuImages/' + file;
+                }
+                file = this.imagePathRoot + file;
+                if (count < this.resLimit) {
                     query += 'id:"' + file + '" ';
                     count += 1;
                 }
