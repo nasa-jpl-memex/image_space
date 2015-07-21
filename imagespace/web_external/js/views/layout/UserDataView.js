@@ -9,7 +9,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         },
 
         'click .im-blur': function () {
-            $('#blur-style').text('img.im-blur { -webkit-filter: blur(10px); filter blur(10px) }');
+            $('#blur-style').text('img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }');
         },
 
         'click .im-unblur-hover': function () {
