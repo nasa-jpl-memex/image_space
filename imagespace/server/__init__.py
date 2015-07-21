@@ -61,7 +61,7 @@ class CustomAppRoot(object):
         <style id="blur-style">
             img.im-blur {
                 -webkit-filter: blur(10px);
-                filter blur(10px)
+                filter: blur(10px)
             }
         </style>
 
