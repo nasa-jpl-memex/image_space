@@ -6,6 +6,11 @@ from images. It allows histogram and D3-based visual search, free text search an
 performs image similarity metrics using computer vision techniques and metadata-techniques (e.g., 
 [Jaccard Similarity](http://github.com/chrismattmann/tika-img-similarity)).
 
+Installation
+============
+See the [installation README](https://github.com/memex-explorer/image_space/tree/master/imagespace) for
+instructions.
+
 Credits
 =======
 ImageSpace is developed by the [JPL-Kitware-Continuum](http://memex.jpl.nasa.gov/) team funded
