@@ -44,6 +44,22 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                 console.log(results);
                 imagespace.router.navigate('display/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
             }, this));
+        },
+
+        'click .im-similar-domain-dynamics-images': function (event) {
+            this.$('.im-similar-domain-dynamics-images')
+                .addClass('btn-info disabled')
+                .removeClass('btn-default')
+                .html('Finding images with similar domain dynamics <i class="icon-spin5 animate-spin"></i>');
+            girder.restRequest({
+                path: 'imagedomaindynamicssearch',
+                data: {
+                    url: this.image.imageUrl
+                }
+            }).done(_.bind(function (results) {
+                console.log(results);
+                imagespace.router.navigate('search/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
+            }, this));
         }
     },
 

@@ -59,9 +59,10 @@ Now ensure Girder is stopped, and set the following environment variables
 export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint
 export IMAGE_SPACE_TIKA=/path/to/your/tika/tika-app-1.7.jar
 export IMAGE_SPACE_FLANN_INDEX=http://localhost:9220/flann_index
-export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server
-export IMAGE_SPACE_PREFIX=http://path_to_image_repository
-export IMAGE_SPACE_CMU_BACKGROUND_SEARCH=http://path_to_cmu_background_search_server
+export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server                                   # to use Columbia similarity refinement
+export IMAGE_SPACE_PREFIX=http://path_to_image_repository                                  
+export IMAGE_SPACE_CMU_BACKGROUND_SEARCH=http://path_to_cmu_background_search_server                          # to use CMU background similarity refinement
+export IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH=http://path_to_georgetown_domain_dynamics_search_server  # to use Georgetowns domain dynamics similarity refinement
 ```
 
 Finally start the Girder server with
@@ -70,7 +71,7 @@ Finally start the Girder server with
 python -m girder
 ```
 
-The app should be visible at [http://localhost:8080](http://localhost:8080).
+The default Girder app should be visible at [http://localhost:8080](http://localhost:8080).
 
 Register for a new account, which will be the admin account. Go to the admin console and enter the
 plugin configuration. Find the imagespace plugin and enable it. Girder should prompt you to restart
