@@ -41,10 +41,10 @@ class ImageDomainDynamicsSearch(Resource):
     def _imageDomainDynamicsSearch(self, params):
         return [{'urls': d[0]} for d in requests.post(
             os.environ['IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'],
-            data=params['feedback'],
+            data=params['url'],
             headers={
                 'Content-type': 'text',
-                'Content-length': str(len(params['feedback']))
+                'Content-length': str(len(params['url']))
             },
             verify=False)
             .json()]
