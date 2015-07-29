@@ -58,7 +58,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                 }
             }).done(_.bind(function (results) {
                 console.log(results);
-                imagespace.router.navigate('search/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
+                imagespace.router.navigate('display/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
             }, this));
         }
     },

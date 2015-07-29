@@ -39,13 +39,6 @@ class ImageDomainDynamicsSearch(Resource):
         return self._imageDomainDynamicsSearch(params)
 
     def _imageDomainDynamicsSearch(self, params):
-        return [{'urls': d[0]} for d in requests.post(
-            os.environ['IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'],
-            data=params['url'],
-            headers={
-                'Content-type': 'text',
-                'Content-length': str(len(params['url']))
-            },
-            verify=False)
-            .json()]
+        filename = params['url'].split('/')[-1]
+        return requests.get(os.environ['IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'] + '?feedback=' + filename).json()
     getImageDomainDynamicsSearch.description = Description('Searches images by domain dynamics')
