@@ -53,7 +53,10 @@ ln -s path/to/image_space/imagespace ./plugins/imagespace
 grunt
 ```
 
-Now ensure Girder is stopped, and set the following environment variables
+The above builds the codebase enabling us to deploy it to the Girder server. It should be noted that after 
+any changes to the imagespace code, it is necessary to rebuild it with *grunt*. 
+
+Then set the following environment variables
 
 ```bash
 export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint
