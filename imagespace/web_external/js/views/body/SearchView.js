@@ -102,7 +102,15 @@ imagespace.router.route('search/:query', 'search', function (query) {
 });
 
 imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
+    // Replace Girder token with current session's token if necessary
+    var parts = url.split('&token=');
+    if (parts.length === 2) {
+        url = parts[0] + '&token=' + girder.cookie.find('girderToken');
+    }
+
     var performSearch = function (image) {
+        image.imageUrl = url;
+
         imagespace.headerView.render({url: url, mode: mode, image: image});
 
         if (mode === 'content') {
@@ -113,7 +121,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
                 limit: 100
             }
             if (image.histogram) {
-                q.histogram = image.histogram;
+                q.histogram = JSON.stringify(image.histogram);
             }
             girder.restRequest({
                 path: 'imagecontentsearch',
@@ -123,6 +131,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
                     results: results
                 });
                 $('.alert-info').addClass('hidden');
+                imagespace.userDataView.render();
             });
             return;
         }
@@ -140,6 +149,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
                     results: results
                 });
                 $('.alert-info').addClass('hidden');
+                imagespace.userDataView.render();
             });
             return;
         }
@@ -179,6 +189,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
                 results: results
             });
             $('.alert-info').addClass('hidden');
+            imagespace.userDataView.render();
         });
     };
 

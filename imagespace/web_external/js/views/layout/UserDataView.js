@@ -103,24 +103,11 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         'click .im-find-similar': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
                 image = this.imageIdMap[id];
-            $('.alert-info').html('Finding similar images <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
-            $('.btn-lg').addClass('disabled');
+            imagespace.router.navigate('search/' + encodeURIComponent(image.imageUrl) + '/content', {trigger: true});
+
+            this.$('.btn-lg').addClass('disabled');
             $(event.currentTarget).parent().find('.im-find-similar')
                 .html('<i class="icon-spin5 animate-spin"></i>');
-            if (image.histogram) {
-                this.findSimilarImages(image);
-            } else {
-                girder.restRequest({
-                    path: 'imagefeatures',
-                    data: {
-                        url: image.imageUrl
-                    },
-                    method: 'POST'
-                }).done(_.bind(function (features) {
-                    image.histogram = features.histogram;
-                    this.findSimilarImages(image);
-                }, this));
-            }
         },
 
         'mouseover .im-image-area': function (event) {
@@ -185,45 +172,6 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             }));
         }, this));
         return this;
-    },
-
-    findSimilarImages: function (image) {
-        girder.restRequest({
-            path: 'imagesearch',
-            data: {
-                url: image.imageUrl,
-                histogram: JSON.stringify(image.histogram || []),
-                limit: this.resLimit
-            }
-        }).done(_.bind(function (results) {
-            var query = '(', count = 0;
-            results.forEach(_.bind(function (result, index) {
-                var parts = result.id.split('/'),
-                    file = parts[parts.length - 1];
-                if (file.length < 30) {
-                    return;
-                }
-                if (result.id.indexOf('cmuImages') !== -1) {
-                    file = 'cmuImages/' + file;
-                }
-		file = this.imagePathRoot + file;
-                if (count < this.resLimit) {
-                    query += 'id:"' + file + '" ';
-                    count += 1;
-                }
-            }, this));
-            query += ')';
-            imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
-
-            $('.btn-lg').removeClass('disabled');
-            $('.im-find-similar').html('<i class="icon-search"></i>');
-
-            $('.alert-info').addClass('hidden');
-            $('.alert-success').text('Search complete.').removeClass('hidden');
-            setTimeout(function () {
-                $('.alert-success').addClass('hidden')
-            }, 5000);
-        }, this));
     },
 
     upload: function (file) {
@@ -393,5 +341,4 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
         return new Blob([uInt8Array], {type: contentType});
     }
-
 });

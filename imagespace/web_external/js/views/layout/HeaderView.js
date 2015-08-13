@@ -11,6 +11,15 @@ imagespace.views.LayoutHeaderView = imagespace.View.extend({
             link.addClass('active');
         },
 
+        'click .im-search-image': function (event) {
+            this.imageDetailWidget = new imagespace.views.ImageDetailWidget({
+                el: $('#g-dialog-container'),
+                image: this.image,
+                parentView: this
+            });
+            this.imageDetailWidget.render();
+        },
+
         'keypress .im-search': function (event) {
             if (event.which === 13) {
                 var query = encodeURIComponent($(event.currentTarget).val());
@@ -20,6 +29,8 @@ imagespace.views.LayoutHeaderView = imagespace.View.extend({
     },
 
     render: function (settings) {
+        this.image = settings ? settings.image : undefined;
+
         this.$el.html(imagespace.templates.layoutHeader(settings));
 
         this.$('a[title]').tooltip({
