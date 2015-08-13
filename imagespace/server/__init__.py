@@ -19,6 +19,7 @@
 
 import mako
 from .imagebackgroundsearch_rest import ImageBackgroundSearch
+from .imagecontentsearch_rest import ImageContentSearch
 from .imagedomaindynamicssearch_rest import ImageDomainDynamicsSearch
 from .imagefeatures_rest import ImageFeatures
 from .imagepivot_rest import ImagePivot
@@ -95,6 +96,7 @@ class CustomAppRoot(object):
 def load(info):
     # Bind our REST resources
     info['apiRoot'].imagebackgroundsearch = ImageBackgroundSearch()
+    info['apiRoot'].imagecontentsearch = ImageContentSearch()
     info['apiRoot'].imagedomaindynamicssearch = ImageDomainDynamicsSearch()
     info['apiRoot'].imagesearch = ImageSearch()
     info['apiRoot'].imagefeatures = ImageFeatures()

@@ -10,24 +10,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         },
 
         'click .im-similar-images': function (event) {
-            this.$('.im-similar-images')
-                .addClass('btn-info disabled')
-                .removeClass('btn-default')
-                .html('Finding similar images <i class="icon-spin5 animate-spin"></i>');
-            if (this.image.histogram) {
-                this.findSimilarImages();
-            } else {
-                girder.restRequest({
-                    path: 'imagefeatures',
-                    data: {
-                        url: this.image.imageUrl
-                    },
-                    method: 'POST'
-                }).done(_.bind(function (features) {
-                    this.image.histogram = features.histogram;
-                    this.findSimilarImages();
-                }, this));
-            }
+            imagespace.router.navigate('search/' + encodeURIComponent(this.image.imageUrl) + '/content', {trigger: true});
         },
 
         'click .im-similar-background-images': function (event) {
@@ -60,6 +43,14 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                 console.log(results);
                 imagespace.router.navigate('search/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
             }, this));
+        },
+
+        'mouseenter .im-attribute': function (event) {
+            $(event.target).closest('dd').find('.im-search-operations').removeClass('hidden');
+        },
+
+        'mouseleave .im-attribute': function (event) {
+            $(event.target).closest('dd').find('.im-search-operations').addClass('hidden');
         }
     },
 
@@ -83,37 +74,5 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
 
         return this;
-    },
-
-    findSimilarImages: function () {
-        girder.restRequest({
-            path: 'imagesearch',
-            data: {
-                url: this.image.imageUrl,
-                histogram: JSON.stringify(this.image.histogram || []),
-                limit: this.resLimit
-            }
-        }).done(_.bind(function (results) {
-            console.log(results);
-            this.$el.modal('hide');
-            var query = '(', count = 0;
-            results.forEach(_.bind(function (result, index) {
-                var parts = result.id.split('/'),
-                    file = parts[parts.length - 1];
-                if (file.length < 30) {
-                    return;
-                }
-                if (result.id.indexOf('cmuImages') !== -1) {
-                    file = 'cmuImages/' + file;
-                }
-                file = this.imagePathRoot + file;
-                if (count < this.resLimit) {
-                    query += 'id:"' + file + '" ';
-                    count += 1;
-                }
-            }, this));
-            query += ')';
-            imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
-        }, this));
     }
 });

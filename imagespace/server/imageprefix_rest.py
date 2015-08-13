@@ -23,16 +23,17 @@ from girder.api.rest import Resource
 
 import os
 
+
 class ImagePrefix(Resource):
     def __init__(self):
         self.resourceName = 'imageprefix'
         self.route('GET', (), self.getImagePrefix)
 
-
     @access.public
     def getImagePrefix(self, params):
         return {
             'prefix': os.environ['IMAGE_SPACE_PREFIX'],
+            'solrPrefix': os.environ['IMAGE_SPACE_SOLR_PREFIX'],
             'stolenCameraPrefix': os.environ['IMAGE_SPACE_STOLEN_CAMERA'] if 'IMAGE_SPACE_STOLEN_CAMERA' in os.environ else 'http://www.stolencamerafinder.com/search'
         }
     getImagePrefix.description = Description('Returns image URL prefix')

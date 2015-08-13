@@ -16,11 +16,11 @@ imagespace.views.LayoutHeaderView = imagespace.View.extend({
                 var query = encodeURIComponent($(event.currentTarget).val());
                 imagespace.router.navigate('search/' + query, {trigger: true});
             }
-        },
+        }
     },
 
-    render: function () {
-        this.$el.html(imagespace.templates.layoutHeader());
+    render: function (settings) {
+        this.$el.html(imagespace.templates.layoutHeader(settings));
 
         this.$('a[title]').tooltip({
             placement: 'bottom',
@@ -31,6 +31,8 @@ imagespace.views.LayoutHeaderView = imagespace.View.extend({
             el: this.$('.h-current-user-wrapper'),
             parentView: this
         }).render();
-    },
+
+        return this;
+    }
 
 });

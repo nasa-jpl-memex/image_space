@@ -7,34 +7,48 @@
             a(href="#{image.imageUrl}", target="_blank")
                 img.im-image-detail.im-blur(src="#{image.imageUrl}")
             .im-actions
-                .im-similar-images.btn.btn-default(title="Search for images with similar content")
+                .im-similar-images.btn.btn-link.btn-default(title="Search for images with similar content")
                     | Find similar images
                 | &nbsp;
-                .im-similar-background-images.btn.btn-default(title="Search for images with similar background content")
+                .im-similar-background-images.btn.btn-link.btn-default(title="Search for images with similar background content")
                     | Find images with similar background
                 | &nbsp;
-                .im-similar-domain-dynamics-images.btn.btn-default(title="Search for images with similar domain dynamics")
+                .im-similar-domain-dynamics-images.btn.btn-link.btn-default(title="Search for images with similar domain dynamics")
                     | Find images with similar domain dynamics
                 | &nbsp;
                 a.im-permalink.btn.btn-link(href='#search/' + encodeURIComponent('id:"#{image.id}"'), target="_blank", title="Links to a search containing just this image. This does not function for custom imported images.")
                     | Permalink
-            ul.list-group.im-attributes
+            if image.highlight
+                h4 Match
+                dl.dl-horizontal
+                    for val, key in image.highlight
+                        dt
+                            b= key
+                        dd
+                            span !{val}
+            h4 Attributes
+            dl.dl-horizontal.im-attributes
                 for val, key in image
-                    li.list-group-item
-                        span.badge.im-search-mod.btn.btn-default(im-search='#{query} AND #{key}:"#{val}"', title="Narrow search by this attribute")
-                            i.icon-plus
-                        span.badge.im-search-mod.btn.btn-default(im-search='#{key}:"#{val}"', title="Start a new search with this attribute")
-                            i.icon-search
-                        if key == 'camera_serial_number'
-                            a.badge.btn.btn-default(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
-                                i.icon-picture
-                        b= key + ': '
+                    dt
+                        b= key
+                    dd.im-attribute
                         if (val !== undefined && typeof val[0] === 'string' && val[0].startsWith('http'))
                             a(href=val[0], target='_blank')= val[0]
                         else if (val !== undefined && typeof val === 'string' && val.startsWith('http'))
                             a(href=val, target='_blank')= val
                         else
                             span= val
+                        span.im-search-operations.hidden
+                            | &nbsp;-&nbsp;
+                            a.im-search-mod(im-search='#{key}:"#{val}"', title='Start new search for images matching this attribute')
+                                | Search
+                            | &nbsp;-&nbsp;
+                            a.im-search-mod(im-search='#{query} AND #{key}:"#{val}"', title='Narrow search to images matching this attribute')
+                                | Sub-search
+                            if key == 'camera_serial_number'
+                                | &nbsp;-&nbsp;
+                                a(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', target='_blank')
+                                    | Search stolencamerafinder.com
         .modal-footer
             a.btn.btn-small.btn-default(data-dismiss="modal")
                 | Close

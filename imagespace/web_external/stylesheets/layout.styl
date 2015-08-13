@@ -1,40 +1,25 @@
 @import 'nib'
 
-$headerHeight = 54px
+$headerHeight = 50px
 $portraitHeight = 38px
 
-.h-header-wrapper
-  height $headerHeight
-  padding-right 20px
-  padding-left 20px
-  background-color rgba(80, 80, 80, 0.88)
-  color white
-  border-bottom 1px solid #e6e6e6
-  transition background-color 0.4s ease-in-out
-  position fixed
-  top 0
-  width 100%
-  z-index 10
+.navbar
+    a
+        color rgb(180, 180, 180)
 
-  a
-    color white
+    a:hover
+        color white
 
-  a:hover
-    color rgb(180, 180, 180)
-
-  &:hover
-    background-color rgba(30, 30, 30, 0.88)
-
-  .h-user-link
+.h-user-link
     font-size 16px
 
-  .h-login-link-wrapper
+.h-login-link-wrapper
     font-size 16px
 
-  .h-user-link-wrapper
+.h-user-link-wrapper
     display inline-block
 
-  .h-portrait-wrapper
+.h-portrait-wrapper
     border-radius 50%
     display inline-block
     margin-right 10px
@@ -43,25 +28,17 @@ $portraitHeight = 38px
     width $portraitHeight
     background-size $portraitHeight $portraitHeight
 
-  .h-current-user-text > *
+.h-current-user-text > *
     vertical-align middle
     line-height $headerHeight
 
-  .h-current-user-wrapper
+.h-current-user-wrapper
     float right
 
-  .h-icons-wrapper
+.h-icons-wrapper
     display inline
     line-height $headerHeight
     font-size 21px
-
-    &>a
-      color #444
-      margin-right 4px
-      border 1px solid transparent
-      border-radius 3px
-      padding 3px
-
 
 #wrapper
     padding-left 0
@@ -148,11 +125,25 @@ $portraitHeight = 38px
 .im-pad-left
     padding-left 10px
 
+.im-alert
+    margin-bottom -1px
+    border-radius 0px
+
 .im-search-form
-    padding-top 10px
-    padding-bottom 10px
+    width 70%
+
+.im-search-form-group
     width 60%
+    padding-left 200px
+
+.im-image-search-form
     float left
+
+.im-search-image
+    height 50px
+    float left
+    padding-left 200px
+    padding-right 50px
 
 #im-app-main-container
     margin 0
@@ -174,9 +165,6 @@ $portraitHeight = 38px
 
 .im-actions
     padding-top 30px
-
-.im-attributes
-    padding-top 20px
 
 img.im-image-thumbnail
     height 100px

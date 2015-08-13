@@ -1,7 +1,37 @@
-.h-header-wrapper
-    a.im-brand(href="#") Image Space
-    .container-fluid.im-search-form
-        input.im-search.form-control(type="text", placeholder="Search", value="*")
-    a.im-brand.im-pad-left(href="#search/*") Reset search
-    .h-current-user-wrapper
+.nav.navbar.navbar-inverse.navbar-fixed-top
+    .container-fluid
+        .navbar-header
+            a.navbar-brand(href="#") Image Space
+        .collapse.navbar-collapse
+            if mode
+                .im-image-search-form
+                    img.im-search-image.im-blur(src="#{url}")
+                    ul.nav.navbar-nav
+                        li(class=(mode === 'content' ? 'active' : ''))
+                            a(href='#search/' + encodeURIComponent(url) + '/content').btn.btn-link.btn-default Content
+                        li(class=(mode === 'background' ? 'active' : ''))
+                            a(href='#search/' + encodeURIComponent(url) + '/background').btn.btn-link.btn-default Background
+                        if image.camera_serial_number
+                            li(class=(mode === 'camera' ? 'active' : ''))
+                                a(href='#search/' + encodeURIComponent(url) + '/camera').btn.btn-link.btn-default Camera
+                        if image.geo_lat
+                            li(class=(mode === 'location' ? 'active' : ''))
+                                a(href='#search/' + encodeURIComponent(url) + '/location').btn.btn-link.btn-default Location
+                        if image.ads_id
+                            li(class=(mode === 'ad' ? 'active' : ''))
+                                a(href='#search/' + encodeURIComponent(url) + '/ad').btn.btn-link.btn-default Ad
+                        li(class=(mode === 'size' ? 'active' : ''))
+                            a(href='#search/' + encodeURIComponent(url) + '/size').btn.btn-link.btn-default Size
+            else
+                form.im-search-form.navbar-form.navbar-left
+                    .form-group.im-search-form-group
+                        input.im-search.form-control(type="text", placeholder="Search", value="*")
+                    | &nbsp;
+                    button.btn.btn-default Search
+                    | &nbsp;
+                    button.btn.btn-default(href="#search/*") Reset
+            .h-current-user-wrapper
     .g-clear-both
+    .container-fluid
+        .im-alert.alert.alert-info.hidden
+        .im-alert.alert.alert-success.hidden

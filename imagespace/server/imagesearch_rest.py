@@ -40,23 +40,19 @@ class ImageSearch(Resource):
         return self._imageSearch(params)
 
     def _imageSearch(self, params):
-        limit = params['limit'] if 'limit' in params else '10'
-        if 'histogram' in params:
-            if 'IMAGE_SPACE_FLANN_INDEX' in os.environ:
-                logger.info('Using FLANN INDEX at ' + os.environ['IMAGE_SPACE_FLANN_INDEX'])
-                return requests.get(
-                    os.environ['IMAGE_SPACE_FLANN_INDEX'] +
-                    '?query=' + params['histogram'] + '&k=' + str(limit)).json()
-            logger.info('Using COLUMBIA INDEX at '+os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] + '?url=' + params['url'] + '&num=' + str(limit))
-            return [{'id' : d} for d in requests.get(
-                os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] +
-                '?url=' + params['url'] + '&num=' + str(limit), verify=False).json()['images'][0]['similar_images']['image_urls']]
-
+        limit = params['limit'] if 'limit' in params else '100'
         query = params['query'] if 'query' in params else '*'
-        base = os.environ['IMAGE_SPACE_SOLR'] + '/select?wt=json&indent=true'
+        base = (
+            os.environ['IMAGE_SPACE_SOLR'] +
+            '/select?wt=json&indent=true&hl=true&hl.fl=*'
+        )
         try:
-            result = requests.get(base + '&q=' + query + '&rows=' + str(limit), verify=False).json()
+            result = requests.get(
+                base + '&q=' + query +
+                '&rows=' + str(limit), verify=False).json()
         except ValueError:
             return []
+        for image in result['response']['docs']:
+            image['highlight'] = result['highlighting'][image['id']]
         return result['response']['docs']
     getImageSearch.description = Description('Searches image database')
