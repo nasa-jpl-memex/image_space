@@ -86,8 +86,8 @@ imagespace.views.SearchView = imagespace.View.extend({
 
 imagespace.router.route('search/:query', 'search', function (query) {
     imagespace.headerView.render({query: query});
+    $('.alert-info').html('Searching <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
-    $('.im-search').val(query);
     girder.restRequest({
         path: 'imagesearch',
         data: {
@@ -98,6 +98,7 @@ imagespace.router.route('search/:query', 'search', function (query) {
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
             results: results
         });
+        $('.alert-info').addClass('hidden');
     });
 });
 

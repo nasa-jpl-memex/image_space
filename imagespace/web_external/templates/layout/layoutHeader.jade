@@ -22,14 +22,15 @@
                                 a(href='#search/' + encodeURIComponent(url) + '/ad').btn.btn-link.btn-default Ad
                         li(class=(mode === 'size' ? 'active' : ''))
                             a(href='#search/' + encodeURIComponent(url) + '/size').btn.btn-link.btn-default Size
+                        li
+                            a(href='#').btn.btn-link.btn-default Clear image search
             else
-                form.im-search-form.navbar-form.navbar-left
+                .im-search-form.navbar-form.navbar-left
                     .form-group.im-search-form-group
-                        input.im-search.form-control(type="text", placeholder="Search", value="*")
+                        input.im-search.form-control(type="text", placeholder="Search image text and attributes", value=query)
                     | &nbsp;
-                    button.btn.btn-default Search
-                    | &nbsp;
-                    button.btn.btn-default(href="#search/*") Reset
+                    button.btn.btn-primary.im-search-button(disabled=(query && query.length > 0) ? null : "disabled")
+                        i.icon-search
             .h-current-user-wrapper
     .g-clear-both
     .container-fluid
