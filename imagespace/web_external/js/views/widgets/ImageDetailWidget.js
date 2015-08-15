@@ -9,42 +9,6 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
         },
 
-        'click .im-similar-images': function (event) {
-            imagespace.router.navigate('search/' + encodeURIComponent(this.image.imageUrl) + '/content', {trigger: true});
-        },
-
-        'click .im-similar-background-images': function (event) {
-            this.$('.im-similar-background-images')
-                .addClass('btn-info disabled')
-                .removeClass('btn-default')
-                .html('Finding images with similar background <i class="icon-spin5 animate-spin"></i>');
-            girder.restRequest({
-                path: 'imagebackgroundsearch',
-                data: {
-                    url: this.image.imageUrl
-                }
-            }).done(_.bind(function (results) {
-                console.log(results);
-                imagespace.router.navigate('display/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
-            }, this));
-        },
-
-        'click .im-similar-domain-dynamics-images': function (event) {
-            this.$('.im-similar-domain-dynamics-images')
-                .addClass('btn-info disabled')
-                .removeClass('btn-default')
-                .html('Finding images with similar domain dynamics <i class="icon-spin5 animate-spin"></i>');
-            girder.restRequest({
-                path: 'imagedomaindynamicssearch',
-                data: {
-                    url: this.image.imageUrl
-                }
-            }).done(_.bind(function (results) {
-                console.log(results);
-                imagespace.router.navigate('search/' + encodeURIComponent(JSON.stringify(results)), {trigger: true});
-            }, this));
-        },
-
         'mouseenter .im-attribute': function (event) {
             $(event.target).closest('dd').find('.im-search-operations').removeClass('hidden');
         },

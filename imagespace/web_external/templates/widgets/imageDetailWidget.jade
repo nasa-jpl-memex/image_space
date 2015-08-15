@@ -1,5 +1,6 @@
 - var system = ['_version_', 'meta', 'x_parsed_by']
 - var hidden = ['highlight']
+- var url = image.imageUrl
 
 .modal-dialog
     .modal-content
@@ -7,20 +8,26 @@
             button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
             h4.modal-title= title
         .modal-body
-            a(href="#{image.imageUrl}", target="_blank")
-                img.im-image-detail.im-blur(src="#{image.imageUrl}")
+            a(href="#{url}", target="_blank")
+                img.im-image-detail.im-blur(src="#{url}")
             .im-actions
-                .im-similar-images.btn.btn-link.btn-default(title="Search for images with similar content")
-                    | Find similar images
+                | Search by 
+                a(href='#search/' + encodeURIComponent(url) + '/content', data-dismiss="modal").btn.btn-link.btn-default Content
                 | &nbsp;
-                .im-similar-background-images.btn.btn-link.btn-default(title="Search for images with similar background content")
-                    | Find images with similar background
+                a(href='#search/' + encodeURIComponent(url) + '/background', data-dismiss="modal").btn.btn-link.btn-default Background
+                if image.camera_serial_number
+                    | &nbsp;
+                    a(href='#search/' + encodeURIComponent(url) + '/camera', data-dismiss="modal").btn.btn-link.btn-default Camera
+                if image.geo_lat
+                    | &nbsp;
+                    a(href='#search/' + encodeURIComponent(url) + '/location', data-dismiss="modal").btn.btn-link.btn-default Location
+                if image.ads_id
+                    | &nbsp;
+                    a(href='#search/' + encodeURIComponent(url) + '/ad', data-dismiss="modal").btn.btn-link.btn-default Ad
                 | &nbsp;
-                .im-similar-domain-dynamics-images.btn.btn-link.btn-default(title="Search for images with similar domain dynamics")
-                    | Find images with similar domain dynamics
+                a(href='#search/' + encodeURIComponent(url) + '/size', data-dismiss="modal").btn.btn-link.btn-default Size
                 | &nbsp;
-                a.im-permalink.btn.btn-link(href='#search/' + encodeURIComponent('id:"#{image.id}"'), target="_blank", title="Links to a search containing just this image. This does not function for custom imported images.")
-                    | Permalink
+                a(href='#search/' + encodeURIComponent(url) + '/dynamics', data-dismiss="modal").btn.btn-link.btn-default Dynamics
             if image.highlight
                 h4 Match
                 dl.dl-horizontal

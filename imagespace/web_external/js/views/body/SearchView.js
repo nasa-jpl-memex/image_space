@@ -154,6 +154,23 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
             return;
         }
 
+        if (mode === 'dynamics') {
+            $('.alert-info').html('Finding images with similar domain dynamics <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
+
+            girder.restRequest({
+                path: 'imagedomaindynamicssearch',
+                data: {
+                    url: url
+                }
+            }).done(_.bind(function (results) {
+                girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
+                    results: results
+                });
+                $('.alert-info').addClass('hidden');
+                imagespace.userDataView.render();
+            }, this));
+        }
+
         if (mode === 'ad') {
             $('.alert-info').html('Finding images in same ad <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
