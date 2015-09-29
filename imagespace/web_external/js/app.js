@@ -1,9 +1,16 @@
+// Polyfill startsWith
+if (typeof String.prototype.startsWith !== 'function') {
+    String.prototype.startsWith = function (str) {
+        return this.slice(0, str.length) == str;
+    };
+}
+
 imagespace.App = girder.App.extend({
 
-    render: function() {
+    render: function () {
         this.$el.html(imagespace.templates.layout());
 
-        new imagespace.views.LayoutHeaderView({
+        imagespace.headerView = new imagespace.views.LayoutHeaderView({
             el: this.$('#im-app-header-container'),
             parentView: this
         }).render();

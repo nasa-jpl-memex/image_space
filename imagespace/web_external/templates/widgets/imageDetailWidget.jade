@@ -1,40 +1,92 @@
+- var system = ['_version_', 'meta', 'x_parsed_by']
+- var hidden = ['highlight']
+- var url = image.imageUrl
+
 .modal-dialog
     .modal-content
         .modal-header
             button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
             h4.modal-title= title
         .modal-body
-            a(href="#{image.imageUrl}", target="_blank")
-                img.im-image-detail.im-blur(src="#{image.imageUrl}")
+            a(href="#{url}", target="_blank")
+                img.im-image-detail.im-blur(src="#{url}")
             .im-actions
-                .im-similar-images.btn.btn-default(title="Search for images with similar content")
-                    | Find similar images
+                | Search by 
+                a(href='#search/' + encodeURIComponent(url) + '/content', data-dismiss="modal").btn.btn-link.btn-default Content
                 | &nbsp;
-                .im-similar-background-images.btn.btn-default(title="Search for images with similar background content")
-                    | Find images with similar background
+                a(href='#search/' + encodeURIComponent(url) + '/background', data-dismiss="modal").btn.btn-link.btn-default Background
+                if image.camera_serial_number
+                    | &nbsp;
+                    a(href='#search/' + encodeURIComponent(url) + '/camera', data-dismiss="modal").btn.btn-link.btn-default Camera
+                if image.geo_lat
+                    | &nbsp;
+                    a(href='#search/' + encodeURIComponent(url) + '/location', data-dismiss="modal").btn.btn-link.btn-default Location
+                if image.ads_id
+                    | &nbsp;
+                    a(href='#search/' + encodeURIComponent(url) + '/ad', data-dismiss="modal").btn.btn-link.btn-default Ad
                 | &nbsp;
-                .im-similar-domain-dynamics-images.btn.btn-default(title="Search for images with similar domain dynamics")
-                    | Find images with similar domain dynamics
+                a(href='#search/' + encodeURIComponent(url) + '/size', data-dismiss="modal").btn.btn-link.btn-default Size
                 | &nbsp;
-                a.im-permalink.btn.btn-link(href='#search/' + encodeURIComponent('id:"#{image.id}"'), target="_blank", title="Links to a search containing just this image. This does not function for custom imported images.")
-                    | Permalink
-            ul.list-group.im-attributes
+                a(href='#search/' + encodeURIComponent(url) + '/dynamics', data-dismiss="modal").btn.btn-link.btn-default Dynamics
+            if image.highlight
+                h4 Match
+                dl.dl-horizontal
+                    for val, key in image.highlight
+                        if system.indexOf(key) === -1 && hidden.indexOf(key) === -1
+                            dt
+                                b= key
+                            dd
+                                span !{val}
+            h4 Attributes
+            dl.dl-horizontal.im-attributes
                 for val, key in image
-                    li.list-group-item
-                        span.badge.im-search-mod.btn.btn-default(im-search='#{query} AND #{key}:"#{val}"', title="Narrow search by this attribute")
-                            i.icon-plus
-                        span.badge.im-search-mod.btn.btn-default(im-search='#{key}:"#{val}"', title="Start a new search with this attribute")
-                            i.icon-search
-                        if key == 'camera_serial_number'
-                            a.badge.btn.btn-default(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', title="Find images taken with this serial number.", target="_blank")
-                                i.icon-picture
-                        b= key + ': '
-                        if (val !== undefined && typeof val[0] === 'string' && val[0].startsWith('http'))
-                            a(href=val[0], target='_blank')= val[0]
-                        else if (val !== undefined && typeof val === 'string' && val.startsWith('http'))
-                            a(href=val, target='_blank')= val
-                        else
-                            span= val
+                    if system.indexOf(key) === -1 && hidden.indexOf(key) === -1
+                        dt
+                            b= key
+                        dd.im-attribute
+                            if (val !== undefined && val !== null && typeof val[0] === 'string' && val[0].startsWith('http'))
+                                a(href=val[0], target='_blank')= val[0]
+                            else if (val !== undefined && val !== null && typeof val === 'string' && val.startsWith('http'))
+                                a(href=val, target='_blank')= val
+                            else
+                                span= val
+                            span.im-search-operations.hidden
+                                | &nbsp;-&nbsp;
+                                a.im-search-mod(im-search='#{key}:"#{val}"', title='Start new search for images matching this attribute')
+                                    | Search
+                                | &nbsp;-&nbsp;
+                                a.im-search-mod(im-search='#{query} AND #{key}:"#{val}"', title='Narrow search to images matching this attribute')
+                                    | Sub-search
+                                if key == 'camera_serial_number'
+                                    | &nbsp;-&nbsp;
+                                    a(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', target='_blank')
+                                        | Search stolencamerafinder.com
+            h4
+                a(data-toggle="collapse", href="#im-system-attributes") System Attributes
+            .collapse#im-system-attributes
+                dl.dl-horizontal.im-attributes
+                    for key in system
+                        - var val = image[key]
+                        dt
+                            b= key
+                        dd.im-attribute
+                            if (val !== undefined && val !== null && typeof val[0] === 'string' && val[0].startsWith('http'))
+                                a(href=val[0], target='_blank')= val[0]
+                            else if (val !== undefined && val !== null && typeof val === 'string' && val.startsWith('http'))
+                                a(href=val, target='_blank')= val
+                            else
+                                span= val
+                            span.im-search-operations.hidden
+                                | &nbsp;-&nbsp;
+                                a.im-search-mod(im-search='#{key}:"#{val}"', title='Start new search for images matching this attribute')
+                                    | Search
+                                | &nbsp;-&nbsp;
+                                a.im-search-mod(im-search='#{query} AND #{key}:"#{val}"', title='Narrow search to images matching this attribute')
+                                    | Sub-search
+                                if key == 'camera_serial_number'
+                                    | &nbsp;-&nbsp;
+                                    a(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', target='_blank')
+                                        | Search stolencamerafinder.com
         .modal-footer
             a.btn.btn-small.btn-default(data-dismiss="modal")
                 | Close
