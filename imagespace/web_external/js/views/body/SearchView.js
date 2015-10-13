@@ -33,6 +33,20 @@ imagespace.views.SearchView = imagespace.View.extend({
 
         'mouseout .im-image-area': function (event) {
             $(event.currentTarget).find('.im-caption-content').addClass('hidden');
+        },
+
+        'change .im-view-list': function (event) {
+            console.log('view-list');
+            localStorage.setItem('viewMode', 'list');
+            this.viewMode = 'list';
+            this.render();
+        },
+
+        'change .im-view-grid': function (event) {
+            console.log('view-grid');
+            localStorage.setItem('viewMode', 'grid');
+            this.viewMode = 'grid';
+            this.render();
         }
     },
 
@@ -40,6 +54,7 @@ imagespace.views.SearchView = imagespace.View.extend({
         girder.cancelRestRequests('fetch');
         this.resLimit = 30;
         this.results = settings.results;
+        this.viewMode = localStorage.getItem('viewMode') || 'grid';
         this.imageIdMap = {};
         this.results.forEach(_.bind(function (result) {
             result.imageUrl = result.id.startsWith('http') ? result.id : imagespace.solrIdToUrl(result.id);
@@ -77,6 +92,7 @@ imagespace.views.SearchView = imagespace.View.extend({
     render: function () {
         this.$el.html(imagespace.templates.search({
             results: this.results,
+            viewMode: this.viewMode,
             showText: true
         }));
         return this;
