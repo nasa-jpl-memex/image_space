@@ -53,7 +53,6 @@ class ImageDomainDynamicsSearch(Resource):
 
         return requests.post(os.environ['IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'], data=jdata).json()["response"]["docs"]
 
-        # since its a rest service , it has to be returned in JSON, facepalm!
-
+        
         
     getImageDomainDynamicsSearch.description = Description('Searches images by domain dynamics')
