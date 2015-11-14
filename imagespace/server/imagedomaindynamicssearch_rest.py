@@ -47,9 +47,18 @@ class ImageDomainDynamicsSearch(Resource):
         # use Solr Response returned to reRank Images based on "chosen metadata fields"
         # display reRanked images
 
-        req1 = requests.get(os.environ["IMAGE_SPACE_SOLR"] + "/select?q=" +filename+"&wt=json&rows=100")        
+        req1 = requests.get(os.environ["IMAGE_SPACE_SOLR"] + "/select?q=" +filename+"&wt=json&rows=100")
 
-        jdata = {"docpath": "response/docs", "fields": json.dumps(["title", "content"]), "results": json.dumps(req1.json())}
+        justJson = req1.json()["response"]["docs"]        
+
+        union_feature_names = set(justJson.pop().keys()) #returns rightmost element efficient for list
+
+        for eachDoc in justJson:
+            union_feature_names &= set(eachDoc.keys())
+
+        #["title", "content"]
+
+        jdata = {"docpath": "response/docs", "fields": json.dumps(list(union_feature_names)), "results": json.dumps(req1.json())}
 
         return requests.post(os.environ['IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'], data=jdata).json()["response"]["docs"]
 
