@@ -56,27 +56,27 @@ tangelo --port 9220
 
 3. Note that you also need to install [Tika-Python](http://github.com/chrismattmann/tika-python).
 You can do so by:
-```bash
-pip2.7 install tika
-```
+  ```bash
+  pip2.7 install tika
+  ```
 
 4. [Install Grunt CLI](http://gruntjs.com/getting-started#installing-the-cli)
 
 5. To enable the imagespace plugin, first create a symbolic link to the imagespace plugin
-```bash
-sudo ln -s /usr/bin/nodejs /usr/bin/node
-cd /path/to/girder
-ln -s path/to/image_space/imagespace ./plugins/imagespace
-cp -R girder/conf/girder.dist.cfg girder/conf/girder.local.cfg
-```
+  ```bash
+  sudo ln -s /usr/bin/nodejs /usr/bin/node
+  cd /path/to/girder
+  ln -s path/to/image_space/imagespace ./plugins/imagespace
+  cp -R girder/conf/girder.dist.cfg girder/conf/girder.local.cfg
+  ```
 
 6. Optional: modify the **server.socket_port** in *girder/conf/girder.local.cfg* to change the default Girder Deploy Port No 8080.
 
 7. Build the app.
-```
-cd /path/to/girder
-grunt
-```
+  ```
+  cd /path/to/girder
+  grunt
+  ```
 The above builds the codebase enabling us to deploy it to the Girder server. It should be noted that after 
 any changes to the imagespace code, it is necessary to rebuild it with *grunt*. 
 
