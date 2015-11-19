@@ -1,16 +1,32 @@
 # Image Space Server
 
-## Deployment
+ImageSpace is a plugin for [Girder](https://girder.readthedocs.org/en/latest/)
+Please upgrade to latest snapshot of Girder to resolve ImageSpace deployment issues
+
+- Comprehensive Deploy
+  * Follow below steps
+- Easy Deploy, skips local indexing of documents
+  * Follow below steps but **skip** setting up [Image similarity server](#imageSim)
+
 
 There are three processes involved for this app: a MongoDB server,
-an image similarity server,
+an image similarity server, 
 and a Girder web server containing the imagespace plugin.
+
+
+## Pre-requisites and Install
 
 ### MongoDB
 
-Start Mongo normally on the default port.
+1. MongoDB is one of the prerequisites for Girder. 
+  * you can install [latest MongoDB from here](http://docs.mongodb.org/master/installation/)
 
-### Image similarity server
+2. Start Mongo normally on the default port.
+```
+sudo service mongod start
+```
+
+### <a name="imageSim"></a>Image similarity server
 
 The image similarity server requires a set of images to load and process into the index.
 The server will look at the file located in the `IMAGE_SPACE_LISTS` environment variable.
@@ -34,41 +50,47 @@ tangelo --port 9220
 
 ### Girder with imagespace plugin
 
-First ensure you have the proper [prerequisites](http://girder.readthedocs.org/en/latest/prerequisites.html),
-then [install Girder from a Git checkout](http://girder.readthedocs.org/en/latest/installation.html#install-from-git-checkout).
+1. First ensure you have the proper [Girder_prerequisites](http://girder.readthedocs.org/en/latest/prerequisites.html),
 
-Note that you also need to install [Tika-Python](http://github.com/chrismattmann/tika-python).
+2. Then [install Girder from a Git checkout](http://girder.readthedocs.org/en/latest/installation.html#install-from-git-checkout).
+
+3. Note that you also need to install [Tika-Python](http://github.com/chrismattmann/tika-python).
 You can do so by:
-
 ```bash
 pip2.7 install tika
 ```
 
-To enable the imagespace plugin, first create a symbolic link to the imagespace plugin
-and rebuild the app.
+4. [Install Grunt CLI](http://gruntjs.com/getting-started#installing-the-cli)
 
+5. To enable the imagespace plugin, first create a symbolic link to the imagespace plugin
 ```bash
-cd girder
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+cd /path/to/girder
 ln -s path/to/image_space/imagespace ./plugins/imagespace
-grunt
+cp -R girder/conf/girder.dist.cfg girder/conf/girder.local.cfg
 ```
 
+6. Optional: modify the **server.socket_port** in *girder/conf/girder.local.cfg* to change the default Girder Deploy Port No 8080.
+
+7. Build the app.
+```
+cd /path/to/girder
+grunt
+```
 The above builds the codebase enabling us to deploy it to the Girder server. It should be noted that after 
 any changes to the imagespace code, it is necessary to rebuild it with *grunt*. 
 
-Then set the following environment variables
-
+8. Then set the following environment variables
 ```bash
-export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint
-export IMAGE_SPACE_FLANN_INDEX=http://localhost:9220/flann_index
-export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server                                   # to use Columbia similarity refinement
-export IMAGE_SPACE_PREFIX=http://path_to_image_repository                                  
-export IMAGE_SPACE_CMU_BACKGROUND_SEARCH=http://path_to_cmu_background_search_server                          # to use CMU background similarity refinement
-export IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH=http://path_to_georgetown_domain_dynamics_search_server  # to use Georgetowns domain dynamics similarity refinement
+export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint_OR_local_SolrCoreURLInstance                    # Required for easy deploy
+export IMAGE_SPACE_FLANN_INDEX=http://localhost:9220/flann_index                                              # Optional for easy deploy
+export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server                                   # Required to use Columbia similarity refinement
+export IMAGE_SPACE_PREFIX=http://path_to_image_repository_local_or_cloud                                      # Required for easy deploy
+export IMAGE_SPACE_CMU_BACKGROUND_SEARCH=http://path_to_cmu_background_search_server                          # Required to use CMU background similarity refinement
+export IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH=http://path_to_georgetown_domain_dynamics_search_server  # Required to use Georgetowns domain dynamics similarity refinement
 ```
 
-Finally start the Girder server with
-
+9. Finally start the Girder server with
 ```bash
 python -m girder
 ```
