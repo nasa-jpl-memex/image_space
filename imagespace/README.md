@@ -1,17 +1,17 @@
 # Image Space Server
 
-ImageSpace is a plugin for [Girder](https://girder.readthedocs.org/en/latest/)
-Please upgrade to latest snapshot of Girder to resolve ImageSpace deployment issues
+ImageSpace is a plugin for [Girder](https://girder.readthedocs.org/en/latest/).
+
+There are three processes involved for this app: a MongoDB server,
+an image similarity server, 
+and a Girder web server containing the imagespace plugin.
+
+Note: Please upgrade to latest snapshot of Girder to resolve ImageSpace deployment issues
 
 - Comprehensive Deploy
   * Follow below steps
 - Easy Deploy, skips local indexing of documents
   * Follow below steps but **skip** setting up [Image similarity server](#imageSim)
-
-
-There are three processes involved for this app: a MongoDB server,
-an image similarity server, 
-and a Girder web server containing the imagespace plugin.
 
 
 ## Pre-requisites and Install
@@ -70,7 +70,7 @@ You can do so by:
   cp -R girder/conf/girder.dist.cfg girder/conf/girder.local.cfg
   ```
 
-6. Optional: modify the **server.socket_port** in *girder/conf/girder.local.cfg* to change the default Girder Deploy Port No 8080.
+6. Optional: modify the **server.socket_port** in *girder/conf/girder.local.cfg* to change the default Girder Deploy Port No(8080).
 
 7. Build the app.
   ```
