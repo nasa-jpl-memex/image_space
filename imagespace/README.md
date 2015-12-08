@@ -83,6 +83,7 @@ any changes to the imagespace code, it is necessary to rebuild it with *grunt*.
 8. Then set the following environment variables
   ```bash
   export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint_OR_local_SolrCoreURLInstance                    # Required for easy deploy
+  export IMAGE_SPACE_SOLR_PREFIX=/server/path/to/image/dir                                                      # Required
   export IMAGE_SPACE_FLANN_INDEX=http://localhost:9220/flann_index                                              # Optional for easy deploy
   export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server                                   # Required to use Columbia similarity refinement
   export IMAGE_SPACE_PREFIX=http://path_to_image_repository_local_or_cloud                                      # Required for easy deploy
