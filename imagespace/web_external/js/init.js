@@ -38,3 +38,7 @@ _.extend(imagespace, {
 });
 
 girder.router.enabled(false);
+
+imagespace.router.route('page/:name', 'page', function (name) {
+    $('#g-app-body-container').html(imagespace.templates[name]);
+});
