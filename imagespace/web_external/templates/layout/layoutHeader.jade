@@ -3,34 +3,7 @@
         .navbar-header
             a.navbar-brand(href="#") Image Space
         .collapse.navbar-collapse
-            if mode
-                .im-image-search-form
-                    img.im-search-image.im-blur(src="#{url}")
-                    ul.nav.navbar-nav
-                        li(class=(mode === 'content' ? 'active' : ''))
-                            a(href='#search/' + encodeURIComponent(url) + '/content').btn.btn-link.btn-default Content
-                        li(class=(mode === 'background' ? 'active' : ''))
-                            a(href='#search/' + encodeURIComponent(url) + '/background').btn.btn-link.btn-default Background
-                        if image.camera_serial_number
-                            li(class=(mode === 'camera' ? 'active' : ''))
-                                a(href='#search/' + encodeURIComponent(url) + '/camera').btn.btn-link.btn-default Camera
-                        if image.geo_lat
-                            li(class=(mode === 'location' ? 'active' : ''))
-                                a(href='#search/' + encodeURIComponent(url) + '/location').btn.btn-link.btn-default Location
-                        if image.ads_id
-                            li(class=(mode === 'ad' ? 'active' : ''))
-                                a(href='#search/' + encodeURIComponent(url) + '/ad').btn.btn-link.btn-default Ad
-                        li(class=(mode === 'size' ? 'active' : ''))
-                            a(href='#search/' + encodeURIComponent(url) + '/size').btn.btn-link.btn-default Size
-                        li
-                            a(href='#').btn.btn-link.btn-default Clear image search
-            else
-                .im-search-form.navbar-form.navbar-left
-                    .form-group.im-search-form-group
-                        input.im-search.form-control(type="text", placeholder="Search image text and attributes", value=query)
-                    | &nbsp;
-                    button.btn.btn-primary.im-search-button(disabled=(query && query.length > 0) ? null : "disabled")
-                        i.icon-search
+            #header-search-bar
             ul.nav.navbar-nav
               li(class=(activePage === 'page/help') ? 'active': '')
                 a(href='#page/help').btn.btn-link.btn-default Help
