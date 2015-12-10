@@ -51,7 +51,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
             }, this);
         },
 
-        'click #im-upload .icon-upload': function () {
+        'click #im-upload .im-advanced-search-button': function () {
             $('#im-files').click();
         },
 

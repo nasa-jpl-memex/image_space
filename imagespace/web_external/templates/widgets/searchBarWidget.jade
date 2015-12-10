@@ -27,7 +27,6 @@ else
       .form-group.im-search-form-group
           input.im-search.form-control(type="text", placeholder="Enter a search term or drop an image...", value=query)
       | &nbsp;
-      button.btn.btn-primary.im-search-button(disabled=(query && query.length > 0) ? null : "disabled")
-          i.icon-search
       if dropzone
-        i.icon-upload
+        button.btn.btn-primary.im-advanced-search-button
+          i.icon-upload
