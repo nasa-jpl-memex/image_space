@@ -40,6 +40,11 @@ imagespace.views.SearchBarView = imagespace.View.extend({
         'click .im-search-button': function (event) {
             var query = encodeURIComponent($('.im-search').val());
             imagespace.router.navigate('search/' + query, {trigger: true});
+        },
+
+        'click #advanced-search': function (event) {
+            event.preventDefault();
+            $(imagespace.templates.advancedSearchWidget()).girderModal(false);
         }
     },
 

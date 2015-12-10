@@ -14,7 +14,8 @@ imagespace.views.FrontPageView = girder.views.FrontPageView.extend({
         var searchBar = new imagespace.views.SearchBarView({
             el: this.$('#search-bar'),
             parentView: this,
-            dropzone: true
+            dropzone: true,
+            advancedSearch: true
         }).render();
 
         // Remove search bar from header on front page
