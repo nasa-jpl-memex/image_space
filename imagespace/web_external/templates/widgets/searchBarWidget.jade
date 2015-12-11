@@ -21,6 +21,8 @@ if mode
                 a(href='#').btn.btn-link.btn-default Clear image search
 else
     .im-search-form.navbar-form.navbar-left(id=(dropzone) ? 'im-upload' : '')
+      if frontPage
+        h1(style='margin-left:100px') Image Space
       if dropzone
         .hide
            input#im-files(type="file", multiple="multiple")

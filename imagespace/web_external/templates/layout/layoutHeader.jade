@@ -4,12 +4,12 @@
             a.navbar-brand(href="#") Image Space
         .collapse.navbar-collapse
             #header-search-bar
-            ul.nav.navbar-nav
+            ul.nav.navbar-nav.im-nav
               li(class=(activePage === 'page/help') ? 'active': '')
                 a(href='#page/help').btn.btn-link.btn-default Help
               li(class=(activePage === 'page/about') ? 'active': '')
                 a(href='#page/about').btn.btn-link.btn-default About
-            .h-current-user-wrapper
+              .h-current-user-wrapper
     .g-clear-both
     .container-fluid
         .im-alert.alert.alert-info.hidden
