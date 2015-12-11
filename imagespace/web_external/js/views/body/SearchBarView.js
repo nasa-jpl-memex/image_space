@@ -152,6 +152,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                                     image.item_id = fileObject.attributes.itemId;
                                     item._sendMetadata(image, _.bind(function () {
                                         this.render();
+                                        imagespace.userDataView.render();
                                     }, this));
                                 }, this));
                             }
