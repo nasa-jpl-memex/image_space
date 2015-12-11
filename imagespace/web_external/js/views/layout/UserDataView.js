@@ -8,18 +8,9 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
             this.searchBySizeWidget.render();
         },
 
-        'click .im-blur': function () {
-            $('#blur-style').text('img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }');
-        },
-
-        'click .im-unblur-hover': function () {
-            $('#blur-style').text(
-                'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }'
-                + '\nimg.im-blur:hover { -webkit-filter: blur(0px); filter: blur(0px) }');
-        },
-
-        'click .im-unblur': function () {
-            $('#blur-style').text('');
+        'change input[name=blur-options]': function (e) {
+            localStorage.setItem('im-unblur', $(e.currentTarget).val());
+            this.updateUnblur($(e.currentTarget).val());
         },
 
         'click .im-search-by-serial-number': function () {
@@ -74,6 +65,17 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         }
     },
 
+    updateUnblur: function (val) {
+        var options = {
+            never: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }',
+            always: '',
+            hover: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }' +
+                '\nimg.im-blur:hover { -webkit-filter: blur(0px); filter: blur(0px) }'
+        };
+
+        $('#blur-style').text(options[val]);
+    },
+
     initialize: function (settings) {
         this.imagePathRoot = '/data/roxyimages/';
         // this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/';
@@ -122,8 +124,11 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         this.updateUserData(_.bind(function () {
             this.$el.html(imagespace.templates.userData({
                 userData: imagespace.userData,
-                showText: true
+                showText: true,
+                unblur: localStorage.getItem('im-unblur') || 'never'
             }));
+
+            this.updateUnblur(localStorage.getItem('im-unblur') || 'never');
         }, this));
         return this;
     }
