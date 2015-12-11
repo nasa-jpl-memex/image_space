@@ -38,3 +38,8 @@ _.extend(imagespace, {
 });
 
 girder.router.enabled(false);
+
+imagespace.router.route('page/:name', 'page', function (name) {
+    imagespace.headerView.render();
+    $('#g-app-body-container').html(imagespace.templates[name]);
+});

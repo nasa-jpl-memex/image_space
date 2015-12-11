@@ -1,23 +1,18 @@
 .container-fluid
-    .hide
-        input#im-files(type="file", multiple="multiple")
-    #im-upload.btn.btn-primary
-        i.icon-image
-        |  Browse or drop image
     .im-searches
         .im-search-by-size.btn.btn-default.btn-link Image size distribution
         .im-search-by-serial-number.btn.btn-default.btn-link Serial number distribution
         .im-blur-controls
             | Unblur&nbsp;
             .btn-group(role="group", data-toggle="buttons")
-                label.im-blur.btn.btn-default.active
-                    input(type="radio", name="blur-options")
+                label.btn.btn-default(class=(unblur == "never") ? "active": "")
+                    input(type="radio", name="blur-options", value="never")
                     | Never
-                label.im-unblur-hover.btn.btn-default
-                    input(type="radio", name="blur-options")
+                label.btn.btn-default(class=(unblur == "hover") ? "active": "")
+                    input(type="radio", name="blur-options", value="hover")
                     | On hover
-                label.im-unblur.btn.btn-default
-                    input(type="radio", name="blur-options")
+                label.btn.btn-default(class=(unblur == "always") ? "active": "")
+                    input(type="radio", name="blur-options", value="always")
                     | Always
     if userData.images.length > 0
         for result in userData.images

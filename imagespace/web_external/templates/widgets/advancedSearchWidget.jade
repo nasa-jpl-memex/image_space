@@ -1,0 +1,22 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+      h4.modal-title
+        | Advanced Search Tips
+    .modal-body
+      table.table-hover
+        thead
+          tr
+           th Searching for..
+           th finds..
+        tbody
+          tr
+            td hello
+            td images with hello in the image or attributes
+          tr
+            td camera_serial_number:3007670
+            td images taken by this camera
+          tr
+            td tiff_imagewidth:200 AND tiff_imagelength:200
+            td images of size 200x200
