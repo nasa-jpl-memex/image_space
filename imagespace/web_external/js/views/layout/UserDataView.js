@@ -80,7 +80,6 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         this.resLimit = 30;
         this.imageIdMap = {};
         girder.cancelRestRequests('fetch');
-        this.render();
     },
 
     updateUserData: function (done) {
