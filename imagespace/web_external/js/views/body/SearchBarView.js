@@ -96,8 +96,9 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
     initialize: function (settings) {
         this.settings = settings || {};
+        this.settings.loggedIn = girder.currentUser;
 
-        if (settings.dropzone === true) {
+        if (settings.dropzone) {
             _.extend(this.events, this.dropzoneEvents);
         }
     },
