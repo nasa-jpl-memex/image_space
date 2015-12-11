@@ -2,7 +2,6 @@ imagespace.views.SearchBarView = imagespace.View.extend({
     events: {
         'click .im-nav-link': function (event) {
             var link = $(event.currentTarget);
-            console.log('click');
 
             imagespace.router.navigate(link.attr('im-target'), {trigger: true});
 
@@ -60,28 +59,28 @@ imagespace.views.SearchBarView = imagespace.View.extend({
             $('#im-files').click();
         },
 
-        'dragenter #im-upload': function (e) {
+        'dragenter input.im-search': function (e) {
             e.stopPropagation();
             e.preventDefault();
             e.originalEvent.dataTransfer.dropEffect = 'copy';
-            d3.select('#im-upload')
+            d3.select('input.im-search')
                 .classed('btn-success', true)
                 .classed('btn-primary', false);
         },
 
-        'dragleave #im-upload': function (e) {
+        'dragleave input.im-search': function (e) {
             e.stopPropagation();
             e.preventDefault();
-            d3.select('#im-upload')
+            d3.select('input.im-search')
                 .classed('btn-success', false)
                 .classed('btn-primary', true);
         },
 
-        'dragover #im-upload': function (e) {
+        'dragover input.im-search': function (e) {
             e.preventDefault();
         },
 
-        'drop #im-upload': function (e) {
+        'drop input.im-search': function (e) {
             var files = e.originalEvent.dataTransfer.files;
             e.stopPropagation();
             e.preventDefault();
@@ -111,7 +110,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
     upload: function (file) {
         var reader = new FileReader();
 
-        $('#im-upload')
+        $('input.im-search')
             .addClass('btn-info disabled')
             .removeClass('btn-default')
             .html('<i class="icon-spin5 animate-spin"></i> Processing ...');
@@ -168,7 +167,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
     },
 
     loadUrl: function (url) {
-        $('#im-upload')
+        $('input.im-search')
             .addClass('btn-info disabled')
             .removeClass('btn-default')
             .html('<i class="icon-spin5 animate-spin"></i> Processing ...');
