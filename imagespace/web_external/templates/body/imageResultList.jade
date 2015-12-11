@@ -1,0 +1,22 @@
+.row
+    .im-image-area.col-xs-6.col-md-3
+        .im-details.btn.btn-link.btn-default(im-id="#{image.id}")
+            .im-thumbnail
+                img.im-image-thumbnail.im-blur(src=image.imageUrl)
+    .col-xs-6.col-md-9
+        h4= image.id
+        div!= '<b>Size:</b> ' + image.tiff_imagewidth + 'x' + image.tiff_imagelength
+        div!= '<b>Extracted text:</b> ' + image.content
+        div!= '<b>Serial number:</b> ' + image.camera_serial_number
+        div!= '<b>Ad ID:</b> ' + image.ads_id
+        div!= '<b>Geolocation:</b> ' + image.geo_lat + ' latitude, ' + image.geo_long + ' longitude'
+        div
+            .im-add-user-data.btn.btn-link.btn-md(im-id="#{image.id}", title="Save")
+                i.icon-floppy
+                | &nbsp;Save
+            .im-find-similar.btn.btn-link.btn-md(im-id="#{image.id}", title="Find similar images")
+                i.icon-search
+                | &nbsp;Find similar
+            .im-details.btn.btn-link.btn-md(im-id="#{image.id}", title="Details")
+                i.icon-info
+                | &nbsp;Details

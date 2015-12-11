@@ -1,49 +1,12 @@
 imagespace.views.SearchView = imagespace.View.extend({
     events: {
-        'click .im-add-user-data': function (event) {
-            var id = $(event.currentTarget).attr('im-id'),
-                image = this.imageIdMap[id];
-            imagespace.userDataView.addUserImage(image);
-        },
-
-        'click .im-details': function (event) {
-            var id = $(event.currentTarget).attr('im-id'),
-                image = this.imageIdMap[id];
-            this.imageDetailWidget = new imagespace.views.ImageDetailWidget({
-                el: $('#g-dialog-container'),
-                image: image,
-                parentView: this
-            });
-            this.imageDetailWidget.render();
-        },
-
-        'click .im-find-similar': function (event) {
-            var id = $(event.currentTarget).attr('im-id'),
-                image = this.imageIdMap[id];
-            imagespace.router.navigate('search/' + encodeURIComponent(image.imageUrl) + '/content', {trigger: true});
-
-            this.$('.btn-lg').addClass('disabled');
-            $(event.currentTarget).parent().find('.im-find-similar')
-                .html('<i class="icon-spin5 animate-spin"></i>');
-        },
-
-        'mouseover .im-image-area': function (event) {
-            $(event.currentTarget).find('.im-caption-content').removeClass('hidden');
-        },
-
-        'mouseout .im-image-area': function (event) {
-            $(event.currentTarget).find('.im-caption-content').addClass('hidden');
-        },
-
         'change .im-view-list': function (event) {
-            console.log('view-list');
             localStorage.setItem('viewMode', 'list');
             this.viewMode = 'list';
             this.render();
         },
 
         'change .im-view-grid': function (event) {
-            console.log('view-grid');
             localStorage.setItem('viewMode', 'grid');
             this.viewMode = 'grid';
             this.render();
@@ -91,10 +54,22 @@ imagespace.views.SearchView = imagespace.View.extend({
 
     render: function () {
         this.$el.html(imagespace.templates.search({
-            results: this.results,
+            hasResults: _.size(this.results),
             viewMode: this.viewMode,
             showText: true
         }));
+
+        _.each(this.results, function (result) {
+            var imageView = new imagespace.views.ImageView({
+                image: result,
+                viewMode: this.viewMode,
+                imageIdMap: this.imageIdMap,
+                parentView: this
+            });
+
+            this.$('#im-search-results').append(imageView.render().el);
+        }, this);
+
         return this;
     }
 
@@ -108,7 +83,7 @@ imagespace.router.route('search/:query', 'search', function (query) {
         path: 'imagesearch',
         data: {
             query: query,
-            limit: 100
+            limit: 10
         }
     }).done(function (results) {
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {

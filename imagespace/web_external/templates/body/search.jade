@@ -10,44 +10,7 @@
                     input.im-view-list(type="radio", name="options", autocomplete="off", checked=(viewMode === 'list' ? 'true' : null))
                     i.icon-th-list
                     | &nbsp;List
-    if results.length > 0
-        if viewMode === 'grid'
-            for result in results
-                .im-image-area.col-xs-6.col-md-3
-                    .im-details.btn.btn-link.btn-default(im-id="#{result.id}")
-                        .im-thumbnail
-                            img.im-image-thumbnail.im-blur(src=result.imageUrl)
-                    .im-caption
-                        .im-caption-content.hidden
-                            .im-add-user-data.btn.btn-link.btn-md(im-id="#{result.id}", title="Save")
-                                i.icon-floppy
-                            .im-find-similar.btn.btn-link.btn-md(im-id="#{result.id}", title="Find similar images")
-                                i.icon-search
-                            .im-details.btn.btn-link.btn-md(im-id="#{result.id}", title="Details")
-                                i.icon-info
-        else
-            for result in results
-                .row
-                    .im-image-area.col-xs-6.col-md-3
-                        .im-details.btn.btn-link.btn-default(im-id="#{result.id}")
-                            .im-thumbnail
-                                img.im-image-thumbnail.im-blur(src=result.imageUrl)
-                    .col-xs-6.col-md-9
-                        h4= result.id
-                        div!= '<b>Size:</b> ' + result.tiff_imagewidth + 'x' + result.tiff_imagelength
-                        div!= '<b>Extracted text:</b> ' + result.content
-                        div!= '<b>Serial number:</b> ' + result.camera_serial_number
-                        div!= '<b>Ad ID:</b> ' + result.ads_id
-                        div!= '<b>Geolocation:</b> ' + result.geo_lat + ' latitude, ' + result.geo_long + ' longitude'
-                        div
-                            .im-add-user-data.btn.btn-link.btn-md(im-id="#{result.id}", title="Save")
-                                i.icon-floppy
-                                | &nbsp;Save
-                            .im-find-similar.btn.btn-link.btn-md(im-id="#{result.id}", title="Find similar images")
-                                i.icon-search
-                                | &nbsp;Find similar
-                            .im-details.btn.btn-link.btn-md(im-id="#{result.id}", title="Details")
-                                i.icon-info
-                                | &nbsp;Details
-    else
+
+    #im-search-results
+      if !hasResults
         h1 No search results found.
