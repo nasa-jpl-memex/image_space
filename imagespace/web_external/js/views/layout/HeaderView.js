@@ -6,6 +6,7 @@ imagespace.views.LayoutHeaderView = imagespace.View.extend({
 
         var searchBar = new imagespace.views.SearchBarView(_.extend({
             el: this.$('#header-search-bar'),
+            dropzone: girder.currentUser, // Only allow dropzone if the user is logged in
             parentView: this
         }, settings)).render();
 
