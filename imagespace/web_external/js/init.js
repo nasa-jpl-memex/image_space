@@ -15,9 +15,14 @@ _.extend(imagespace, {
         images: []
     },
 
+    /**
+     * Converts a solr ID to a viewable URL.
+     * In other words, it replaces a prepended IMAGE_SPACE_SOLR_PREFIX
+     * with an IMAGE_SPACE_PREFIX.
+     **/
     solrIdToUrl: function (id) {
-        var parts = id.split('/'),
-            file = parts[parts.length - 1];
+        var re = new RegExp("^" + imagespace.solrPrefix),
+            file = id.replace(re, "");
         if (id.indexOf('cmuImages') !== -1) {
             file = 'cmuImages/' + file;
         }
@@ -25,8 +30,8 @@ _.extend(imagespace, {
     },
 
     urlToSolrId: function (url) {
-        var parts = url.split('/'),
-            file = parts[parts.length - 1];
+        var re = new RegExp("^" + imagespace.prefix),
+            file = url.replace(re, "");
         if (file.length < 30) {
             return;
         }
