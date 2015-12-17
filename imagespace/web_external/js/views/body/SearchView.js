@@ -15,55 +15,25 @@ imagespace.views.SearchView = imagespace.View.extend({
 
     initialize: function (settings) {
         girder.cancelRestRequests('fetch');
-        this.resLimit = 30;
-        this.results = settings.results;
+        this.$el = window.app.$('#g-app-body-container');
+        this.collection = settings.collection;
+        this.resLimit = 30; // @Todo is this used anywhere?
         this.viewMode = localStorage.getItem('viewMode') || 'grid';
-        this.imageIdMap = {};
-        this.results.forEach(_.bind(function (result) {
-            result.imageUrl = result.id.startsWith('http') ? result.id : imagespace.solrIdToUrl(result.id);
-            this.imageIdMap[result.id] = result;
-        }, this));
-
-        // Place in order if ids are explicit
-        if ($('.im-search').length > 0) {
-            var queryParts = $('.im-search').val().split(' '),
-                idResults = [],
-                idResultMap = {},
-                remaining = [];
-            queryParts.forEach(_.bind(function (part) {
-                var partId = part.match(/id:\"(.*)\"/);
-                if (partId && partId.length === 2 && this.imageIdMap[partId[1]]) {
-                    idResults.push(this.imageIdMap[partId[1]]);
-                    idResultMap[partId[1]] = true;
-                }
-            }, this));
-
-            // Gather the rest
-            this.results.forEach(function (result) {
-                if (!idResultMap[result.id]) {
-                    remaining.push(result);
-                }
-            });
-
-            // Construct new result list with id results first
-            this.results = idResults.concat(remaining);
-        }
-
-        this.render();
+        this.collection.on('g:changed', _.bind(this.render, this));
+        this.collection.fetch();
     },
 
     render: function () {
         this.$el.html(imagespace.templates.search({
-            hasResults: _.size(this.results),
             viewMode: this.viewMode,
-            showText: true
+            showText: true,
+            collection: this.collection
         }));
 
-        _.each(this.results, function (result) {
+        this.collection.each(function (image) {
             var imageView = new imagespace.views.ImageView({
-                image: result,
+                model: image,
                 viewMode: this.viewMode,
-                imageIdMap: this.imageIdMap,
                 parentView: this
             });
 
@@ -79,17 +49,17 @@ imagespace.router.route('search/:query', 'search', function (query) {
     imagespace.headerView.render({query: query});
     $('.alert-info').html('Searching <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
-    girder.restRequest({
-        path: 'imagesearch',
-        data: {
-            query: query,
-            limit: 10
+    var resultsColl = new imagespace.collections.SearchResultCollection(null);
+
+    _.extend(resultsColl, {
+        params: {
+            query: query
         }
-    }).done(function (results) {
-        girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
-            results: results
-        });
-        $('.alert-info').addClass('hidden');
+    });
+
+    new imagespace.views.SearchView({
+        collection: resultsColl,
+        parentView: window.app
     });
 });
 
@@ -209,7 +179,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
         }
     }).done(function (results) {
         var q;
-        if (results.length === 0) {
+        if (_.size(results.docs) === 0) {
             $('.alert-info').html('Computing features <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
             girder.restRequest({
                 path: 'imagefeatures',
@@ -222,7 +192,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
                 performSearch(features);
             });
         } else {
-            performSearch(results[0]);
+            performSearch(_.first(results.docs));
         }
     });
 });

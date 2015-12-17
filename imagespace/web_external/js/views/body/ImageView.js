@@ -7,13 +7,13 @@ imagespace.views.ImageView = imagespace.View.extend({
     events: {
         'click .im-add-user-data': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
-                image = this.imageIdMap[id];
+                image = this.model;
             imagespace.userDataView.addUserImage(image);
         },
 
         'click .im-details': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
-                image = this.imageIdMap[id];
+                image = this.model;
             this.imageDetailWidget = new imagespace.views.ImageDetailWidget({
                 el: $('#g-dialog-container'),
                 image: image,
@@ -24,7 +24,7 @@ imagespace.views.ImageView = imagespace.View.extend({
 
         'click .im-find-similar': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
-                image = this.imageIdMap[id];
+                image = this.model;
             imagespace.router.navigate('search/' + encodeURIComponent(image.imageUrl) + '/content', {trigger: true});
 
             this.$('.btn-lg').addClass('disabled');
@@ -42,14 +42,13 @@ imagespace.views.ImageView = imagespace.View.extend({
     },
 
     initialize: function (settings) {
-        this.image = settings.image;
+        this.model = settings.model;
         this.viewMode = settings.viewMode;
-        this.imageIdMap = settings.imageIdMap;
     },
 
     render: function () {
         var args = {
-            image: this.image
+            image: this.model
         };
 
         if (this.viewMode === 'list') {

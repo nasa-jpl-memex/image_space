@@ -1,6 +1,6 @@
 - var system = ['_version_', 'meta', 'x_parsed_by']
 - var hidden = ['highlight']
-- var url = image.imageUrl
+- var url = image.get('imageUrl')
 
 .modal-dialog
     .modal-content
@@ -11,7 +11,7 @@
             a(href="#{url}", target="_blank")
                 img.im-image-detail.im-blur(src="#{url}")
             .im-actions
-                | Search by 
+                | Search by
                 a(href='#search/' + encodeURIComponent(url) + '/content', data-dismiss="modal").btn.btn-link.btn-default Content
                 | &nbsp;
                 a(href='#search/' + encodeURIComponent(url) + '/background', data-dismiss="modal").btn.btn-link.btn-default Background
@@ -28,10 +28,10 @@
                 a(href='#search/' + encodeURIComponent(url) + '/size', data-dismiss="modal").btn.btn-link.btn-default Size
                 | &nbsp;
                 a(href='#search/' + encodeURIComponent(url) + '/dynamics', data-dismiss="modal").btn.btn-link.btn-default Dynamics
-            if image.highlight
+            if image.has('highlight')
                 h4 Match
                 dl.dl-horizontal
-                    for val, key in image.highlight
+                    for val, key in image.get('highlight')
                         if system.indexOf(key) === -1 && hidden.indexOf(key) === -1
                             dt
                                 b= key
@@ -39,7 +39,7 @@
                                 span !{val}
             h4 Attributes
             dl.dl-horizontal.im-attributes
-                for val, key in image
+                for val, key in image.attributes
                     if system.indexOf(key) === -1 && hidden.indexOf(key) === -1
                         dt
                             b= key
@@ -66,7 +66,7 @@
             .collapse#im-system-attributes
                 dl.dl-horizontal.im-attributes
                     for key in system
-                        - var val = image[key]
+                        - var val = image.get(key)
                         dt
                             b= key
                         dd.im-attribute
