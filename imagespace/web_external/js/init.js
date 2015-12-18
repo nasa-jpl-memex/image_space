@@ -16,6 +16,96 @@ _.extend(imagespace, {
     },
 
     /**
+     * imagespace.searches is a mapping of strings to objects. The
+     * string corresponds to the route appended to /search/:url/ and the
+     * object must contain a search function which takes an image object (model?)
+     * and is expected to return a SearchResultCollection. Additionally it can contain
+     * a niceName property for display purposes, and a displayContext property which
+     * takes an image model and determines whether or not the search should be displayed
+     * in that context.
+     **/
+    searches: {
+        ad: {
+            search: function (image) {
+                return imagespace.getSearchResultCollectionFromQuery('ads_id:"' + image.ads_id + '"');
+            },
+            niceName: 'Ad',
+            displayContext: function (image) {
+                return image.has('ads_id');
+            }
+        },
+        camera: {
+            search: function (image) {
+                return imagespace.getSearchResultCollectionFromQuery(
+                    'camera_serial_number:"' + image.camera_serial_number + '"');
+            },
+            niceName: 'Camera',
+            displayContext: function (image) {
+                return image.has('camera_serial_number');
+            }
+        },
+        size: {
+            search: function (image) {
+                return imagespace.getSearchResultCollectionFromQuery(
+                    'tiff_imagelength:' + image.tiff_imagelength + ' AND tiff_imagewidth:' + image.tiff_imagewidth);
+            },
+            niceName: 'Size',
+            displayContext: function (image) {
+                return image.has('tiff_imagelength') && image.has('tiff_imagewidth');
+            }
+        },
+        location: {
+            search: function (image) {
+                var geoLatDelta = image.geo_lat < 0 ? -1 : 1,
+                    geoLongDelta = image.geo_long < 0 ? -1 : 1,
+                    latRange = [image.geo_lat - geoLatDelta, image.geo_lat + geoLatDelta],
+                    longRange = [image.geo_long - geoLongDelta, image.geo_long + geoLongDelta];
+
+                return imagespace.getSearchResultCollectionFromQuery(
+                    'geo_lat:[' + latRange[0] + ' TO ' + latRange[1] + '] AND geo_long:[' + longRange[0] + ' TO ' + longRange[1] + ']'
+                );
+            },
+            niceName: 'Location',
+            displayContext: function (image) {
+                return image.has('geo_lat');
+            }
+        }
+    },
+
+    /**
+     * Returns a search result collection from a standard query (i.e. something
+     * that could be typed into the search bar). This is a common use case for pre-
+     * preparing searches.
+     **/
+    getSearchResultCollectionFromQuery: function (query) {
+        return _.extend(new imagespace.collections.SearchResultCollection(null), {
+            params: {
+                query: query
+            }
+        });
+    },
+
+    /**
+     * Takes an image model and determines which searches are applicable
+     * given their displayContext. (defaults to true)
+     **/
+    getApplicableSearches: function (image) {
+        var applicable = _.filter(_.keys(imagespace.searches), function (key) {
+            var search = imagespace.searches[key];
+
+            if (!_.has(search, 'displayContext')) {
+                return true;
+            } else if (_.isFunction(search.displayContext)) {
+                return search.displayContext(image);
+            } else {
+                return search.displayContext;
+            }
+        });
+
+        return _.pick(imagespace.searches, applicable);
+    },
+
+    /**
      * Converts a solr ID to a viewable URL.
      * In other words, it replaces a prepended IMAGE_SPACE_SOLR_PREFIX
      * with an IMAGE_SPACE_PREFIX.

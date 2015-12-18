@@ -4,6 +4,11 @@ imagespace.collections.SearchResultCollection = girder.Collection.extend({
 
     model: imagespace.models.SearchResultModel,
 
+    initialize: function (models, options) {
+        _.extend(this, options);
+        Backbone.Collection.prototype.initialize.apply(this, [models, options]);
+    },
+
     fetch: function (params, reset) {
         if (this.resourceName === null && this.altUrl === null) {
             alert('Error: You must set a resourceName or altUrl on your collection.');
@@ -25,8 +30,6 @@ imagespace.collections.SearchResultCollection = girder.Collection.extend({
                 sortdir: this.sortDir
             }, this.params)
         }).done(_.bind(function (list) {
-            list = list.docs;
-
             if (list.length > this.pageLimit) {
                 // This means we have more pages to display still. Pop off
                 // the extra that we fetched.

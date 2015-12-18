@@ -1,7 +1,4 @@
 imagespace.views.FrontPageView = girder.views.FrontPageView.extend({
-    events: {
-    },
-
     initialize: function () {
         girder.cancelRestRequests('fetch');
         this.render();
