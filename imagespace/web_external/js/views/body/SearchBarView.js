@@ -129,7 +129,9 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
                 dataURLReader.onloadend = _.bind(function () {
                     image.imageUrl = dataURLReader.result;
-                    imagespace.userData.images.unshift(image);
+                    imagespace.userData.images.add(new imagespace.models.UploadedImageModel(image), {
+                        at: 0
+                    });
                     if (girder.currentUser) {
                         girder.restRequest({
                             path: 'folder?text=Private'
@@ -144,10 +146,6 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                                 this.girderUpload(this.dataURLToBlob(dataURLReader.result), file.name, privateFolder._id, null, _.bind(function (fileObject) {
                                     var location = window.location, item;
                                     image.imageUrl = location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken');
-
-                                    console.log('fileObject');
-                                    console.log(fileObject);
-
                                     item = new girder.models.ItemModel({_id: fileObject.attributes.itemId});
                                     image.item_id = fileObject.attributes.itemId;
                                     item._sendMetadata(image, _.bind(function () {
@@ -262,9 +260,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                 });
 
                 item.once('g:saved', _.bind(function () {
-                    console.log(item);
                     image.item_id = item.attributes._id;
-                    console.log(image);
                     item._sendMetadata(image, _.bind(function () {
                         this.render();
                     }, this), function (error) {
