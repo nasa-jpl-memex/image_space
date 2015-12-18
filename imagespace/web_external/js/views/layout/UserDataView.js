@@ -34,7 +34,6 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
     },
 
     initialize: function (settings) {
-        this.resLimit = 30;
         girder.cancelRestRequests('fetch');
     },
 

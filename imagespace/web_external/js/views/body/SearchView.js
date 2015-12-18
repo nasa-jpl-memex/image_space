@@ -17,7 +17,6 @@ imagespace.views.SearchView = imagespace.View.extend({
         girder.cancelRestRequests('fetch');
         this.$el = window.app.$('#g-app-body-container');
         this.collection = settings.collection;
-        this.resLimit = 30; // @Todo is this used anywhere?
         this.viewMode = localStorage.getItem('viewMode') || 'grid';
         this.collection.on('g:changed', _.bind(this.render, this));
         this.collection.fetch(settings.collection.params || {});
