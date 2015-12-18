@@ -1,3 +1,7 @@
+- var startIndex = (collection.pageNum() * collection.pageLimit)
+- var toIndex = startIndex + collection.length
+- var total = collection.numFound
+
 .container-fluid
     .clearfix
         .im-view-mode.pull-right
@@ -10,6 +14,11 @@
                     input.im-view-list(type="radio", name="options", autocomplete="off", checked=(viewMode === 'list' ? 'true' : null))
                     i.icon-th-list
                     | &nbsp;List
+
+    if collection.length
+      .im-results-pagination
+
+      p Showing results #{startIndex + 1} - #{toIndex} of #{total}
 
     #im-search-results
       if !collection.length
