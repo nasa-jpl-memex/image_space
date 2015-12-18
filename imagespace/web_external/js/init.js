@@ -29,6 +29,11 @@ _.extend(imagespace, {
         return imagespace.prefix + file;
     },
 
+    /**
+     * Converts a viewable url to the appropriate solr ID.
+     * It replaces a prepended IMAGE_SPACE_PREFIX with an
+     * IMAGE_SPACE_SOLR_PREFIX.
+     **/
     urlToSolrId: function (url) {
         var re = new RegExp("^" + imagespace.prefix),
             file = url.replace(re, "");
