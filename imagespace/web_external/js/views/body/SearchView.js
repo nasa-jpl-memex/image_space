@@ -39,6 +39,8 @@ imagespace.views.SearchView = imagespace.View.extend({
             this.$('#im-search-results').append(imageView.render().el);
         }, this);
 
+        $('.alert-info').addClass('hidden');
+
         return this;
     }
 
