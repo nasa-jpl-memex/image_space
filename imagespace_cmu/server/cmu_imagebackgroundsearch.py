@@ -20,33 +20,31 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
-from girder import logger
 
 import requests
 import os
 
 
-class ImageBackgroundSearch(Resource):
+class CmuImageBackgroundSearch(Resource):
     def __init__(self):
-        self.resourceName = 'imagebackgroundsearch'
-        self.route('GET', (), self.getImageSearch)
+        self.resourceName = 'cmu_imagebackgroundsearch'
+        self.route('GET', (), self.getImageBackgroundSearch)
 
     @access.public
-    def getImageSearch(self, params):
-        return self._imageSearch(params)
+    def getImageBackgroundSearch(self, params):
+        return self._imageBackgroundSearch(params)
+    getImageBackgroundSearch.description = (
+        Description('Performs CMU background search')
+        .param('url', 'Publicly accessible URL of the image to search'))
 
-    @access.public
-    def postImageSearch(self, params):
-        return self._imageSearch(params)
-
-    def _imageSearch(self, params):
-        return [{'id': d[0], 'score': d[1]} for d in requests.post(
+    def _imageBackgroundSearch(self, params):
+        r = requests.post(
             os.environ['IMAGE_SPACE_CMU_BACKGROUND_SEARCH'],
             data=params['url'],
             headers={
                 'Content-type': 'text',
                 'Content-length': str(len(params['url']))
             },
-            verify=False)
-            .json()]
-    getImageSearch.description = Description('Searches images by background')
+            verify=False).json()
+
+        return [{'id': d[0], 'score': d[1]} for d in r]
