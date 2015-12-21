@@ -7,6 +7,37 @@ imagespace.collections.SearchResultCollection = girder.Collection.extend({
     initialize: function (models, options) {
         _.extend(this, options);
         Backbone.Collection.prototype.initialize.apply(this, [models, options]);
+
+        // Store the ids explicitly mentioned in the query, in order
+        if (_.has(this, 'params') && _.has(this.params, 'query')) {
+            this.orderedIds = _.filter(_.map(this.params.query.split(' '), function (s) {
+                var m = s.match(/id:"(.*)"/);
+
+                if (m) {
+                    return m[1];
+                } else {
+                    return false;
+                }
+            }), _.identity);
+        }
+    },
+
+    /**
+     * This takes a model and determines if it was explicitly mentioned in the query
+     * and if so, returns that index as the order it should be in the collection.
+     * Otherwise, it just returns the length of the collection so the remaining
+     * models will be ordered the same as they were retrieved.
+     **/
+    comparator: function (model) {
+        if (_.has(this, 'orderedIds')) {
+            var explicitlyOrdered = _.indexOf(this.orderedIds, model.get('id'));
+
+            if (explicitlyOrdered !== -1) {
+                return explicitlyOrdered;
+            }
+        }
+
+        return this.length;
     },
 
     fetch: function (params, reset) {

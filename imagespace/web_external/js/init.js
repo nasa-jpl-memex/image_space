@@ -81,7 +81,7 @@ _.extend(imagespace, {
      * preparing searches.
      **/
     getSearchResultCollectionFromQuery: function (query) {
-        return _.extend(new imagespace.collections.SearchResultCollection(null), {
+        return new imagespace.collections.SearchResultCollection(null, {
             params: {
                 query: query
             }
