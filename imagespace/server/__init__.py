@@ -129,6 +129,17 @@ class CustomAppRoot(object):
 
 
 def load(info):
+    required_env_vars = ('IMAGE_SPACE_SOLR',
+                         'IMAGE_SPACE_PREFIX',
+                         'IMAGE_SPACE_SOLR_PREFIX')
+
+    for var in required_env_vars:
+        if var not in os.environ or os.environ[var] == '':
+            raise Exception('Imagespace will not function without the %s '
+                            'environment variable.' % var)
+        else:
+            os.environ[var] = os.environ[var].rstrip('/')
+
     # Bind our REST resources
     info['apiRoot'].imagebackgroundsearch = ImageBackgroundSearch()
     info['apiRoot'].imagedomaindynamicssearch = ImageDomainDynamicsSearch()
