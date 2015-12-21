@@ -81,7 +81,8 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
         }
     }).done(function (results) {
         var q;
-        if (_.size(results) === 0) {
+        results = imagespace.processResponse(results);
+        if (results.numFound === 0) {
             $('.alert-info').html('Computing features <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
             girder.restRequest({
                 path: 'imagefeatures',
@@ -94,7 +95,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
                 performSearch(features);
             });
         } else {
-            performSearch(_.first(results));
+            performSearch(_.first(results.docs));
         }
     });
 });

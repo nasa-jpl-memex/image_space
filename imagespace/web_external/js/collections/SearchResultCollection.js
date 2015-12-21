@@ -30,6 +30,10 @@ imagespace.collections.SearchResultCollection = girder.Collection.extend({
                 sortdir: this.sortDir
             }, this.params)
         }).done(_.bind(function (list) {
+            list = imagespace.processResponse(list);
+            this.numFound = list.numFound;
+            list = list.docs;
+
             if (list.length > this.pageLimit) {
                 // This means we have more pages to display still. Pop off
                 // the extra that we fetched.

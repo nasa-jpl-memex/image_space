@@ -134,6 +134,19 @@ _.extend(imagespace, {
             file = 'cmuImages/' + file;
         }
         return imagespace.solrPrefix + file;
+    },
+
+    /**
+     * Processes a response (from a collection fetch) to
+     * include a numFound attribute, and puts the elements in the docs
+     * property. This is because certain endpoints return numDocs and docs (solr)
+     * while others don't, though we still need to have access to them for pagination.
+     **/
+    processResponse: function (resp) {
+        return {
+            numFound: _.has(resp, 'numFound') ? resp.numFound : resp.length,
+            docs: _.has(resp, 'docs') ? resp.docs : resp
+        };
     }
 });
 
