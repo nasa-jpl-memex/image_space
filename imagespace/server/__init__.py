@@ -22,8 +22,6 @@ import os
 from girder import constants
 from girder.constants import SettingKey
 from girder.utility.model_importer import ModelImporter
-from .imagebackgroundsearch_rest import ImageBackgroundSearch
-from .imagedomaindynamicssearch_rest import ImageDomainDynamicsSearch
 from .imagefeatures_rest import ImageFeatures
 from .imagepivot_rest import ImagePivot
 from .imagesearch_rest import ImageSearch
@@ -141,8 +139,6 @@ def load(info):
             os.environ[var] = os.environ[var].rstrip('/')
 
     # Bind our REST resources
-    info['apiRoot'].imagebackgroundsearch = ImageBackgroundSearch()
-    info['apiRoot'].imagedomaindynamicssearch = ImageDomainDynamicsSearch()
     info['apiRoot'].imagesearch = ImageSearch()
     info['apiRoot'].imagefeatures = ImageFeatures()
     info['apiRoot'].imagepivot = ImagePivot()
