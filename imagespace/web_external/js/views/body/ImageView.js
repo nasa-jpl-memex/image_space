@@ -25,7 +25,8 @@ imagespace.views.ImageView = imagespace.View.extend({
         'click .im-find-similar': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
                 image = this.model;
-            imagespace.router.navigate('search/' + encodeURIComponent(image.imageUrl) + '/content', {trigger: true});
+            imagespace.router.navigate('search/' + encodeURIComponent(image.get('imageUrl')) + '/' +
+                                       imagespace.defaultSimilaritySearch, {trigger: true});
 
             this.$('.btn-lg').addClass('disabled');
             $(event.currentTarget).parent().find('.im-find-similar')
@@ -48,7 +49,8 @@ imagespace.views.ImageView = imagespace.View.extend({
 
     render: function () {
         var args = {
-            image: this.model
+            image: this.model,
+            similaritySearch: imagespace.defaultSimilaritySearch
         };
 
         if (this.viewMode === 'list') {

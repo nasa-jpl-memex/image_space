@@ -67,7 +67,9 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
         imagespace.headerView.render({
             url: url,
             mode: mode,
-            image: new imagespace.models.SearchResultModel(image)
+            image: (url.indexOf('girder') !== -1) ?
+                new imagespace.models.UploadedImageModel(image) :
+                new imagespace.models.SearchResultModel(image)
         });
 
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {

@@ -14,9 +14,10 @@
             .im-add-user-data.btn.btn-link.btn-md(im-id=image.get('id'), title="Save")
                 i.icon-floppy
                 | &nbsp;Save
-            .im-find-similar.btn.btn-link.btn-md(im-id=image.get('id'), title="Find similar images")
-                i.icon-search
-                | &nbsp;Find similar
+            if similaritySearch
+              .im-find-similar.btn.btn-link.btn-md(im-id=image.get('id'), title="Find similar images")
+                  i.icon-search
+                  | &nbsp;Find similar
             .im-details.btn.btn-link.btn-md(im-id=image.get('id'), title="Details")
                 i.icon-info
                 | &nbsp;Details

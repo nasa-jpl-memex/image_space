@@ -29,7 +29,8 @@ imagespace.views.UploadedImageView = imagespace.views.ImageView.extend({
 
     render: function () {
         this.$el.html(imagespace.templates.imageResultSidebar({
-            image: this.model
+            image: this.model,
+            defaultSimilaritySearch: imagespace.defaultSimilaritySearch
         }));
 
         return this;
