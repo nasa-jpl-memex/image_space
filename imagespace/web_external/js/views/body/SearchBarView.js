@@ -98,6 +98,10 @@ imagespace.views.SearchBarView = imagespace.View.extend({
         this.settings = settings || {};
         this.settings.loggedIn = girder.currentUser;
 
+        if (_.has(this.settings, 'image')) {
+            this.settings.searches = imagespace.getApplicableSearches(this.settings.image);
+        }
+
         if (settings.dropzone) {
             _.extend(this.events, this.dropzoneEvents);
         }

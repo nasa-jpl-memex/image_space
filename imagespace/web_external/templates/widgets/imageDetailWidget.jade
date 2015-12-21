@@ -10,24 +10,11 @@
         .modal-body
             a(href="#{url}", target="_blank")
                 img.im-image-detail.im-blur(src="#{url}")
-            .im-actions
+            if searches
+              .im-actions
                 | Search by
-                a(href='#search/' + encodeURIComponent(url) + '/content', data-dismiss="modal").btn.btn-link.btn-default Content
-                | &nbsp;
-                a(href='#search/' + encodeURIComponent(url) + '/background', data-dismiss="modal").btn.btn-link.btn-default Background
-                if image.camera_serial_number
-                    | &nbsp;
-                    a(href='#search/' + encodeURIComponent(url) + '/camera', data-dismiss="modal").btn.btn-link.btn-default Camera
-                if image.geo_lat
-                    | &nbsp;
-                    a(href='#search/' + encodeURIComponent(url) + '/location', data-dismiss="modal").btn.btn-link.btn-default Location
-                if image.ads_id
-                    | &nbsp;
-                    a(href='#search/' + encodeURIComponent(url) + '/ad', data-dismiss="modal").btn.btn-link.btn-default Ad
-                | &nbsp;
-                a(href='#search/' + encodeURIComponent(url) + '/size', data-dismiss="modal").btn.btn-link.btn-default Size
-                | &nbsp;
-                a(href='#search/' + encodeURIComponent(url) + '/dynamics', data-dismiss="modal").btn.btn-link.btn-default Dynamics
+                each val, key in searches
+                  a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal").btn.btn-link.btn-default #{val.niceName}
             if image.has('highlight')
                 h4 Match
                 dl.dl-horizontal

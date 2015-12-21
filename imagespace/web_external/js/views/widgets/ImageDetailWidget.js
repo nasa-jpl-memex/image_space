@@ -28,7 +28,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             title: this.title,
             image: this.image,
             query: $('.im-search').val(),
-            stolenCameraPrefix: imagespace.stolenCameraPrefix
+            stolenCameraPrefix: imagespace.stolenCameraPrefix,
+            searches: imagespace.getApplicableSearches(this.image)
         })).girderModal(this).on('shown.bs.modal', function () {
         });
 

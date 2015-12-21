@@ -64,7 +64,11 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
     var performSearch = function (image) {
         image.imageUrl = url;
 
-        imagespace.headerView.render({url: url, mode: mode, image: image});
+        imagespace.headerView.render({
+            url: url,
+            mode: mode,
+            image: new imagespace.models.SearchResultModel(image)
+        });
 
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
             collection: imagespace.searches[mode].search(image)

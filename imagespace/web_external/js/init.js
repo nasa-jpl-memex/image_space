@@ -72,6 +72,9 @@ _.extend(imagespace, {
         }
     },
 
+    // Determines what search to use for similarity by default (magnifying glass icon)
+    defaultSimilaritySearch: null,
+
     /**
      * Returns a search result collection from a standard query (i.e. something
      * that could be typed into the search bar). This is a common use case for pre-
