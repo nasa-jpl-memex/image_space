@@ -12,5 +12,6 @@ $(function () {
             parentView: null
         });
         imagespace.events.trigger('g:appload.after');
+        girder.events.trigger('im:appload.after');
     });
 });
