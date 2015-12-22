@@ -80,9 +80,13 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
                     this.$('#im-user-images').append(imageView.render().el);
                 }, this);
+
+                $('#sidebar-wrapper').show();
+                $('#wrapper').removeClass('toggled');
             }
 
         }, this));
+
         return this;
     }
 });
