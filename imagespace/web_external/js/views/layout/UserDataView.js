@@ -1,24 +1,8 @@
 imagespace.views.LayoutUserDataView = imagespace.View.extend({
     events: {
-        'click .im-search-by-size': function () {
-            this.searchBySizeWidget = new imagespace.views.SearchBySizeWidget({
-                el: $('#g-dialog-container'),
-                parentView: this
-            });
-            this.searchBySizeWidget.render();
-        },
-
         'change input[name=blur-options]': function (e) {
             localStorage.setItem('im-unblur', $(e.currentTarget).val());
             this.updateUnblur($(e.currentTarget).val());
-        },
-
-        'click .im-search-by-serial-number': function () {
-            this.searchBySerialNumberWidget = new imagespace.views.SearchBySerialNumberWidget({
-                el: $('#g-dialog-container'),
-                parentView: this
-            });
-            this.searchBySerialNumberWidget.render();
         }
     },
 
