@@ -3,23 +3,23 @@
 - var total = collection.numFound
 
 .container-fluid
-    .clearfix
-        .im-view-mode.pull-right
-            .btn-group(data-toggle="buttons")
-                label.btn.btn-default(class=(viewMode === 'grid' ? 'active' : ''))
-                    input.im-view-grid(type="radio", name="options", autocomplete="off", checked=(viewMode === 'grid' ? 'true' : null))
-                    i.icon-th
-                    | &nbsp;Grid
-                label.btn.btn-default(class=(viewMode === 'list' ? 'active' : ''))
-                    input.im-view-list(type="radio", name="options", autocomplete="off", checked=(viewMode === 'list' ? 'true' : null))
-                    i.icon-th-list
-                    | &nbsp;List
-
+  .clearfix
     if collection.length
-      .im-results-pagination
+      .im-results-pagination.pull-left
+        .im-pagination-container
+        p Showing results #{startIndex + 1} - #{toIndex} of #{total}
 
-      p Showing results #{startIndex + 1} - #{toIndex} of #{total}
+    .im-view-mode.pull-right
+      .btn-group(data-toggle="buttons")
+        label.btn.btn-default(class=(viewMode === 'grid' ? 'active' : ''))
+          input.im-view-grid(type="radio", name="options", autocomplete="off", checked=(viewMode === 'grid' ? 'true' : null))
+          i.icon-th
+          | &nbsp;Grid
+        label.btn.btn-default(class=(viewMode === 'list' ? 'active' : ''))
+          input.im-view-list(type="radio", name="options", autocomplete="off", checked=(viewMode === 'list' ? 'true' : null))
+          i.icon-th-list
+          | &nbsp;List
 
-    #im-search-results
-      if !collection.length
-        h1 No search results found.
+  #im-search-results
+    if !collection.length
+      h1 No search results found.

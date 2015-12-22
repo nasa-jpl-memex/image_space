@@ -45,7 +45,7 @@ imagespace.views.SearchView = imagespace.View.extend({
         }, this);
 
         $('.alert-info').addClass('hidden');
-        this.paginateWidget.setElement(this.$('.im-results-pagination')).render();
+        this.paginateWidget.setElement(this.$('.im-pagination-container')).render();
 
         return this;
     }
