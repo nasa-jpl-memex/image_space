@@ -42,6 +42,7 @@ class ImageSearch(Resource):
     def _imageSearch(self, params):
         limit = params['limit'] if 'limit' in params else '100'
         query = params['query'] if 'query' in params else '*'
+        offset = params['offset'] if 'offset' in params else '0'
         base = (
             os.environ['IMAGE_SPACE_SOLR'] +
             '/select?wt=json&indent=true&hl=true&hl.fl=*'
@@ -49,10 +50,18 @@ class ImageSearch(Resource):
         try:
             result = requests.get(
                 base + '&q=' + query +
-                '&rows=' + str(limit), verify=False).json()
+                '&rows=' + str(limit) + '&start=' + str(offset), verify=False).json()
+            logger.info(base + '&q=' + query + '&rows=' + str(limit) + '&start=' + str(offset))
         except ValueError:
             return []
         for image in result['response']['docs']:
             image['highlight'] = result['highlighting'][image['id']]
-        return result['response']['docs']
+
+        response = {
+            'numFound': result['response']['numFound'],
+            'docs': result['response']['docs']
+        }
+
+        return response
     getImageSearch.description = Description('Searches image database')
+    # @todo document params

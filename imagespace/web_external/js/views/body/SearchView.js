@@ -19,7 +19,7 @@ imagespace.views.SearchView = imagespace.View.extend({
         this.collection = settings.collection;
         this.viewMode = localStorage.getItem('viewMode') || 'grid';
         this.collection.on('g:changed', _.bind(this.render, this));
-        this.collection.fetch(settings.collection.params || {});
+        this.collection.fetch(settings.collection.params || {}, true);
     },
 
     render: function () {
@@ -28,6 +28,11 @@ imagespace.views.SearchView = imagespace.View.extend({
             showText: true,
             collection: this.collection
         }));
+
+        this.paginateWidget = new girder.views.PaginateWidget({
+            collection: this.collection,
+            parentView: this
+        });
 
         this.collection.each(function (image) {
             var imageView = new imagespace.views.ImageView({
@@ -40,6 +45,7 @@ imagespace.views.SearchView = imagespace.View.extend({
         }, this);
 
         $('.alert-info').addClass('hidden');
+        this.paginateWidget.setElement(this.$('.im-pagination-container')).render();
 
         return this;
     }
