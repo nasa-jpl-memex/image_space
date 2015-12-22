@@ -1,15 +1,2 @@
 .container-fluid
-    .im-searches
-        .im-blur-controls
-            | Unblur&nbsp;
-            .btn-group(role="group", data-toggle="buttons")
-                label.btn.btn-default(class=(unblur == "never") ? "active": "")
-                    input(type="radio", name="blur-options", value="never")
-                    | Never
-                label.btn.btn-default(class=(unblur == "hover") ? "active": "")
-                    input(type="radio", name="blur-options", value="hover")
-                    | On hover
-                label.btn.btn-default(class=(unblur == "always") ? "active": "")
-                    input(type="radio", name="blur-options", value="always")
-                    | Always
-    #im-user-images
+  #im-user-images

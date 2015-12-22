@@ -1,22 +1,4 @@
 imagespace.views.LayoutUserDataView = imagespace.View.extend({
-    events: {
-        'change input[name=blur-options]': function (e) {
-            localStorage.setItem('im-unblur', $(e.currentTarget).val());
-            this.updateUnblur($(e.currentTarget).val());
-        }
-    },
-
-    updateUnblur: function (val) {
-        var options = {
-            never: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }',
-            always: '',
-            hover: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }' +
-                '\nimg.im-blur:hover { -webkit-filter: blur(0px); filter: blur(0px) }'
-        };
-
-        $('#blur-style').text(options[val]);
-    },
-
     initialize: function (settings) {
         girder.cancelRestRequests('fetch');
     },
@@ -65,11 +47,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
     render: function () {
         this.updateUserData(_.bind(function () {
-            this.$el.html(imagespace.templates.userData({
-                unblur: localStorage.getItem('im-unblur') || 'never'
-            }));
-
-            this.updateUnblur(localStorage.getItem('im-unblur') || 'never');
+            this.$el.html(imagespace.templates.userData());
 
             if (_.size(imagespace.userData.images)) {
                 imagespace.userData.images.each(function (image) {
