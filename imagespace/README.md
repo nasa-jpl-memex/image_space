@@ -84,11 +84,7 @@ any changes to the imagespace code, it is necessary to rebuild it with *grunt*.
   ```bash
   export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint_OR_local_SolrCoreURLInstance                    # Required for easy deploy
   export IMAGE_SPACE_SOLR_PREFIX=/server/path/to/image/dir                                                      # Required
-  export IMAGE_SPACE_FLANN_INDEX=http://localhost:9220/flann_index                                              # Optional for easy deploy
-  export IMAGE_SPACE_COLUMBIA_INDEX=http://path_to_columbia_similarity_server                                   # Required to use Columbia similarity refinement
   export IMAGE_SPACE_PREFIX=http://path_to_image_repository_local_or_cloud                                      # Required for easy deploy
-  export IMAGE_SPACE_CMU_BACKGROUND_SEARCH=http://path_to_cmu_background_search_server                          # Required to use CMU background similarity refinement
-  export IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH=http://path_to_georgetown_domain_dynamics_search_server  # Required to use Georgetowns domain dynamics similarity refinement
   ```
 
 9. Finally start the Girder server with
@@ -103,6 +99,12 @@ plugin configuration. Find the imagespace plugin and enable it. Girder should pr
 the server (or restart manually). One restarted, again visit [http://localhost:8080](http://localhost:8080).
 The application should be replaced with Image Space, with the full Girder app located at
 [http://localhost:8080/girder](http://localhost:8080/girder).
+
+### Additional Plugins
+Image Space comes with additional plugins that may be enabled using the [Girder administration panel](http://girder.readthedocs.org/en/latest/installation.html#initial-setup). For each of these a symbolic link must be set so the plugin exists in Girder's `/plugins` directory.
+
+Individual plugins may require certain environment variables be set, for example the Image Space FLANN plugin requires `IMAGE_SPACE_FLANN_INDEX` be set to the URL of the flann_index. These plugins will warn you when starting Girder if they don't have the required environment variables to function properly.
+
 
 ## License
 
