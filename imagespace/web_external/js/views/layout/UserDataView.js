@@ -87,14 +87,16 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
             this.updateUnblur(localStorage.getItem('im-unblur') || 'never');
 
-            imagespace.userData.images.each(function (image) {
-                var imageView = new imagespace.views.UploadedImageView({
-                    model: image,
-                    parentView: this
-                });
+            if (_.size(imagespace.userData.images)) {
+                imagespace.userData.images.each(function (image) {
+                    var imageView = new imagespace.views.UploadedImageView({
+                        model: image,
+                        parentView: this
+                    });
 
-                this.$('#im-user-images').append(imageView.render().el);
-            }, this);
+                    this.$('#im-user-images').append(imageView.render().el);
+                }, this);
+            }
 
         }, this));
         return this;
