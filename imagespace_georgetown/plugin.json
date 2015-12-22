@@ -1,0 +1,7 @@
+{
+    "name": "Image Space Georgetown",
+    "version": "0.1.0",
+    "dependencies": [
+        "imagespace"
+    ]
+}

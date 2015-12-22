@@ -116,9 +116,7 @@ _.extend(imagespace, {
     solrIdToUrl: function (id) {
         var re = new RegExp("^" + imagespace.solrPrefix),
             file = id.replace(re, "");
-        if (id.indexOf('cmuImages') !== -1) {
-            file = 'cmuImages/' + file;
-        }
+
         return imagespace.prefix + file;
     },
 
@@ -130,12 +128,11 @@ _.extend(imagespace, {
     urlToSolrId: function (url) {
         var re = new RegExp("^" + imagespace.prefix),
             file = url.replace(re, "");
+
         if (file.length < 30) {
             return;
         }
-        if (url.indexOf('cmuImages') !== -1) {
-            file = 'cmuImages/' + file;
-        }
+
         return imagespace.solrPrefix + file;
     },
 

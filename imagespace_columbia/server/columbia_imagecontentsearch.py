@@ -22,45 +22,25 @@ from girder.api.describe import Description
 from girder.api.rest import Resource
 from girder import logger
 
-import json
 import requests
 import os
 
-from .imagefeatures_rest import ImageFeatures
 
-
-class ImageContentSearch(Resource):
+class ColumbiaImageContentSearch(Resource):
     def __init__(self):
-        self.resourceName = 'imagesearch'
+        self.resourceName = 'columbia_imagecontentsearch'
         self.route('GET', (), self.getImageContentSearch)
 
     @access.public
     def getImageContentSearch(self, params):
         return self._imageContentSearch(params)
-
-    @access.public
-    def postImageContentSearch(self, params):
-        return self._imageContentSearch(params)
+    getImageContentSearch.description = (
+        Description('Searches columbia image database')
+        .param('url', 'Publicly accessible URL of the image to search'))
 
     def _imageContentSearch(self, params):
         limit = params['limit'] if 'limit' in params else '100'
 
-        # Use FLANN index if env variable set
-        if 'IMAGE_SPACE_FLANN_INDEX' in os.environ:
-            if 'histogram' not in params:
-                features = ImageFeatures()
-                f = features.getImageFeatures({'url': params['url']})
-                params['histogram'] = json.dumps(f['histogram'])
-
-            logger.info(
-                'Using FLANN INDEX at ' +
-                os.environ['IMAGE_SPACE_FLANN_INDEX'])
-            return requests.get(
-                os.environ['IMAGE_SPACE_FLANN_INDEX'] +
-                '?query=' + params['histogram'] +
-                '&k=' + str(limit)).json()
-
-        # Use Columbia index
         logger.info(
             'Using COLUMBIA INDEX at ' +
             os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] +
@@ -72,5 +52,3 @@ class ImageContentSearch(Resource):
             '&num=' + str(limit),
             verify=False
         ).json()['images'][0]['similar_images']['cached_image_urls']]
-
-    getImageContentSearch.description = Description('Searches image database')

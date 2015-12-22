@@ -18,9 +18,10 @@
 ###############################################################################
 
 import mako
-from .imagebackgroundsearch_rest import ImageBackgroundSearch
-from .imagecontentsearch_rest import ImageContentSearch
-from .imagedomaindynamicssearch_rest import ImageDomainDynamicsSearch
+import os
+from girder import constants
+from girder.constants import SettingKey
+from girder.utility.model_importer import ModelImporter
 from .imagefeatures_rest import ImageFeatures
 from .imagepivot_rest import ImagePivot
 from .imagesearch_rest import ImageSearch
@@ -54,6 +55,12 @@ class CustomAppRoot(object):
               href="${staticRoot}/lib/fontello/css/animation.css">
         <link rel="stylesheet"
               href="${staticRoot}/built/app.min.css">
+        % for plugin in pluginCss:
+            % if plugin != 'imagespace':
+        <link rel="stylesheet"
+              href="${staticRoot}/built/plugins/${plugin}/plugin.min.css">
+            % endif
+        % endfor
         <link rel="stylesheet"
               href="${staticRoot}/built/plugins/imagespace/imagespace.min.css">
         <link rel="icon"
@@ -86,6 +93,11 @@ class CustomAppRoot(object):
         <script src="${staticRoot}/built/app.min.js"></script>
         <script src="${staticRoot}/built/plugins/gravatar/plugin.min.js">
         </script>
+        % for plugin in pluginJs:
+           % if plugin != 'imagespace':
+        <script src="${staticRoot}/built/plugins/${plugin}/plugin.min.js"></script>
+           % endif
+        % endfor
         <script src="${staticRoot}/built/plugins/imagespace/imagespace-libs.min.js">
         </script>
         <script src="${staticRoot}/built/plugins/imagespace/imagespace.min.js">
@@ -96,6 +108,17 @@ class CustomAppRoot(object):
     """
 
     def GET(self):
+        self.vars['pluginCss'] = []
+        self.vars['pluginJs'] = []
+        builtDir = os.path.join(constants.STATIC_ROOT_DIR, 'clients', 'web',
+                                'static', 'built', 'plugins')
+        for plugin in ModelImporter.model('setting').get(
+                SettingKey.PLUGINS_ENABLED):
+            if os.path.exists(os.path.join(builtDir, plugin, 'plugin.min.css')):
+                self.vars['pluginCss'].append(plugin)
+            if os.path.exists(os.path.join(builtDir, plugin, 'plugin.min.js')):
+                self.vars['pluginJs'].append(plugin)
+
         if self.indexHtml is None:
             self.indexHtml = mako.template.Template(self.template).render(
                 **self.vars)
@@ -104,10 +127,18 @@ class CustomAppRoot(object):
 
 
 def load(info):
+    required_env_vars = ('IMAGE_SPACE_SOLR',
+                         'IMAGE_SPACE_PREFIX',
+                         'IMAGE_SPACE_SOLR_PREFIX')
+
+    for var in required_env_vars:
+        if var not in os.environ or os.environ[var] == '':
+            raise Exception('Imagespace will not function without the %s '
+                            'environment variable.' % var)
+        else:
+            os.environ[var] = os.environ[var].rstrip('/')
+
     # Bind our REST resources
-    info['apiRoot'].imagebackgroundsearch = ImageBackgroundSearch()
-    info['apiRoot'].imagecontentsearch = ImageContentSearch()
-    info['apiRoot'].imagedomaindynamicssearch = ImageDomainDynamicsSearch()
     info['apiRoot'].imagesearch = ImageSearch()
     info['apiRoot'].imagefeatures = ImageFeatures()
     info['apiRoot'].imagepivot = ImagePivot()
