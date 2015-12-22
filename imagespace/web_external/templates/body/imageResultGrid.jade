@@ -1,12 +1,13 @@
 .im-image-area.col-xs-6.col-md-3
-    .im-details.btn.btn-link.btn-default(im-id="#{image.id}")
+    .im-details.btn.btn-link.btn-default(im-id=image.get('id'))
         .im-thumbnail
-            img.im-image-thumbnail.im-blur(src=image.imageUrl)
+            img.im-image-thumbnail.im-blur(src=image.get('imageUrl'))
     .im-caption
         .im-caption-content.hidden
-            .im-add-user-data.btn.btn-link.btn-md(im-id="#{image.id}", title="Save")
+            .im-add-user-data.btn.btn-link.btn-md(im-id=image.get('id'), title="Save")
                 i.icon-floppy
-            .im-find-similar.btn.btn-link.btn-md(im-id="#{image.id}", title="Find similar images")
-                i.icon-search
-            .im-details.btn.btn-link.btn-md(im-id="#{image.id}", title="Details")
+            if similaritySearch
+              .im-find-similar.btn.btn-link.btn-md(im-id=image.get('id'), title="Find similar images")
+                  i.icon-search
+            .im-details.btn.btn-link.btn-md(im-id=image.get('id'), title="Details")
                 i.icon-info

@@ -19,9 +19,6 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
     },
 
     initialize: function (settings) {
-        this.resLimit = 30;
-        this.imagePathRoot = '/data/roxyimages/';
-        // this.imagePathRoot = '/data/xdata/syria/syria_instagram_images/'
         this.image = settings.image || null;
         this.title = settings.title || 'Image details';
     },
@@ -31,7 +28,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             title: this.title,
             image: this.image,
             query: $('.im-search').val(),
-            stolenCameraPrefix: imagespace.stolenCameraPrefix
+            stolenCameraPrefix: imagespace.stolenCameraPrefix,
+            searches: imagespace.getApplicableSearches(this.image)
         })).girderModal(this).on('shown.bs.modal', function () {
         });
 

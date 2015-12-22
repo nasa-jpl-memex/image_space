@@ -14,17 +14,4 @@
                 label.btn.btn-default(class=(unblur == "always") ? "active": "")
                     input(type="radio", name="blur-options", value="always")
                     | Always
-    if userData.images.length > 0
-        for result in userData.images
-            .im-image-area
-                .im-details.btn.btn-link.btn-default(im-id="#{result.id}")
-                    .im-thumbnail
-                        img.im-image-thumbnail.im-blur(src=result.imageUrl)
-                .im-caption
-                    .im-caption-content.hidden
-                        .im-remove.btn.btn-link.btn-lg(im-id="#{result.id}", title="Delete")
-                            i.icon-trash
-                        .im-find-similar.btn.btn-link.btn-lg(im-id="#{result.id}", title="Find similar images")
-                            i.icon-search
-                        .im-details.btn.btn-link.btn-lg(im-id="#{result.id}", title="Info")
-                            i.icon-info
+    #im-user-images

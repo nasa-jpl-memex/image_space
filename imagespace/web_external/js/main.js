@@ -7,7 +7,7 @@ $(function () {
         imagespace.stolenCameraPrefix = result.stolenCameraPrefix;
         imagespace.solrPrefix = result.solrPrefix;
         imagespace.events.trigger('g:appload.before');
-        var app = new imagespace.App({
+        window.app = new imagespace.App({
             el: 'body',
             parentView: null
         });
