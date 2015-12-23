@@ -31,6 +31,10 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             stolenCameraPrefix: imagespace.stolenCameraPrefix,
             searches: imagespace.getApplicableSearches(this.image)
         })).girderModal(this).on('shown.bs.modal', function () {
+            if ($('.modal-body img').outerWidth() > $('.modal-dialog').outerWidth()) {
+                // 20 is the padding of .modal-body and 30 is the margin of .modal-dialog
+                $('.modal-dialog').css('width', ($('.modal-body img').outerWidth() + 20 + 30) + 'px');
+            }
         });
 
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
