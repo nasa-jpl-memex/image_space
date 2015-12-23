@@ -35,6 +35,9 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                 // 20 is the padding of .modal-body and 30 is the margin of .modal-dialog
                 $('.modal-dialog').css('width', ($('.modal-body img').outerWidth() + 20 + 30) + 'px');
             }
+
+            $('.modal-inner-content').css('height', $('.modal-content').height() * 0.3);
+            $('.modal-inner-content').css('overflow', 'auto');
         });
 
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
