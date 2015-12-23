@@ -19,6 +19,7 @@
 
 import mako
 import os
+import subprocess
 from girder import constants
 from girder.constants import SettingKey
 from girder.utility.model_importer import ModelImporter
@@ -39,7 +40,12 @@ class CustomAppRoot(object):
     vars = {
         'apiRoot': 'api/v1',
         'staticRoot': 'static',
-        'title': 'Image Space'
+        'title': 'Image Space',
+        'versionInfo': {
+            'niceName': 'SUG v2.5',
+            'sha': subprocess.check_output(
+                ['git', 'rev-parse', '--short', 'HEAD']).strip()
+        }
     }
 
     template = r"""
@@ -73,6 +79,11 @@ class CustomAppRoot(object):
                 filter: blur(10px)
             }
         </style>
+
+        <script type="text/javascript">
+          imagespace = {};
+          imagespace.versionInfo = ${versionInfo};
+        </script>
 
       </head>
       <body>
