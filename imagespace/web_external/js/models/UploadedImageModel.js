@@ -1,3 +1,3 @@
-imagespace.models.UploadedImageModel = imagespace.models.SearchResultModel.extend({
+imagespace.models.UploadedImageModel = imagespace.models.ImageModel.extend({
     initialize: function () {}
 });

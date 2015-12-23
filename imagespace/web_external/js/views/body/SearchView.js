@@ -62,7 +62,7 @@ imagespace.router.route('search/:query', 'search', function (query) {
     $('.alert-info').html('Searching <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
     new imagespace.views.SearchView({
-        collection: imagespace.getSearchResultCollectionFromQuery(query),
+        collection: imagespace.getImageCollectionFromQuery(query),
         parentView: window.app
     });
 });
@@ -82,7 +82,7 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
             mode: mode,
             image: (url.indexOf('girder') !== -1) ?
                 new imagespace.models.UploadedImageModel(image) :
-                new imagespace.models.SearchResultModel(image)
+                new imagespace.models.ImageModel(image)
         });
 
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {

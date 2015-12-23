@@ -20,7 +20,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 girder.restRequest({
                     path: 'item?limit=100&offset=0&sort=created&sortdir=-1&folderId=' + privateFolder._id
                 }).done(_.bind(function (items) {
-                    imagespace.userData.images = new imagespace.collections.SearchResultCollection(null, {
+                    imagespace.userData.images = new imagespace.collections.ImageCollection(null, {
                         model: imagespace.models.UploadedImageModel
                     });
 

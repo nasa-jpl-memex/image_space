@@ -1,7 +1,7 @@
 /**
  * This view handles the display of a single image in the sidebar, otherwise
  * known as an image that has been uploaded by the user. These images are also
- * backed by the SearchResultModel (though they differ slightly).
+ * backed by the ImageModel (though they differ slightly).
  * The main difference between the ImageView and the UploadedImageView is
  * the ability to remove a file.
  **/
