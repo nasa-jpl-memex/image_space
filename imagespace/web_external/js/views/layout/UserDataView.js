@@ -1,38 +1,4 @@
 imagespace.views.LayoutUserDataView = imagespace.View.extend({
-    events: {
-        'click .im-search-by-size': function () {
-            this.searchBySizeWidget = new imagespace.views.SearchBySizeWidget({
-                el: $('#g-dialog-container'),
-                parentView: this
-            });
-            this.searchBySizeWidget.render();
-        },
-
-        'change input[name=blur-options]': function (e) {
-            localStorage.setItem('im-unblur', $(e.currentTarget).val());
-            this.updateUnblur($(e.currentTarget).val());
-        },
-
-        'click .im-search-by-serial-number': function () {
-            this.searchBySerialNumberWidget = new imagespace.views.SearchBySerialNumberWidget({
-                el: $('#g-dialog-container'),
-                parentView: this
-            });
-            this.searchBySerialNumberWidget.render();
-        }
-    },
-
-    updateUnblur: function (val) {
-        var options = {
-            never: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }',
-            always: '',
-            hover: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }' +
-                '\nimg.im-blur:hover { -webkit-filter: blur(0px); filter: blur(0px) }'
-        };
-
-        $('#blur-style').text(options[val]);
-    },
-
     initialize: function (settings) {
         girder.cancelRestRequests('fetch');
     },
@@ -81,11 +47,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
     render: function () {
         this.updateUserData(_.bind(function () {
-            this.$el.html(imagespace.templates.userData({
-                unblur: localStorage.getItem('im-unblur') || 'never'
-            }));
-
-            this.updateUnblur(localStorage.getItem('im-unblur') || 'never');
+            this.$el.html(imagespace.templates.userData());
 
             if (_.size(imagespace.userData.images)) {
                 imagespace.userData.images.each(function (image) {
@@ -96,9 +58,13 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
                     this.$('#im-user-images').append(imageView.render().el);
                 }, this);
+
+                $('#sidebar-wrapper').show();
+                $('#wrapper').removeClass('toggled');
             }
 
         }, this));
+
         return this;
     }
 });

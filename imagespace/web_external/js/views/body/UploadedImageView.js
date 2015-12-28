@@ -17,6 +17,12 @@ imagespace.views.UploadedImageView = imagespace.views.ImageView.extend({
             if (image.has('item_id')) {
                 item.once('g:deleted', function () {
                     this.destroy();
+
+                    // If this is the last item being deleted, hide the sidebar
+                    if (_.size(imagespace.userData.images) === 1) {
+                        $('#sidebar-wrapper').hide();
+                        $('#wrapper').addClass('toggled');
+                    }
                 }, this).destroy();
             }
         }

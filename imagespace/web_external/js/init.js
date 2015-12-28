@@ -147,6 +147,22 @@ _.extend(imagespace, {
             numFound: _.has(resp, 'numFound') ? resp.numFound : resp.length,
             docs: _.has(resp, 'docs') ? resp.docs : resp
         };
+    },
+
+    // Default blur setting must be one of always, never, or hover
+    defaultBlurSetting: 'hover',
+
+    updateBlurSetting: function (val) {
+        localStorage.setItem('im-blur', val);
+
+        var options = {
+            always: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }',
+            never: '',
+            hover: 'img.im-blur { -webkit-filter: blur(10px); filter: blur(10px) }' +
+                '\nimg.im-blur:hover { -webkit-filter: blur(0px); filter: blur(0px) }'
+        };
+
+        $('#blur-style').text(options[val]);
     }
 });
 
