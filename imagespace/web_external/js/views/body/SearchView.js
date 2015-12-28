@@ -29,10 +29,12 @@ imagespace.views.SearchView = imagespace.View.extend({
             collection: this.collection
         }));
 
-        this.paginateWidget = new girder.views.PaginateWidget({
-            collection: this.collection,
-            parentView: this
-        });
+        if (this.collection.supportsPagination) {
+            this.paginateWidget = new girder.views.PaginateWidget({
+                collection: this.collection,
+                parentView: this
+            });
+        }
 
         this.collection.each(function (image) {
             var imageView = new imagespace.views.ImageView({
@@ -45,7 +47,10 @@ imagespace.views.SearchView = imagespace.View.extend({
         }, this);
 
         $('.alert-info').addClass('hidden');
-        this.paginateWidget.setElement(this.$('.im-pagination-container')).render();
+
+        if (this.collection.supportsPagination) {
+            this.paginateWidget.setElement(this.$('.im-pagination-container')).render();
+        }
 
         return this;
     }
