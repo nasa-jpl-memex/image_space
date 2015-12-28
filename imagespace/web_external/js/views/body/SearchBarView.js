@@ -186,7 +186,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
             image.imageUrl = url;
             image.id = url;
 
-            this.addUserImage(image);
+            imagespace.addUserImage(image);
         }, this));
     },
 
@@ -243,37 +243,5 @@ imagespace.views.SearchBarView = imagespace.View.extend({
         }
 
         return new Blob([uInt8Array], {type: contentType});
-    },
-
-    addUserImage: function (image) {
-        image.source_query = window.location.href;
-
-        girder.restRequest({
-            path: 'folder?text=Private'
-        }).done(_.bind(function (folders) {
-            var privateFolder = null;
-            folders.forEach(function (folder) {
-                if (folder.parentId === girder.currentUser.id) {
-                    privateFolder = folder;
-                }
-            })
-            if (privateFolder) {
-                var item = new girder.models.ItemModel({
-                    name: image.id,
-                    folderId: privateFolder._id
-                });
-
-                item.once('g:saved', _.bind(function () {
-                    image.item_id = item.attributes._id;
-                    item._sendMetadata(image, _.bind(function () {
-                        this.render();
-                    }, this), function (error) {
-                        // TODO report error
-                    })
-                }, this)).once('g:error', function (error) {
-                    console.log(error);
-                }, this).save();
-            }
-        }, this));
     }
 });

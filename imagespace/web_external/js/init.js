@@ -141,11 +141,15 @@ _.extend(imagespace, {
      * include a numFound attribute, and puts the elements in the docs
      * property. This is because certain endpoints return numDocs and docs (solr)
      * while others don't, though we still need to have access to them for pagination.
+     * Additionally this converts all documents to Image models.
      **/
     processResponse: function (resp) {
         return {
             numFound: _.has(resp, 'numFound') ? resp.numFound : resp.length,
-            docs: _.has(resp, 'docs') ? resp.docs : resp
+            docs: _.map(_.has(resp, 'docs') ? resp.docs : resp,
+                        function (doc) {
+                            return new imagespace.models.ImageModel(doc);
+                        })
         };
     },
 
@@ -163,6 +167,44 @@ _.extend(imagespace, {
         };
 
         $('#blur-style').text(options[val]);
+    },
+
+    /**
+     * Takes an image model and stores it as a Girder item for the current user.
+     **/
+    addUserImage: function (image, done, error) {
+        if (!girder.currentUser) {
+            return;
+        }
+
+        var noop = function () {};
+        done = (_.isFunction(done)) ? done : noop;
+        error = (_.isFunction(error)) ? error : noop;
+        image.source_query = window.location.href;
+
+        girder.restRequest({
+            path: 'folder',
+            data: {
+                text: 'Private',
+                parentType: 'user',
+                parentId: girder.currentUser.id
+            }
+        }).done(function (folders) {
+            var privateFolder = _.first(folders);
+
+            if (privateFolder) {
+                var item = new girder.models.ItemModel({
+                    name: _.has(image, 'id') ? image.id : image.get('id'),
+                    folderId: privateFolder._id
+                });
+
+                item.once('g:saved', function () {
+                    image.set('item_id', item.attributes._id);
+                    item._sendMetadata(image.attributes, done, error);
+                    imagespace.userData.images.add(image);
+                }).once('g:error', error).save();
+            }
+        });
     }
 });
 

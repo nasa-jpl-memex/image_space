@@ -2,7 +2,7 @@ girder.events.once('im:appload.after', function () {
     var cmuSearchResultCollection = function (args, collectionArgs) {
         return _.extend({
             search: function (image) {
-                return new imagespace.collections.SearchResultCollection(null, _.extend({
+                return new imagespace.collections.ImageCollection(null, _.extend({
                     params: {
                         url: image.imageUrl
                     },
