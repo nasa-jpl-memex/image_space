@@ -1,8 +1,8 @@
-imagespace.collections.SearchResultCollection = girder.Collection.extend({
+imagespace.collections.ImageCollection = girder.Collection.extend({
     altUrl: 'imagesearch',
     pageLimit: 20,
     supportsPagination: true,
-    model: imagespace.models.SearchResultModel,
+    model: imagespace.models.ImageModel,
 
     initialize: function (models, options) {
         _.extend(this, options);

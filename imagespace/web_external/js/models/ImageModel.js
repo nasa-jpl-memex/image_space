@@ -1,4 +1,4 @@
-imagespace.models.SearchResultModel = girder.Model.extend({
+imagespace.models.ImageModel = girder.Model.extend({
     initialize: function (settings) {
         if (this.has('id')) {
             if (this.get('id').startsWith('http')) {

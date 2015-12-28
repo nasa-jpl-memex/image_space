@@ -1,7 +1,7 @@
 girder.events.once('im:appload.after', function () {
     imagespace.searches['flann-content'] = {
         search: function (image) {
-            var collection = new imagespace.collections.SearchResultCollection(null, {
+            var collection = new imagespace.collections.ImageCollection(null, {
                 altUrl: 'flann_imagecontentsearch',
                 params: {
                     url: image.imageUrl
