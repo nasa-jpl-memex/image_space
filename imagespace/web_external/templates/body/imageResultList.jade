@@ -5,11 +5,25 @@
                 img.im-image-thumbnail.im-blur(src=image.get('imageUrl'))
     .col-xs-6.col-md-9
         h4= image.get('id')
-        div!= '<b>Size:</b> ' + image.get('tiff_imagewidth') + 'x' + image.get('tiff_imagelength')
-        div!= '<b>Extracted text:</b> ' + image.get('content')
-        div!= '<b>Serial number:</b> ' + image.get('camera_serial_number')
-        div!= '<b>Ad ID:</b> ' + image.get('ads_id')
-        div!= '<b>Geolocation:</b> ' + image.get('geo_lat') + ' latitude, ' + image.get('geo_long') + ' longitude'
+        if image.has('tiff:imagelength_l_md') && image.has('tiff:imagewidth_l_md')
+          div
+            b Size:
+            !{image.get('tiff:imagewidth_l_md') + 'x' + image.get('tiff:imagelength_l_md')}
+
+        if image.has('content')
+          div
+            b Extracted text:
+            !{image.get('content')}
+
+        if image.has('geo:lat_d_md') && image.has('geo:long_d_md')
+          div
+            b Geolocation:
+            !{image.get('geo:lat_d_md') + ' latitude, ' + image.get('geo:long_d_md') + ' longitude'}
+
+        if image.has('make_t_md')
+          div
+            b Camera Make
+            !{image.get('make_t_md')}
         div
             .im-add-user-data.btn.btn-link.btn-md(im-id=image.get('id'), title="Save")
                 i.icon-floppy
