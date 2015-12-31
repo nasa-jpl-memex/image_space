@@ -25,6 +25,10 @@ girder.events.once('im:appload.after', function () {
         { altUrl: 'cmu_fullimagesearch' }
     );
 
+    if (imagespace.defaultSimilaritySearch === null) {
+        imagespace.defaultSimilaritySearch = 'cmu-full';
+    }
+
     imagespace.solrIdToUrl = function (id) {
         var re = new RegExp("^" + imagespace.solrPrefix),
             file = id.replace(re, "");
