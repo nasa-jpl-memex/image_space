@@ -136,6 +136,18 @@ _.extend(imagespace, {
         return imagespace.solrPrefix + file;
     },
 
+    oppositeCaseFilename: function (filename) {
+        var parts = filename.split('/');
+
+        if (parts[parts.length - 1] === parts[parts.length - 1].toLowerCase()) {
+            parts[parts.length - 1] = parts[parts.length - 1].toUpperCase();
+        } else {
+            parts[parts.length - 1] = parts[parts.length - 1].toLowerCase();
+        }
+
+        return parts.join('/');
+    },
+
     /**
      * Processes a response (from a collection fetch) to
      * include a numFound attribute, and puts the elements in the docs
