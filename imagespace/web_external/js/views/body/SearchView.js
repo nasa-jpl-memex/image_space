@@ -95,6 +95,8 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
 
         $('.alert-info').addClass('hidden');
         imagespace.userDataView.render();
+
+        $('.modal-open').css('overflow', 'auto');
     };
 
     girder.restRequest({
