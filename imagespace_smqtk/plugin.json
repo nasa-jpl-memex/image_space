@@ -1,0 +1,7 @@
+{
+    "name": "Image Space SMQTK",
+    "version": "0.1.0",
+    "dependencies": [
+        "imagespace"
+    ]
+}
