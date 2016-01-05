@@ -1,4 +1,4 @@
-# Image Space Server
+# ImageSpace Server
 
 ImageSpace is a plugin for [Girder](https://girder.readthedocs.org/en/latest/).
 
@@ -97,13 +97,13 @@ The default Girder app should be visible at [http://localhost:8080](http://local
 Register for a new account, which will be the admin account. Go to the admin console and enter the
 plugin configuration. Find the imagespace plugin and enable it. Girder should prompt you to restart
 the server (or restart manually). One restarted, again visit [http://localhost:8080](http://localhost:8080).
-The application should be replaced with Image Space, with the full Girder app located at
+The application should be replaced with ImageSpace, with the full Girder app located at
 [http://localhost:8080/girder](http://localhost:8080/girder).
 
 ### Additional Plugins
-Image Space comes with additional plugins that may be enabled using the [Girder administration panel](http://girder.readthedocs.org/en/latest/installation.html#initial-setup). For each of these a symbolic link must be set so the plugin exists in Girder's `/plugins` directory.
+ImageSpace comes with additional plugins that may be enabled using the [Girder administration panel](http://girder.readthedocs.org/en/latest/installation.html#initial-setup). For each of these a symbolic link must be set so the plugin exists in Girder's `/plugins` directory.
 
-Individual plugins may require certain environment variables be set, for example the Image Space FLANN plugin requires `IMAGE_SPACE_FLANN_INDEX` be set to the URL of the flann_index. These plugins will warn you when starting Girder if they don't have the required environment variables to function properly.
+Individual plugins may require certain environment variables be set, for example the ImageSpace FLANN plugin requires `IMAGE_SPACE_FLANN_INDEX` be set to the URL of the flann_index. These plugins will warn you when starting Girder if they don't have the required environment variables to function properly.
 
 
 ## License
