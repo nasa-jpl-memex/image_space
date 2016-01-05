@@ -40,7 +40,7 @@ class CustomAppRoot(object):
     vars = {
         'apiRoot': 'api/v1',
         'staticRoot': 'static',
-        'title': 'Image Space',
+        'title': 'ImageSpace',
         'versionInfo': {
             'niceName': 'SUG v2.5',
             'sha': subprocess.check_output(
