@@ -1,5 +1,5 @@
 {
-    "name": "Image Space FLANN",
+    "name": "ImageSpace FLANN",
     "version": "0.1.0",
     "dependencies": [
         "imagespace"

@@ -1,5 +1,5 @@
 {
-    "name": "Image Space CMU",
+    "name": "ImageSpace CMU",
     "version": "0.1.0",
     "dependencies": [
         "imagespace"

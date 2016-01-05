@@ -1,5 +1,5 @@
 {
-    "name": "Image Space Columbia",
+    "name": "ImageSpace Columbia",
     "version": "0.1.0",
     "dependencies": [
         "imagespace"
