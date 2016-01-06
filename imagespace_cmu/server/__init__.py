@@ -23,7 +23,8 @@ from .cmu_search import CmuFullImageSearch, CmuImageBackgroundSearch
 
 def load(info):
     required_env_vars = ('IMAGE_SPACE_CMU_BACKGROUND_SEARCH',
-                         'IMAGE_SPACE_CMU_FULL_IMAGE_SEARCH')
+                         'IMAGE_SPACE_CMU_FULL_IMAGE_SEARCH',
+                         'IMAGE_SPACE_CMU_PREFIX')
 
     for required_var in required_env_vars:
         if required_var not in os.environ \

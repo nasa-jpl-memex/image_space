@@ -20,7 +20,6 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
-from girder import logger
 
 import requests
 import os
