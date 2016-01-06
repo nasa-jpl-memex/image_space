@@ -40,7 +40,7 @@ class CustomAppRoot(object):
     vars = {
         'apiRoot': 'api/v1',
         'staticRoot': 'static',
-        'title': 'Image Space',
+        'title': 'ImageSpace',
         'versionInfo': {
             'niceName': 'SUG v2.5',
             'sha': subprocess.check_output(
@@ -53,6 +53,8 @@ class CustomAppRoot(object):
     <html lang="en">
       <head>
         <title>${title}</title>
+        <link rel="stylesheet"
+              href="//fonts.googleapis.com/css?family=Droid+Sans:400,700">
         <link rel="stylesheet"
               href="${staticRoot}/lib/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet"
