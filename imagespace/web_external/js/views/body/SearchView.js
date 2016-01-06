@@ -77,12 +77,16 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
     var performSearch = function (image) {
         image.imageUrl = url;
 
+        if (!(image instanceof imagespace.models.ImageModel)) {
+            image = (url.indexOf('girder') !== -1) ?
+                new imagespace.models.UploadedImageModel(image) :
+                new imagespace.models.ImageModel(image);
+        }
+
         imagespace.headerView.render({
             url: url,
             mode: mode,
-            image: (url.indexOf('girder') !== -1) ?
-                new imagespace.models.UploadedImageModel(image) :
-                new imagespace.models.ImageModel(image)
+            image: image
         });
 
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
@@ -91,12 +95,14 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
 
         $('.alert-info').addClass('hidden');
         imagespace.userDataView.render();
+
+        $('.modal-open').css('overflow', 'auto');
     };
 
     girder.restRequest({
         path: 'imagesearch',
         data: {
-            query: 'id:"' + imagespace.urlToSolrId(url) + '"'
+            query: 'id:"' + imagespace.urlToSolrId(url) + '" OR id:"' + imagespace.oppositeCaseFilename(imagespace.urlToSolrId(url)) + '"'
         }
     }).done(function (results) {
         var q;

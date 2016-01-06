@@ -40,22 +40,34 @@ class ImageSearch(Resource):
         return self._imageSearch(params)
 
     def _imageSearch(self, params):
+        def filenameLower(filename):
+            path = filename.replace('file:', '')
+            return 'file:%s' % os.path.join(os.path.dirname(path),
+                                            os.path.basename(path).lower())
+
         limit = params['limit'] if 'limit' in params else '100'
         query = params['query'] if 'query' in params else '*'
         offset = params['offset'] if 'offset' in params else '0'
-        base = (
-            os.environ['IMAGE_SPACE_SOLR'] +
-            '/select?wt=json&indent=true&hl=true&hl.fl=*'
-        )
+        base = os.environ['IMAGE_SPACE_SOLR'] + '/select'
+
         try:
-            result = requests.get(
-                base + '&q=' + query +
-                '&rows=' + str(limit) + '&start=' + str(offset), verify=False).json()
-            logger.info(base + '&q=' + query + '&rows=' + str(limit) + '&start=' + str(offset))
+            result = requests.get(base, params={
+                'wt': 'json',
+                'hl': 'true',
+                'hl.fl': '*',
+                'q': query,
+                'start': offset,
+                'rows': limit,
+                'fq': 'mainType:image'
+            }, verify=False).json()
         except ValueError:
             return []
+
         for image in result['response']['docs']:
             image['highlight'] = result['highlighting'][image['id']]
+
+        for doc in result['response']['docs']:
+            doc['id'] = filenameLower(doc['id'])
 
         response = {
             'numFound': result['response']['numFound'],

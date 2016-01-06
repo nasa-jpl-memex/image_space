@@ -4,7 +4,7 @@ girder.events.once('im:appload.after', function () {
             search: function (image) {
                 return new imagespace.collections.ImageCollection(null, _.extend({
                     params: {
-                        url: image.imageUrl
+                        url: _.has(image, 'imageUrl') ? image.imageUrl : image.get('imageUrl')
                     },
                     supportsPagination: false,
                     comparator: function (image) {
@@ -24,6 +24,10 @@ girder.events.once('im:appload.after', function () {
         { niceName: 'Similarity (CMU)' },
         { altUrl: 'cmu_fullimagesearch' }
     );
+
+    if (imagespace.defaultSimilaritySearch === null) {
+        imagespace.defaultSimilaritySearch = 'cmu-full';
+    }
 
     imagespace.solrIdToUrl = function (id) {
         var re = new RegExp("^" + imagespace.solrPrefix),

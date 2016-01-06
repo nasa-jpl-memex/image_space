@@ -25,49 +25,45 @@ _.extend(imagespace, {
      * in that context.
      **/
     searches: {
-        ad: {
-            search: function (image) {
-                return imagespace.getImageCollectionFromQuery('ads_id:"' + image.ads_id + '"');
-            },
-            niceName: 'Ad',
-            displayContext: function (image) {
-                return image.has('ads_id');
-            }
-        },
-        camera: {
+        make: {
             search: function (image) {
                 return imagespace.getImageCollectionFromQuery(
-                    'camera_serial_number:"' + image.camera_serial_number + '"');
+                    'make_t_md:"' + image.get('make_t_md') + '"');
             },
-            niceName: 'Camera',
+            niceName: 'Camera Make',
             displayContext: function (image) {
-                return image.has('camera_serial_number');
+                return image.has('make_t_md');
             }
         },
         size: {
             search: function (image) {
+                var lengthKey = 'tiff\\:imagelength_l_md',
+                    widthKey = 'tiff\\:imagewidth_l_md';
+
                 return imagespace.getImageCollectionFromQuery(
-                    'tiff_imagelength:' + image.tiff_imagelength + ' AND tiff_imagewidth:' + image.tiff_imagewidth);
+                    lengthKey + ':' + image.get('tiff:imagelength_l_md') + ' AND ' + widthKey + ':' + image.get('tiff:imagewidth_l_md'));
             },
             niceName: 'Size',
             displayContext: function (image) {
-                return image.has('tiff_imagelength') && image.has('tiff_imagewidth');
+                return image.has('tiff:imagelength_l_md') && image.has('tiff:imagewidth_l_md');
             }
         },
         location: {
             search: function (image) {
-                var geoLatDelta = image.geo_lat < 0 ? -1 : 1,
-                    geoLongDelta = image.geo_long < 0 ? -1 : 1,
-                    latRange = [image.geo_lat - geoLatDelta, image.geo_lat + geoLatDelta],
-                    longRange = [image.geo_long - geoLongDelta, image.geo_long + geoLongDelta];
+                var latKey = 'geo:lat_d_md',
+                    longKey = 'geo:long_d_md',
+                    geoLatDelta = image.get(latKey) < 0 ? -1 : 1,
+                    geoLongDelta = image.get(longKey) < 0 ? -1 : 1,
+                    latRange = [image.get(latKey) - geoLatDelta, image.get(latKey) + geoLatDelta],
+                    longRange = [image.get(longKey) - geoLongDelta, image.get(longKey) + geoLongDelta];
 
                 return imagespace.getImageCollectionFromQuery(
-                    'geo_lat:[' + latRange[0] + ' TO ' + latRange[1] + '] AND geo_long:[' + longRange[0] + ' TO ' + longRange[1] + ']'
+                    'geo\\:lat_d_md:[' + latRange[0] + ' TO ' + latRange[1] + '] AND geo\\:long_d_md:[' + longRange[0] + ' TO ' + longRange[1] + ']'
                 );
             },
             niceName: 'Location',
             displayContext: function (image) {
-                return image.has('geo_lat');
+                return image.has('geo:lat_d_md') && image.has('geo:long_d_md');
             }
         }
     },
@@ -134,6 +130,18 @@ _.extend(imagespace, {
         }
 
         return imagespace.solrPrefix + file;
+    },
+
+    oppositeCaseFilename: function (filename) {
+        var parts = filename.split('/');
+
+        if (parts[parts.length - 1] === parts[parts.length - 1].toLowerCase()) {
+            parts[parts.length - 1] = parts[parts.length - 1].toUpperCase();
+        } else {
+            parts[parts.length - 1] = parts[parts.length - 1].toLowerCase();
+        }
+
+        return parts.join('/');
     },
 
     /**
