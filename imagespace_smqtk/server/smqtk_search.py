@@ -20,10 +20,13 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
+from girder.models import getDbConnection
+from girder.plugins.imagespace import solr_documents_from_paths
 
 import requests
 import os
 
+DEFAULT_PAGE_SIZE = 20
 
 class SmqtkSimilaritySearch(Resource):
     def __init__(self):
@@ -34,11 +37,27 @@ class SmqtkSimilaritySearch(Resource):
     @access.public
     def runImageSimilaritySearch(self, params):
         assert hasattr(self, 'search_url')
-        print self.search_url
-        print params['url']
-        r = requests.get(self.search_url+'/'+params['url']).json()
+        params['n'] = params['n'] if 'n' in params else str(DEFAULT_PAGE_SIZE)
+        smqtk_r = requests.get(self.search_url + '/n=' + params['n'] + '/' + params['url']).json()
+        neighbors_to_distances = dict(zip(smqtk_r['neighbors'], smqtk_r['distances']))
 
-        return r
+        db = getDbConnection().get_default_database()
+        mapped_paths = db[os.environ['IMAGE_SPACE_SMQTK_MAP_COLLECTION']].find({
+            'sha': {
+                '$in': smqtk_r['neighbors']
+            }
+        })
+        solr_id_to_shas = {os.environ['IMAGE_SPACE_SOLR_PREFIX'] + '/' + x['path']: x['sha'] for x in mapped_paths}
+        documents = solr_documents_from_paths(solr_id_to_shas.keys())
+
+        for document in documents:
+            document['im_distance'] = neighbors_to_distances[solr_id_to_shas[document['id']]]
+
+        return {
+            'numFound': len(documents),
+            'docs': documents
+        }
     runImageSimilaritySearch.description = (
         Description('Performs SMQTK background search')
+        .param('n', 'Number of nearest neighbors to return', default=str(DEFAULT_PAGE_SIZE))
         .param('url', 'Publicly accessible URL of the image to search'))

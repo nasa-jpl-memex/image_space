@@ -8,7 +8,7 @@ girder.events.once('im:appload.after', function () {
                     },
                     supportsPagination: false,
                     comparator: function (image) {
-                        return -image.get('score');
+                        return -image.get('im_distance');
                     }
                 }, collectionArgs || {}));
             }
@@ -18,5 +18,5 @@ girder.events.once('im:appload.after', function () {
     imagespace.searches['smqtk-similarity'] = smqtkSearchResultCollection(
         { niceName: 'SmqtkSimilarity' },
         { altUrl: 'smqtk_similaritysearch' }
-    );    
+    );
 }, this);
