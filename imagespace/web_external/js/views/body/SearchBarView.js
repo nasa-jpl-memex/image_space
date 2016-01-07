@@ -43,13 +43,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
         'click #advanced-search': function (event) {
             event.preventDefault();
-            $('body').append('<div id="advanced-search-modal"></div>');
-            var $el = $('#advanced-search-modal');
-            $el.html(imagespace.templates.advancedSearchWidget()).girderModal(false);
-
-            $el.find('a').on('click', function () {
-                $el.modal('hide');
-            });
+            $('#advanced-search-table').toggle();
         }
     },
 
