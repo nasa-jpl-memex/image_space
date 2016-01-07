@@ -18,7 +18,10 @@ imagespace.views.SearchView = imagespace.View.extend({
         this.$el = window.app.$('#g-app-body-container');
         this.collection = settings.collection;
         this.viewMode = localStorage.getItem('viewMode') || 'grid';
-        this.collection.on('g:changed', _.bind(this.render, this));
+        this.collection.on('g:changed', _.bind(function () {
+            this.render();
+            $('.alert-info').addClass('hidden');
+        }, this));
         this.collection.fetch(settings.collection.params || {}, true);
     },
 
@@ -69,7 +72,11 @@ imagespace.router.route('search/:query', 'search', function (query) {
 
 imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
     // Replace Girder token with current session's token if necessary
-    var parts = url.split('&token=');
+    var niceName = (_.has(imagespace.searches[mode], 'niceName')) ? imagespace.searches[mode].niceName : mode,
+        parts = url.split('&token=');
+
+    $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
+
     if (parts.length === 2) {
         url = parts[0] + '&token=' + girder.cookie.find('girderToken');
     }
@@ -88,12 +95,12 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
             mode: mode,
             image: image
         });
+        $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
             collection: imagespace.searches[mode].search(image)
         });
 
-        $('.alert-info').addClass('hidden');
         imagespace.userDataView.render();
 
         $('.modal-open').css('overflow', 'auto');
