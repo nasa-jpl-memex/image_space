@@ -141,7 +141,7 @@ $portraitHeight = 38px
 .im-search-image
     height 50px
     float left
-    padding-left 200px
+    padding-left 120px
     padding-right 50px
 
 .im-search-image:hover
@@ -213,3 +213,17 @@ img.im-image-detail
 a.im-link
   display block
   clear both
+
+@media(max-width:1350px) {
+   .im-search-image {
+      padding-left: 0px;
+    }
+
+    .navbar-header {
+      display: none;
+    }
+
+    .h-current-user-wrapper {
+      display: none;
+    }
+}
