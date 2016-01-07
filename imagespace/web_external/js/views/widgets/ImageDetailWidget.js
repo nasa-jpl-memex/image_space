@@ -36,8 +36,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                 $('.modal-dialog').css('width', ($('.modal-body img').outerWidth() + 20 + 30) + 'px');
             }
 
-            $('.modal-inner-content').css('height', $('.modal-content').height() * 0.3);
-            $('.modal-inner-content').css('overflow', 'auto');
+            $('.modal-body').css('height', $(window).height() * 0.8);
+            $('.modal-body').css('overflow', 'auto');
         });
 
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
