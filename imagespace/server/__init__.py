@@ -19,6 +19,7 @@
 
 import mako
 import os
+import requests
 import subprocess
 from girder import constants
 from girder.constants import SettingKey
@@ -161,3 +162,32 @@ def load(info):
     info['serverRoot'], info['serverRoot'].girder = (CustomAppRoot(),
                                                      info['serverRoot'])
     info['serverRoot'].api = info['serverRoot'].girder.api
+
+
+def solr_documents_from_paths(paths):
+    """Given a list of paths, return list of relevant solr documents
+    by uppercasing the basename of the paths.
+
+    This performs several requests, each of size CHUNK_SIZE to avoid sending
+    too much data (HTTP 413).
+
+    :param paths: List of solr paths corresponding to the Solr id attribute
+    :returns: List of solr documents
+    """
+    CHUNK_SIZE = 20
+    documents = []
+
+    for i in xrange(0, len(paths), CHUNK_SIZE):
+        paths_chunk = paths[i:i + CHUNK_SIZE]
+
+        r = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
+            'wt': 'json',
+            'q': 'mainType:image',
+            'fq': 'resourcename_t_md:(%s)' %
+            ' '.join('%s' % os.path.basename(p).upper() for p in paths_chunk),
+            'rows': str(CHUNK_SIZE)
+        }, verify=False)
+
+        documents += r.json()['response']['docs']
+
+    return documents

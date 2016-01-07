@@ -8,7 +8,7 @@ girder.events.once('im:appload.after', function () {
                     },
                     supportsPagination: false,
                     comparator: function (image) {
-                        return -image.get('score');
+                        return -image.get('im_score');
                     }
                 }, collectionArgs || {}));
             }

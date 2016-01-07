@@ -20,7 +20,6 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
-from girder import logger
 
 import requests
 import os
@@ -40,10 +39,10 @@ class ImageSearch(Resource):
         return self._imageSearch(params)
 
     def _imageSearch(self, params):
-        def filenameLower(filename):
+        def filenameUpper(filename):
             path = filename.replace('file:', '')
             return 'file:%s' % os.path.join(os.path.dirname(path),
-                                            os.path.basename(path).lower())
+                                            os.path.basename(path).upper())
 
         limit = params['limit'] if 'limit' in params else '100'
         query = params['query'] if 'query' in params else '*'
@@ -67,7 +66,7 @@ class ImageSearch(Resource):
             image['highlight'] = result['highlighting'][image['id']]
 
         for doc in result['response']['docs']:
-            doc['id'] = filenameLower(doc['id'])
+            doc['id'] = filenameUpper(doc['id'])
 
         response = {
             'numFound': result['response']['numFound'],
