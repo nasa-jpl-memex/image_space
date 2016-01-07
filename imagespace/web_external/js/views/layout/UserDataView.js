@@ -69,6 +69,9 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
 
             $('#sidebar-wrapper').show();
             $('#wrapper').removeClass('toggled');
+        } else {
+            $('#wrapper').addClass('toggled');
+            $('#sidebar-wrapper').hide();
         }
 
         return this;

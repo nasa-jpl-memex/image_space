@@ -8,8 +8,17 @@
       button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
       h4.modal-title= title
     .modal-body
-      a(href="#{url}", target="_blank")
-        img.im-image-detail.im-blur(src="#{url}")
+      .image-container
+        .scroll-controls
+          if canScroll && hasPrev
+            i.icon-left-open.prev-image(title='Previous image')
+          if canScroll && hasNext
+            i.icon-right-open.next-image(title='Next image')
+
+        a.im-link(href="#{url}", target="_blank")
+          img.im-image-detail.im-blur(src="#{url}")
+
+
       if searches
         .im-actions
         | Search by

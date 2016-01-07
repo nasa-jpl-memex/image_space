@@ -43,13 +43,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
         'click #advanced-search': function (event) {
             event.preventDefault();
-            $('body').append('<div id="advanced-search-modal"></div>');
-            var $el = $('#advanced-search-modal');
-            $el.html(imagespace.templates.advancedSearchWidget()).girderModal(false);
-
-            $el.find('a').on('click', function () {
-                $el.modal('hide');
-            });
+            $('#advanced-search-table').toggle();
         }
     },
 
@@ -102,10 +96,10 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
     initialize: function (settings) {
         this.settings = settings || {};
-        this.settings.loggedIn = girder.currentUser;
 
         if (_.has(this.settings, 'image')) {
-            this.settings.searches = imagespace.getApplicableSearches(this.settings.image);
+            this.image = this.settings.image;
+            this.settings.searches = imagespace.getApplicableSearches(this.image);
         }
 
         if (settings.dropzone) {

@@ -1,6 +1,5 @@
 .h-current-user-text
     if (user)
-        .h-portrait-wrapper
         .h-user-link-wrapper
             a.h-user-link(data-toggle="dropdown", data-target="#g-user-action-menu")
                 | #{user.get('firstName')} #{user.get('lastName')}
