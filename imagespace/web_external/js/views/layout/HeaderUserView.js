@@ -34,11 +34,6 @@ imagespace.views.LayoutHeaderUserView = imagespace.View.extend({
             user: girder.currentUser
         }));
 
-        if (girder.currentUser) {
-            this.$('.h-portrait-wrapper').css(
-                'background-image', 'url(' +
-                girder.currentUser.getGravatarUrl(36) + ')');
-        }
         return this;
     }
 });
