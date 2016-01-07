@@ -38,7 +38,11 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
 
             $('.modal-body').css('height', $(window).height() * 0.8);
             $('.modal-body').css('overflow', 'auto');
+
         });
+        // Bizzare bug in FF causes the scrollbar to remember its position
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=706792
+        $('.modal-body').scrollTop(0);
 
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
 
