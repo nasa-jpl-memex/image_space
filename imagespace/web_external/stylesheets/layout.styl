@@ -181,8 +181,10 @@ img.im-image-thumbnail
     height 100px
 
 img.im-image-detail
-    height 250px
-    width auto
+    max-height 100%
+    max-width 100%
+    display block
+    margin 0 auto
 
 .im-caption
     height 70px
@@ -208,3 +210,15 @@ img.im-image-detail
   border-spacing 8px
   border-collapse inherit
   display none
+
+.prev-image
+  float left
+  cursor pointer
+
+.next-image
+  float right
+  cursor pointer
+
+a.im-link
+  display block
+  clear both
