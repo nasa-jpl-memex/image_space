@@ -29,6 +29,32 @@ class ImageSearch(Resource):
     def __init__(self):
         self.resourceName = 'imagesearch'
         self.route('GET', (), self.getImageSearch)
+        self.route('GET', ('relevant_ads',), self.getRelevantAds)
+
+    @access.public
+    def getRelevantAds(self, params):
+        AD_LIMIT = 10
+
+        try:
+            result = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
+                'wt': 'json',
+                'q': 'outpaths:"%s"' % params['solr_image_id'],
+                'fl': 'id',
+                'rows': str(AD_LIMIT)
+            }, verify=False).json()
+        except ValueError:
+            return {
+                'numFound': 0,
+                'ids': []
+            }
+
+        return {
+            'numFound': result['response']['numFound'],
+            'ids': [x['id'] for x in result['response']['docs']]
+        }
+    getRelevantAds.description = Description(
+        'Retrieve the relevant ad ids from a given image'
+    ).param('solr_image_id', 'ID of the Solr document representing an image')
 
     @access.public
     def getImageSearch(self, params):

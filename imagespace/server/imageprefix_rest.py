@@ -34,6 +34,7 @@ class ImagePrefix(Resource):
         return {
             'prefix': os.environ['IMAGE_SPACE_PREFIX'],
             'solrPrefix': os.environ['IMAGE_SPACE_SOLR_PREFIX'],
-            'stolenCameraPrefix': os.environ['IMAGE_SPACE_STOLEN_CAMERA'] if 'IMAGE_SPACE_STOLEN_CAMERA' in os.environ else 'http://www.stolencamerafinder.com/search'
+            'stolenCameraPrefix': os.environ['IMAGE_SPACE_STOLEN_CAMERA'] if 'IMAGE_SPACE_STOLEN_CAMERA' in os.environ else 'http://www.stolencamerafinder.com/search',
+            'facetviewAdsUrl': os.environ.get('IMAGE_SPACE_FACETVIEW_ADS_URL', False)
         }
     getImagePrefix.description = Description('Returns image URL prefix')

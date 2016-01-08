@@ -39,7 +39,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         this.canScroll = this.parentView.parentView instanceof imagespace.views.SearchView;
     },
 
-    render: function () {
+    _render: function () {
         var modal = this.$el.html(imagespace.templates.imageDetailWidget({
             title: this.title,
             image: this.image,
@@ -48,7 +48,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             searches: imagespace.getApplicableSearches(this.image),
             canScroll: this.canScroll,
             hasPrev: this.canScroll && this.parentView.$el.prev().length,
-            hasNext: this.canScroll && this.parentView.$el.next().length
+            hasNext: this.canScroll && this.parentView.$el.next().length,
+            facetviewAdsUrl: imagespace.facetviewAdsUrl
         })).girderModal(this);
 
         $('.modal-body').css('height', $(window).height() * 0.8);
@@ -61,5 +62,25 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
 
         return this;
+    },
+
+    render: function () {
+        if (this.image.has('relevantAds')) {
+            return this._render();
+        } else {
+            girder.restRequest({
+                path: '/imagesearch/relevant_ads',
+                data: {
+                    solr_image_id: this.image.get('id')
+                }
+            }).done(_.bind(function (response) {
+                this.image.set('relevantAds', _.map(response.ids, function (id) {
+                    return _.last(id.split('/'));
+                }));
+                this._render();
+            }, this));
+
+            return this;
+        }
     }
 });
