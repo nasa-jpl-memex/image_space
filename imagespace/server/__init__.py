@@ -45,7 +45,9 @@ class CustomAppRoot(object):
         'versionInfo': {
             'niceName': 'SUG v2.5',
             'sha': subprocess.check_output(
-                ['git', 'rev-parse', '--short', 'HEAD']).strip()
+                ['git', 'rev-parse', '--short', 'HEAD'],
+                cwd=os.path.dirname(os.path.realpath(__file__))
+            ).strip()
         }
     }
 
