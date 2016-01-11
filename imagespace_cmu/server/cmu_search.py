@@ -23,6 +23,7 @@ from girder.api.rest import Resource
 
 from girder.plugins.imagespace import solr_documents_from_paths
 
+import json
 import requests
 import os
 
@@ -31,6 +32,7 @@ class CmuSearch(Resource):
     def _search(self, params):
         assert hasattr(self, 'search_url')
 
+        classifications = json.loads(params['classifications']) if 'classifications' in params else []
         cmu_images = requests.post(self.search_url,
                                    data=params['url'],
                                    headers={
@@ -44,7 +46,7 @@ class CmuSearch(Resource):
                       for (image, score) in cmu_images]
         cmu_scores = {image.lower(): score for image, score in cmu_images}
 
-        documents = solr_documents_from_paths([x[0] for x in cmu_images])
+        documents = solr_documents_from_paths([x[0] for x in cmu_images], classifications)
 
         # Augment original scores from response into solr documents
         for document in documents:

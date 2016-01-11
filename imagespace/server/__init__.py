@@ -166,14 +166,18 @@ def load(info):
     info['serverRoot'].api = info['serverRoot'].girder.api
 
 
-def solr_documents_from_paths(paths):
+def solr_documents_from_paths(paths, classifications=None):
     """Given a list of paths, return list of relevant solr documents
     by uppercasing the basename of the paths.
 
     This performs several requests, each of size CHUNK_SIZE to avoid sending
     too much data (HTTP 413).
 
+    Additionally it can take an iterable of classifications which will be
+    searched for through Solr.
+
     :param paths: List of solr paths corresponding to the Solr id attribute
+    :param classifications: List of classifications to search by
     :returns: List of solr documents
     """
     CHUNK_SIZE = 20
@@ -182,11 +186,18 @@ def solr_documents_from_paths(paths):
     for i in xrange(0, len(paths), CHUNK_SIZE):
         paths_chunk = paths[i:i + CHUNK_SIZE]
 
+        if classifications:
+            q = ' OR '.join(['%s:[.7 TO *]' % key
+                             for key in classifications])
+        else:
+            q = '*:*'
+
         r = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
             'wt': 'json',
-            'q': 'mainType:image',
-            'fq': 'resourcename_t_md:(%s)' %
-            ' '.join('%s' % os.path.basename(p).upper() for p in paths_chunk),
+            'q': q,
+            'fq': ['mainType:image',
+                   'resourcename_t_md:(%s)' %
+                   ' '.join('%s' % os.path.basename(p).upper() for p in paths_chunk)],
             'rows': str(CHUNK_SIZE)
         }, verify=False)
 
