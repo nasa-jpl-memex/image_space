@@ -23,6 +23,7 @@ from girder.api.rest import Resource
 from girder.models import getDbConnection
 from girder.plugins.imagespace import solr_documents_from_paths
 
+import json
 import requests
 import os
 
@@ -37,6 +38,7 @@ class SmqtkSimilaritySearch(Resource):
     @access.public
     def runImageSimilaritySearch(self, params):
         assert hasattr(self, 'search_url')
+        classifications = json.loads(params['classifications']) if 'classifications' in params else []
         params['n'] = params['n'] if 'n' in params else str(DEFAULT_PAGE_SIZE)
         smqtk_r = requests.get(self.search_url + '/n=' + params['n'] + '/' + params['url']).json()
         neighbors_to_distances = dict(zip(smqtk_r['neighbors'], smqtk_r['distances']))
@@ -48,7 +50,7 @@ class SmqtkSimilaritySearch(Resource):
             }
         })
         solr_id_to_shas = {os.environ['IMAGE_SPACE_SOLR_PREFIX'] + '/' + x['path']: x['sha'] for x in mapped_paths}
-        documents = solr_documents_from_paths(solr_id_to_shas.keys())
+        documents = solr_documents_from_paths(solr_id_to_shas.keys(), classifications)
 
         for document in documents:
             document['im_distance'] = neighbors_to_distances[solr_id_to_shas[document['id']]]

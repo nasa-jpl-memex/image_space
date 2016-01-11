@@ -21,6 +21,7 @@ from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
 
+import json
 import requests
 import os
 
@@ -71,9 +72,14 @@ class ImageSearch(Resource):
                                             os.path.basename(path).upper())
 
         limit = params['limit'] if 'limit' in params else '100'
-        query = params['query'] if 'query' in params else '*'
+        query = params['query'] if 'query' in params else '*:*'
         offset = params['offset'] if 'offset' in params else '0'
+        classifications = json.loads(params['classifications']) if 'classifications' in params else []
         base = os.environ['IMAGE_SPACE_SOLR'] + '/select'
+
+        if classifications:
+            query += ' AND (%s)' % ' OR '.join(['%s:[.7 TO *]' % key
+                                                for key in classifications])
 
         try:
             result = requests.get(base, params={
@@ -83,7 +89,7 @@ class ImageSearch(Resource):
                 'q': query,
                 'start': offset,
                 'rows': limit,
-                'fq': 'mainType:image'
+                'fq': ['mainType:image']
             }, verify=False).json()
         except ValueError:
             return []
