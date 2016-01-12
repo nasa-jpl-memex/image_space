@@ -19,11 +19,12 @@
           img.im-image-detail.im-blur(src="#{url}")
 
 
-      if searches
+      if image.get('_applicableSearches')
         .im-actions
-        | Search by
-        each val, key in searches
-          a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal").btn.btn-link.btn-default #{val.niceName}
+          span(style='display:block')
+            | Search by
+          each key in image.get('_applicableSearches')
+            a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal").btn.btn-link.btn-default #{imagespace.searches[key].niceName}
       .modal-inner-content
         if image.has('highlight')
           h4 Match

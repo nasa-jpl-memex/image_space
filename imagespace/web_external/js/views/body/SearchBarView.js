@@ -99,7 +99,6 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
         if (_.has(this.settings, 'image')) {
             this.image = this.settings.image;
-            this.settings.searches = imagespace.getApplicableSearches(this.image);
         }
 
         if (settings.dropzone) {
@@ -108,7 +107,9 @@ imagespace.views.SearchBarView = imagespace.View.extend({
     },
 
     render: function () {
-        this.$el.html(imagespace.templates.searchBarWidget(this.settings));
+        this.$el.html(imagespace.templates.searchBarWidget(_.extend(this.settings, {
+            imagespace: imagespace
+        })));
         return this;
     },
 
