@@ -27,7 +27,7 @@ import json
 import requests
 import os
 
-DEFAULT_PAGE_SIZE = 20
+DEFAULT_PAGE_SIZE = 100
 
 class SmqtkSimilaritySearch(Resource):
     def __init__(self):
