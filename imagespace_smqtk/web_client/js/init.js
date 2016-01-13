@@ -16,7 +16,7 @@ girder.events.once('im:appload.after', function () {
     };
 
     imagespace.searches['smqtk-similarity'] = smqtkSearchResultCollection(
-        { niceName: 'SmqtkSimilarity' },
+        { niceName: 'Similarity (SMQTK)' },
         { altUrl: 'smqtk_similaritysearch' }
     );
 }, this);

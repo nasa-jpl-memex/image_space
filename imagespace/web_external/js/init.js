@@ -87,6 +87,10 @@ _.extend(imagespace, {
     /**
      * Takes an image model and determines which searches are applicable
      * given their displayContext. (defaults to true)
+     * Returns a list of search keys ordered by a locale compared sorting of the
+     * actual searches niceName property.
+     * @todo This could definitely be made simpler with more idiomatic underscore
+     * usage.
      **/
     getApplicableSearches: function (image) {
         var applicable = _.filter(_.keys(imagespace.searches), function (key) {
@@ -101,7 +105,11 @@ _.extend(imagespace, {
             }
         });
 
-        return _.pick(imagespace.searches, applicable);
+        applicable.sort(function (a, b) {
+            return imagespace.searches[a].niceName.localeCompare(imagespace.searches[b].niceName);
+        });
+
+        return applicable;
     },
 
     /**

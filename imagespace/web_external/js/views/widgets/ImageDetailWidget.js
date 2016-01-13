@@ -45,7 +45,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             image: this.image,
             query: $('.im-search').val(),
             stolenCameraPrefix: imagespace.stolenCameraPrefix,
-            searches: imagespace.getApplicableSearches(this.image),
+            imagespace: imagespace,
             canScroll: this.canScroll,
             hasPrev: this.canScroll && this.parentView.$el.prev().length,
             hasNext: this.canScroll && this.parentView.$el.next().length,
