@@ -52,6 +52,10 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
             this.params = params || {};
         }
 
+        if (_.has(this.params, 'classifications') && !_.isString(this.params.classifications)) {
+            this.params.classifications = JSON.stringify(this.params.classifications);
+        }
+
         var xhr = girder.restRequest({
             path: this.altUrl || this.resourceName,
             data: _.extend({

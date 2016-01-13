@@ -4,10 +4,25 @@
 
 .container-fluid
   .clearfix
+  #search-controls.form-control
     if collection.supportsPagination && collection.length
       .im-results-pagination.pull-left
         .im-pagination-container
         p Showing results #{startIndex + 1} - #{toIndex} of #{total}
+
+    form#im-classification-narrow.pull-left
+      div
+        input(type='checkbox', name='is-revolver', data-key='smqtk_hg_revolver_d_md',
+              checked=(classifications.indexOf('smqtk_hg_revolver_d_md') !== -1 ? 'checked' : false))
+        label Revolver
+      div
+        input(type='checkbox', name='is-long-gun', data-key='smqtk_hg_long_gun_d_md',
+              checked=(classifications.indexOf('smqtk_hg_long_gun_d_md') !== -1 ? 'checked' : false))
+        label Long Gun
+      div
+        input(type='checkbox', name='is-semiauto', data-key='smqtk_hg_semiauto_d_md',
+              checked=(classifications.indexOf('smqtk_hg_semiauto_d_md') !== -1 ? 'checked' : false))
+        label Semiautomatic (handguns)
 
     .im-view-mode.pull-right
       .btn-group(data-toggle="buttons")

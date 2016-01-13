@@ -1,3 +1,5 @@
 imagespace.models.UploadedImageModel = imagespace.models.ImageModel.extend({
-    initialize: function () {}
+    initialize: function () {
+        this._setApplicableSearches();
+    }
 });

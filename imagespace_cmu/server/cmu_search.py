@@ -21,6 +21,9 @@ from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
 
+from girder.plugins.imagespace import solr_documents_from_paths
+
+import json
 import requests
 import os
 
@@ -29,15 +32,30 @@ class CmuSearch(Resource):
     def _search(self, params):
         assert hasattr(self, 'search_url')
 
-        r = requests.post(self.search_url,
-                          data=params['url'],
-                          headers={
-                              'Content-type': 'text',
-                              'Content-length': str(len(params['url']))
-                          },
-                          verify=False).json()
+        classifications = json.loads(params['classifications']) if 'classifications' in params else []
+        cmu_images = requests.post(self.search_url,
+                                   data=params['url'],
+                                   headers={
+                                       'Content-type': 'text',
+                                       'Content-length': str(len(params['url']))
+                                   },
+                                   verify=False).json()
 
-        return [{'id': d[0], 'score': d[1]} for d in r]
+        cmu_images = [[image.replace(os.environ['IMAGE_SPACE_CMU_PREFIX'],
+                                     os.environ['IMAGE_SPACE_SOLR_PREFIX']), score]
+                      for (image, score) in cmu_images]
+        cmu_scores = {image.lower(): score for image, score in cmu_images}
+
+        documents = solr_documents_from_paths([x[0] for x in cmu_images], classifications)
+
+        # Augment original scores from response into solr documents
+        for document in documents:
+            document['im_score'] = cmu_scores[document['id'].lower()]
+
+        return {
+            'numFound': len(documents),
+            'docs': documents
+        }
 
 
 class CmuImageBackgroundSearch(CmuSearch):

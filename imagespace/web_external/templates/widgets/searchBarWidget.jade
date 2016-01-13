@@ -2,10 +2,10 @@ if mode
     .im-image-search-form
         img.im-search-image.im-blur(src="#{url}")
         ul.nav.navbar-nav
-          if searches
-            each val, key in searches
+          if image.get('_applicableSearches')
+            each key in image.get('_applicableSearches')
               li(class=(mode === key ? 'active': ''))
-                a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal").btn.btn-link.btn-default #{val.niceName}
+                a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal").btn.btn-link.btn-default #{imagespace.searches[key].niceName}
           li
             a(href='#').btn.btn-link.btn-default Clear image search
 else

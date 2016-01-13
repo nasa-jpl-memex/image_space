@@ -12,11 +12,9 @@ imagespace.views.ImageView = imagespace.View.extend({
         },
 
         'click .im-details': function (event) {
-            var id = $(event.currentTarget).attr('im-id'),
-                image = this.model;
             this.imageDetailWidget = new imagespace.views.ImageDetailWidget({
                 el: $('#g-dialog-container'),
-                image: image,
+                image: this.model,
                 parentView: this
             });
             this.imageDetailWidget.render();

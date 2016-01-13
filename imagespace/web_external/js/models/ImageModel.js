@@ -7,5 +7,13 @@ imagespace.models.ImageModel = girder.Model.extend({
                 this.set('imageUrl', imagespace.solrIdToUrl(this.get('id')));
             }
         }
+
+        // Determine which searches can be applied to this image when it's
+        // first initialized
+        this._setApplicableSearches();
+    },
+
+    _setApplicableSearches: function () {
+        this.set('_applicableSearches', imagespace.getApplicableSearches(this));
     }
 });
