@@ -24,7 +24,7 @@
           span(style='display:block')
             | Search by
           each key in image.get('_applicableSearches')
-            a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal").btn.btn-link.btn-default #{imagespace.searches[key].niceName}
+            a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal") #{imagespace.searches[key].niceName}
       .modal-inner-content
         if image.has('highlight')
           h4 Match
