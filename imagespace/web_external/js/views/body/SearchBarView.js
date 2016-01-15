@@ -134,7 +134,9 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
                 dataURLReader.onloadend = _.bind(function () {
                     image.imageUrl = dataURLReader.result;
-                    imagespace.userData.images.add(new imagespace.models.UploadedImageModel(image), {
+                    image = new imagespace.models.UploadedImageModel(image);
+
+                    imagespace.userData.images.add(image, {
                         at: 0
                     });
                     if (girder.currentUser) {
@@ -150,19 +152,19 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                             if (privateFolder) {
                                 this.girderUpload(this.dataURLToBlob(dataURLReader.result), file.name, privateFolder._id, null, _.bind(function (fileObject) {
                                     var location = window.location, item;
-                                    image.imageUrl = location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken');
+                                    image.set('imageUrl', location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken'));
 
                                     // The imageUrl needs to be accessible to external services in a number of cases
                                     // Since the actual host might be under basic auth we may want to add this to every
                                     // uploaded image url so other services can see it
-                                    if (_.has(imagespace, 'localBasicAuth')) {
-                                        image.imageUrl = image.imageUrl.replace(location.protocol + '//',
-                                                                                location.protocol + '//' + imagespace.localBasicAuth + '@');
+                                    if (_.has(imagespace, 'localBasicAuth') && imagespace.localBasicAuth) {
+                                        image.set('imageUrl', image.get('imageUrl').replace(location.protocol + '//',
+                                                                                            location.protocol + '//' + imagespace.localBasicAuth + '@'));
                                     }
 
                                     item = new girder.models.ItemModel({_id: fileObject.attributes.itemId});
-                                    image.item_id = fileObject.attributes.itemId;
-                                    item._sendMetadata(image, _.bind(function () {
+                                    image.set('item_id', fileObject.attributes.itemId);
+                                    item._sendMetadata(image.attributes, _.bind(function () {
                                         this.render();
                                         imagespace.userDataView.render();
                                     }, this));
