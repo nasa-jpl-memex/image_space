@@ -7,6 +7,7 @@ $(function () {
         imagespace.stolenCameraPrefix = result.stolenCameraPrefix;
         imagespace.solrPrefix = result.solrPrefix;
         imagespace.facetviewAdsUrl = result.facetviewAdsUrl || false;
+        imagespace.localBasicAuth = result.localBasicAuth || false;
         imagespace.events.trigger('g:appload.before');
         window.app = new imagespace.App({
             el: 'body',

@@ -151,6 +151,15 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                                 this.girderUpload(this.dataURLToBlob(dataURLReader.result), file.name, privateFolder._id, null, _.bind(function (fileObject) {
                                     var location = window.location, item;
                                     image.imageUrl = location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken');
+
+                                    // The imageUrl needs to be accessible to external services in a number of cases
+                                    // Since the actual host might be under basic auth we may want to add this to every
+                                    // uploaded image url so other services can see it
+                                    if (_.has(imagespace, 'localBasicAuth')) {
+                                        image.imageUrl = image.imageUrl.replace(location.protocol + '//',
+                                                                                location.protocol + '//' + imagespace.localBasicAuth + '@');
+                                    }
+
                                     item = new girder.models.ItemModel({_id: fileObject.attributes.itemId});
                                     image.item_id = fileObject.attributes.itemId;
                                     item._sendMetadata(image, _.bind(function () {
