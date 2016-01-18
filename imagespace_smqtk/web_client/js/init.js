@@ -4,11 +4,11 @@ girder.events.once('im:appload.after', function () {
             search: function (image) {
                 return new imagespace.collections.ImageCollection(null, _.extend({
                     params: {
-                        url: image.imageUrl
+                        url: _.has(image, 'imageUrl') ? image.imageUrl : image.get('imageUrl')
                     },
                     supportsPagination: false,
                     comparator: function (image) {
-                        return -image.get('im_distance');
+                        return image.get('im_distance');
                     }
                 }, collectionArgs || {}));
             }
