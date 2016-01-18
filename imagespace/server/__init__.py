@@ -43,7 +43,7 @@ class CustomAppRoot(object):
         'staticRoot': 'static',
         'title': 'ImageSpace',
         'versionInfo': {
-            'niceName': 'SUG v2.5',
+            'niceName': 'SUG v3.0',
             'sha': subprocess.check_output(
                 ['git', 'rev-parse', '--short', 'HEAD'],
                 cwd=os.path.dirname(os.path.realpath(__file__))
