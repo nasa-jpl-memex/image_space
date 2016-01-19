@@ -39,6 +39,9 @@ class ImageFeatures(Resource):
         except ImportError:
             cv2_available = False
 
+        # Disabling opencv for now
+        cv2_available = False
+
         if 'url' in params:
             data = requests.get(params['url'], verify=False).content
         else:
@@ -49,7 +52,7 @@ class ImageFeatures(Resource):
         tika = {}
         for (k, v) in parsed["metadata"].iteritems():
             k = k.lower().replace(':', '_').replace(' ', '_').replace('-', '_')
-            tika[k] = v
+            tika[k] = v[0] if type(v) is list and len(v) else v
         tika['content'] = parsed["content"]
 
         if cv2_available:
