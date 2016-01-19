@@ -23,7 +23,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
             var q = $(event.currentTarget).val();
             if (event.which === 13) {
                 var query = encodeURIComponent(q);
-                imagespace.router.navigate('search/' + query, {trigger: true});
+                imagespace.router.navigate('search/' + query.replace('tiff:', 'tiff\\:'), {trigger: true});
             }
         },
 
@@ -38,7 +38,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
         'click .im-search-button': function (event) {
             var query = encodeURIComponent($('.im-search').val());
-            imagespace.router.navigate('search/' + query, {trigger: true});
+            imagespace.router.navigate('search/' + query.replace('tiff:', 'tiff\\:'), {trigger: true});
         },
 
         'click #advanced-search': function (event) {

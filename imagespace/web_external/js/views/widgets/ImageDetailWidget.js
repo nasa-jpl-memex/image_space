@@ -6,7 +6,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         'click .im-search-mod': function (event) {
             var query = $(event.currentTarget).attr('im-search');
             this.$el.modal('hide');
-            imagespace.router.navigate('search/' + encodeURIComponent(query), {trigger: true});
+            imagespace.router.navigate('search/' + encodeURIComponent(query.replace('tiff:', 'tiff\\:')), {trigger: true});
         },
 
         'mouseenter .im-attribute': function (event) {
