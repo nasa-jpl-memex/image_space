@@ -9,22 +9,25 @@ imagespace.views.LayoutHeaderUserView = imagespace.View.extend({
             girder.events.trigger('g:registerUi');
         },
 
-        'click a.g-logout': function () {
-            girder.restRequest({
-                path: 'user/authentication',
-                type: 'DELETE'
-            }).done(_.bind(function () {
-                girder.currentUser = null;
-                girder.events.trigger('g:login');
-            }, this));
+        'click a.g-logout': girder.logout
+    },
+
+    redisplay: function () {
+        this.render();
+
+        if (imagespace.userDataView) {
+            imagespace.userDataView.updateUserData();
         }
     },
 
     initialize: function () {
-        girder.events.on('g:login', function () {
+        girder.events.on('g:login.success', this.redisplay, this);
+        girder.events.on('g:logout.success', function () {
             this.render();
-            if (imagespace.userDataView) {
-                imagespace.userDataView.render();
+
+            if (_.has(imagespace, 'userData') &&
+                _.has(imagespace.userData, 'images')) {
+                imagespace.userData.images.reset([]);
             }
         }, this);
     },

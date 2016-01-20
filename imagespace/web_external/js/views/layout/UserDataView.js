@@ -12,6 +12,14 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         this.updateUserData();
     },
 
+    /**
+     * Updates the data from a users private folders and adds
+     * them to the userData.images collection.
+     *
+     * This is a bit of a misnomer, because it only appends results. So
+     * running this after a user logs out won't alter the collection at all
+     * when in reality it should be emptied. @todo
+     **/
     updateUserData: function (done) {
         done = (_.isFunction(done) ? done : function () {});
 
