@@ -19,6 +19,8 @@
 
 import mako
 import os
+import requests
+import subprocess
 from girder import constants
 from girder.constants import SettingKey
 from girder.utility.model_importer import ModelImporter
@@ -39,7 +41,14 @@ class CustomAppRoot(object):
     vars = {
         'apiRoot': 'api/v1',
         'staticRoot': 'static',
-        'title': 'Image Space'
+        'title': 'ImageSpace',
+        'versionInfo': {
+            'niceName': 'SUG v3.0',
+            'sha': subprocess.check_output(
+                ['git', 'rev-parse', '--short', 'HEAD'],
+                cwd=os.path.dirname(os.path.realpath(__file__))
+            ).strip()
+        }
     }
 
     template = r"""
@@ -47,6 +56,8 @@ class CustomAppRoot(object):
     <html lang="en">
       <head>
         <title>${title}</title>
+        <link rel="stylesheet"
+              href="//fonts.googleapis.com/css?family=Droid+Sans:400,700">
         <link rel="stylesheet"
               href="${staticRoot}/lib/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet"
@@ -73,6 +84,11 @@ class CustomAppRoot(object):
                 filter: blur(10px)
             }
         </style>
+
+        <script type="text/javascript">
+          imagespace = {};
+          imagespace.versionInfo = ${versionInfo};
+        </script>
 
       </head>
       <body>
@@ -148,3 +164,43 @@ def load(info):
     info['serverRoot'], info['serverRoot'].girder = (CustomAppRoot(),
                                                      info['serverRoot'])
     info['serverRoot'].api = info['serverRoot'].girder.api
+
+
+def solr_documents_from_paths(paths, classifications=None):
+    """Given a list of paths, return list of relevant solr documents
+    by uppercasing the basename of the paths.
+
+    This performs several requests, each of size CHUNK_SIZE to avoid sending
+    too much data (HTTP 413).
+
+    Additionally it can take an iterable of classifications which will be
+    searched for through Solr.
+
+    :param paths: List of solr paths corresponding to the Solr id attribute
+    :param classifications: List of classifications to search by
+    :returns: List of solr documents
+    """
+    CHUNK_SIZE = 20
+    documents = []
+
+    for i in xrange(0, len(paths), CHUNK_SIZE):
+        paths_chunk = paths[i:i + CHUNK_SIZE]
+
+        if classifications:
+            q = ' OR '.join(['%s:[.7 TO *]' % key
+                             for key in classifications])
+        else:
+            q = '*:*'
+
+        r = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
+            'wt': 'json',
+            'q': q,
+            'fq': ['mainType:image',
+                   'resourcename_t_md:(%s)' %
+                   ' '.join('%s' % os.path.basename(p).upper() for p in paths_chunk)],
+            'rows': str(CHUNK_SIZE)
+        }, verify=False)
+
+        documents += r.json()['response']['docs']
+
+    return documents

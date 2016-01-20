@@ -20,8 +20,8 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
-from girder import logger
 
+import json
 import requests
 import os
 
@@ -30,6 +30,32 @@ class ImageSearch(Resource):
     def __init__(self):
         self.resourceName = 'imagesearch'
         self.route('GET', (), self.getImageSearch)
+        self.route('GET', ('relevant_ads',), self.getRelevantAds)
+
+    @access.public
+    def getRelevantAds(self, params):
+        AD_LIMIT = 10
+
+        try:
+            result = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
+                'wt': 'json',
+                'q': 'outpaths:"%s"' % params['solr_image_id'],
+                'fl': 'id',
+                'rows': str(AD_LIMIT)
+            }, verify=False).json()
+        except ValueError:
+            return {
+                'numFound': 0,
+                'ids': []
+            }
+
+        return {
+            'numFound': result['response']['numFound'],
+            'ids': [x['id'] for x in result['response']['docs']]
+        }
+    getRelevantAds.description = Description(
+        'Retrieve the relevant ad ids from a given image'
+    ).param('solr_image_id', 'ID of the Solr document representing an image')
 
     @access.public
     def getImageSearch(self, params):
@@ -40,22 +66,39 @@ class ImageSearch(Resource):
         return self._imageSearch(params)
 
     def _imageSearch(self, params):
+        def filenameUpper(filename):
+            path = filename.replace('file:', '')
+            return 'file:%s' % os.path.join(os.path.dirname(path),
+                                            os.path.basename(path).upper())
+
         limit = params['limit'] if 'limit' in params else '100'
-        query = params['query'] if 'query' in params else '*'
+        query = params['query'] if 'query' in params else '*:*'
         offset = params['offset'] if 'offset' in params else '0'
-        base = (
-            os.environ['IMAGE_SPACE_SOLR'] +
-            '/select?wt=json&indent=true&hl=true&hl.fl=*'
-        )
+        classifications = json.loads(params['classifications']) if 'classifications' in params else []
+        base = os.environ['IMAGE_SPACE_SOLR'] + '/select'
+
+        if classifications:
+            query += ' AND (%s)' % ' OR '.join(['%s:[.7 TO *]' % key
+                                                for key in classifications])
+
         try:
-            result = requests.get(
-                base + '&q=' + query +
-                '&rows=' + str(limit) + '&start=' + str(offset), verify=False).json()
-            logger.info(base + '&q=' + query + '&rows=' + str(limit) + '&start=' + str(offset))
+            result = requests.get(base, params={
+                'wt': 'json',
+                'hl': 'true',
+                'hl.fl': '*',
+                'q': query,
+                'start': offset,
+                'rows': limit,
+                'fq': ['mainType:image']
+            }, verify=False).json()
         except ValueError:
             return []
+
         for image in result['response']['docs']:
             image['highlight'] = result['highlighting'][image['id']]
+
+        for doc in result['response']['docs']:
+            doc['id'] = filenameUpper(doc['id'])
 
         response = {
             'numFound': result['response']['numFound'],

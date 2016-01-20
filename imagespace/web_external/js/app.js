@@ -8,6 +8,7 @@ if (typeof String.prototype.startsWith !== 'function') {
 imagespace.App = girder.App.extend({
 
     render: function () {
+        imagespace.updateBlurSetting(localStorage.getItem('im-blur') || imagespace.defaultBlurSetting);
         this.$el.html(imagespace.templates.layout());
 
         imagespace.headerView = new imagespace.views.LayoutHeaderView({

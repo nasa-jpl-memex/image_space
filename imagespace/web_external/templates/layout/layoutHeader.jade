@@ -1,7 +1,7 @@
 .nav.navbar.navbar-inverse.navbar-fixed-top
     .container-fluid
         .navbar-header
-            a.navbar-brand(href="#") Image Space
+            a.navbar-brand(href="#") ImageSpace
         .collapse.navbar-collapse
             #header-search-bar
             ul.nav.navbar-nav.im-nav
@@ -9,8 +9,9 @@
                 a(href='#page/help').btn.btn-link.btn-default Help
               li(class=(activePage === 'page/about') ? 'active': '')
                 a(href='#page/about').btn.btn-link.btn-default About
+              li(class=(activePage === 'page/settings') ? 'active': '')
+                a(href='#page/settings').btn.btn-link.btn-default Settings
               .h-current-user-wrapper
     .g-clear-both
-    .container-fluid
-        .im-alert.alert.alert-info.hidden
-        .im-alert.alert.alert-success.hidden
+    .im-alert.alert.alert-info.hidden
+    .im-alert.alert.alert-success.hidden

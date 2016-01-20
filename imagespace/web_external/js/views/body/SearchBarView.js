@@ -23,7 +23,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
             var q = $(event.currentTarget).val();
             if (event.which === 13) {
                 var query = encodeURIComponent(q);
-                imagespace.router.navigate('search/' + query, {trigger: true});
+                imagespace.router.navigate('search/' + query.replace('tiff:', 'tiff\\:'), {trigger: true});
             }
         },
 
@@ -38,12 +38,12 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
         'click .im-search-button': function (event) {
             var query = encodeURIComponent($('.im-search').val());
-            imagespace.router.navigate('search/' + query, {trigger: true});
+            imagespace.router.navigate('search/' + query.replace('tiff:', 'tiff\\:'), {trigger: true});
         },
 
         'click #advanced-search': function (event) {
             event.preventDefault();
-            $(imagespace.templates.advancedSearchWidget()).girderModal(false);
+            $('#advanced-search-table').toggle();
         }
     },
 
@@ -96,10 +96,9 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
     initialize: function (settings) {
         this.settings = settings || {};
-        this.settings.loggedIn = girder.currentUser;
 
         if (_.has(this.settings, 'image')) {
-            this.settings.searches = imagespace.getApplicableSearches(this.settings.image);
+            this.image = this.settings.image;
         }
 
         if (settings.dropzone) {
@@ -108,7 +107,9 @@ imagespace.views.SearchBarView = imagespace.View.extend({
     },
 
     render: function () {
-        this.$el.html(imagespace.templates.searchBarWidget(this.settings));
+        this.$el.html(imagespace.templates.searchBarWidget(_.extend(this.settings, {
+            imagespace: imagespace
+        })));
         return this;
     },
 
@@ -133,7 +134,9 @@ imagespace.views.SearchBarView = imagespace.View.extend({
 
                 dataURLReader.onloadend = _.bind(function () {
                     image.imageUrl = dataURLReader.result;
-                    imagespace.userData.images.add(new imagespace.models.UploadedImageModel(image), {
+                    image = new imagespace.models.UploadedImageModel(image);
+
+                    imagespace.userData.images.add(image, {
                         at: 0
                     });
                     if (girder.currentUser) {
@@ -149,10 +152,19 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                             if (privateFolder) {
                                 this.girderUpload(this.dataURLToBlob(dataURLReader.result), file.name, privateFolder._id, null, _.bind(function (fileObject) {
                                     var location = window.location, item;
-                                    image.imageUrl = location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken');
+                                    image.set('imageUrl', location.protocol + '//' + location.host + location.pathname + '/girder/api/v1/file/' + fileObject.id + '/download?token=' + girder.cookie.find('girderToken'));
+
+                                    // The imageUrl needs to be accessible to external services in a number of cases
+                                    // Since the actual host might be under basic auth we may want to add this to every
+                                    // uploaded image url so other services can see it
+                                    if (_.has(imagespace, 'localBasicAuth') && imagespace.localBasicAuth) {
+                                        image.set('imageUrl', image.get('imageUrl').replace(location.protocol + '//',
+                                                                                            location.protocol + '//' + imagespace.localBasicAuth + '@'));
+                                    }
+
                                     item = new girder.models.ItemModel({_id: fileObject.attributes.itemId});
-                                    image.item_id = fileObject.attributes.itemId;
-                                    item._sendMetadata(image, _.bind(function () {
+                                    image.set('item_id', fileObject.attributes.itemId);
+                                    item._sendMetadata(image.attributes, _.bind(function () {
                                         this.render();
                                         imagespace.userDataView.render();
                                     }, this));
@@ -186,7 +198,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
             image.imageUrl = url;
             image.id = url;
 
-            this.addUserImage(image);
+            imagespace.addUserImage(image);
         }, this));
     },
 
@@ -243,37 +255,5 @@ imagespace.views.SearchBarView = imagespace.View.extend({
         }
 
         return new Blob([uInt8Array], {type: contentType});
-    },
-
-    addUserImage: function (image) {
-        image.source_query = window.location.href;
-
-        girder.restRequest({
-            path: 'folder?text=Private'
-        }).done(_.bind(function (folders) {
-            var privateFolder = null;
-            folders.forEach(function (folder) {
-                if (folder.parentId === girder.currentUser.id) {
-                    privateFolder = folder;
-                }
-            })
-            if (privateFolder) {
-                var item = new girder.models.ItemModel({
-                    name: image.id,
-                    folderId: privateFolder._id
-                });
-
-                item.once('g:saved', _.bind(function () {
-                    image.item_id = item.attributes._id;
-                    item._sendMetadata(image, _.bind(function () {
-                        this.render();
-                    }, this), function (error) {
-                        // TODO report error
-                    })
-                }, this)).once('g:error', function (error) {
-                    console.log(error);
-                }, this).save();
-            }
-        }, this));
     }
 });

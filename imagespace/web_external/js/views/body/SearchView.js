@@ -10,6 +10,17 @@ imagespace.views.SearchView = imagespace.View.extend({
             localStorage.setItem('viewMode', 'grid');
             this.viewMode = 'grid';
             this.render();
+        },
+
+        'change #im-classification-narrow input': function (event) {
+            this.collection.params.classifications = [];
+
+            $('#im-classification-narrow input:checked').map(_.bind(function (i, el) {
+                this.collection.params.classifications.push($(el).data('key'));
+            }, this));
+
+            $('.alert-info').html('Narrowing results <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
+            this.collection.fetch(this.collection.params, true);
         }
     },
 
@@ -17,8 +28,12 @@ imagespace.views.SearchView = imagespace.View.extend({
         girder.cancelRestRequests('fetch');
         this.$el = window.app.$('#g-app-body-container');
         this.collection = settings.collection;
+        this.collection.params.classifications = [];
         this.viewMode = localStorage.getItem('viewMode') || 'grid';
-        this.collection.on('g:changed', _.bind(this.render, this));
+        this.collection.on('g:changed', _.bind(function () {
+            this.render();
+            $('.alert-info').addClass('hidden');
+        }, this));
         this.collection.fetch(settings.collection.params || {}, true);
     },
 
@@ -26,13 +41,16 @@ imagespace.views.SearchView = imagespace.View.extend({
         this.$el.html(imagespace.templates.search({
             viewMode: this.viewMode,
             showText: true,
-            collection: this.collection
+            collection: this.collection,
+            classifications: this.collection.params.classifications
         }));
 
-        this.paginateWidget = new girder.views.PaginateWidget({
-            collection: this.collection,
-            parentView: this
-        });
+        if (this.collection.supportsPagination) {
+            this.paginateWidget = new girder.views.PaginateWidget({
+                collection: this.collection,
+                parentView: this
+            });
+        }
 
         this.collection.each(function (image) {
             var imageView = new imagespace.views.ImageView({
@@ -45,7 +63,10 @@ imagespace.views.SearchView = imagespace.View.extend({
         }, this);
 
         $('.alert-info').addClass('hidden');
-        this.paginateWidget.setElement(this.$('.im-pagination-container')).render();
+
+        if (this.collection.supportsPagination) {
+            this.paginateWidget.setElement(this.$('.im-pagination-container')).render();
+        }
 
         return this;
     }
@@ -57,14 +78,18 @@ imagespace.router.route('search/:query', 'search', function (query) {
     $('.alert-info').html('Searching <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
     new imagespace.views.SearchView({
-        collection: imagespace.getSearchResultCollectionFromQuery(query),
+        collection: imagespace.getImageCollectionFromQuery(query),
         parentView: window.app
     });
 });
 
 imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
     // Replace Girder token with current session's token if necessary
-    var parts = url.split('&token=');
+    var niceName = (_.has(imagespace.searches[mode], 'niceName')) ? imagespace.searches[mode].niceName : mode,
+        parts = url.split('&token=');
+
+    $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
+
     if (parts.length === 2) {
         url = parts[0] + '&token=' + girder.cookie.find('girderToken');
     }
@@ -72,26 +97,32 @@ imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
     var performSearch = function (image) {
         image.imageUrl = url;
 
+        if (!(image instanceof imagespace.models.ImageModel)) {
+            image = (url.indexOf('girder') !== -1) ?
+                new imagespace.models.UploadedImageModel(image) :
+                new imagespace.models.ImageModel(image);
+        }
+
         imagespace.headerView.render({
             url: url,
             mode: mode,
-            image: (url.indexOf('girder') !== -1) ?
-                new imagespace.models.UploadedImageModel(image) :
-                new imagespace.models.SearchResultModel(image)
+            image: image
         });
+        $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
             collection: imagespace.searches[mode].search(image)
         });
 
-        $('.alert-info').addClass('hidden');
         imagespace.userDataView.render();
+
+        $('.modal-open').css('overflow', 'auto');
     };
 
     girder.restRequest({
         path: 'imagesearch',
         data: {
-            query: 'id:"' + imagespace.urlToSolrId(url) + '"'
+            query: 'id:"' + imagespace.urlToSolrId(url) + '" OR id:"' + imagespace.oppositeCaseFilename(imagespace.urlToSolrId(url)) + '"'
         }
     }).done(function (results) {
         var q;

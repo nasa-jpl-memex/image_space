@@ -8,15 +8,13 @@ imagespace.views.ImageView = imagespace.View.extend({
         'click .im-add-user-data': function (event) {
             var id = $(event.currentTarget).attr('im-id'),
                 image = this.model;
-            imagespace.userDataView.addUserImage(image);
+            imagespace.addUserImage(image);
         },
 
         'click .im-details': function (event) {
-            var id = $(event.currentTarget).attr('im-id'),
-                image = this.model;
             this.imageDetailWidget = new imagespace.views.ImageDetailWidget({
                 el: $('#g-dialog-container'),
-                image: image,
+                image: this.model,
                 parentView: this
             });
             this.imageDetailWidget.render();

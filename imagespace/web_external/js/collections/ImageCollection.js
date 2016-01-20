@@ -1,8 +1,8 @@
-imagespace.collections.SearchResultCollection = girder.Collection.extend({
-    pageLimit: 20,
+imagespace.collections.ImageCollection = girder.Collection.extend({
     altUrl: 'imagesearch',
-
-    model: imagespace.models.SearchResultModel,
+    pageLimit: 20,
+    supportsPagination: true,
+    model: imagespace.models.ImageModel,
 
     initialize: function (models, options) {
         _.extend(this, options);
@@ -50,6 +50,10 @@ imagespace.collections.SearchResultCollection = girder.Collection.extend({
             this.offset = 0;
         } else {
             this.params = params || {};
+        }
+
+        if (_.has(this.params, 'classifications') && !_.isString(this.params.classifications)) {
+            this.params.classifications = JSON.stringify(this.params.classifications);
         }
 
         var xhr = girder.restRequest({

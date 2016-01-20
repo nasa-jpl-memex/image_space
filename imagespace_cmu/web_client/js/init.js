@@ -1,17 +1,33 @@
 girder.events.once('im:appload.after', function () {
-    imagespace.searches['cmu-background'] = {
-        search: function (image) {
-            var collection = new imagespace.collections.SearchResultCollection(null, {
-                altUrl: 'cmu_imagebackgroundsearch',
-                params: {
-                    url: image.imageUrl
-                }
-            });
-
-            return collection;
-        },
-        niceName: 'Background'
+    var cmuSearchResultCollection = function (args, collectionArgs) {
+        return _.extend({
+            search: function (image) {
+                return new imagespace.collections.ImageCollection(null, _.extend({
+                    params: {
+                        url: _.has(image, 'imageUrl') ? image.imageUrl : image.get('imageUrl')
+                    },
+                    supportsPagination: false,
+                    comparator: function (image) {
+                        return -image.get('im_score');
+                    }
+                }, collectionArgs || {}));
+            }
+        }, args);
     };
+
+    imagespace.searches['cmu-background'] = cmuSearchResultCollection(
+        { niceName: 'Background' },
+        { altUrl: 'cmu_imagebackgroundsearch' }
+    );
+
+    imagespace.searches['cmu-full'] = cmuSearchResultCollection(
+        { niceName: 'Similarity (CMU)' },
+        { altUrl: 'cmu_fullimagesearch' }
+    );
+
+    if (imagespace.defaultSimilaritySearch === null) {
+        imagespace.defaultSimilaritySearch = 'cmu-full';
+    }
 
     imagespace.solrIdToUrl = function (id) {
         var re = new RegExp("^" + imagespace.solrPrefix),
