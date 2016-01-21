@@ -80,7 +80,7 @@ You can do so by:
 The above builds the codebase enabling us to deploy it to the Girder server. It should be noted that after 
 any changes to the imagespace code, it is necessary to rebuild it with *grunt*. 
 
-8. Then set the following environment variables
+8. Then set the following environment variables & **source** them, whenever they change
   ```bash
   export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint_OR_local_SolrCoreURLInstance                    # Required for easy deploy
   export IMAGE_SPACE_SOLR_PREFIX=/server/path/to/image/dir                                                      # Required
