@@ -38,12 +38,12 @@
         if facetviewAdsUrl && image.has('relevantAds') && image.get('relevantAds').length
           h4 Ads
           dl.dl-horizontal
-            for ad_id in image.get('relevantAds')
+            for ad in image.get('relevantAds')
               dt
 
               dd
                 span
-                  a(href=facetviewAdsUrl + '?query=resourcename_t_md:' + ad_id) !{ad_id.substr(1, 40)}...
+                  a(href=facetviewAdsUrl + '?query=resourcename_t_md:' + ad.resourcename) !{ad.url.substr(0, 40)}...
         h4 Attributes
         dl.dl-horizontal.im-attributes
           for val, key in image.attributes
