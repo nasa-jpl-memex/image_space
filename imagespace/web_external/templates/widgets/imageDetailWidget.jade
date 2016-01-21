@@ -35,10 +35,10 @@
                   b= key
                 dd
                   span !{val}
-        if facetviewAdsUrl && image.has('relevantAds') && image.get('relevantAds').length
+        if facetviewAdsUrl && image.has('_relevantAds') && image.get('_relevantAds').length
           h4 Ads
           dl.dl-horizontal
-            for ad in image.get('relevantAds')
+            for ad in image.get('_relevantAds')
               dt
 
               dd
