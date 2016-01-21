@@ -47,7 +47,7 @@
         h4 Attributes
         dl.dl-horizontal.im-attributes
           for val, key in image.attributes
-            if system.indexOf(key) === -1 && hidden.indexOf(key) === -1
+            if system.indexOf(key) === -1 && hidden.indexOf(key) === -1 && key.indexOf('_') !== 0
               dt
                 b= key
               dd.im-attribute
