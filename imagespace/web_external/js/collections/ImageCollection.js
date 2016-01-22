@@ -3,6 +3,7 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
     pageLimit: 20,
     supportsPagination: true,
     model: imagespace.models.ImageModel,
+    filterByQueryString: true,
 
     initialize: function (models, options) {
         _.extend(this, options);
@@ -23,7 +24,7 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
             }), _.identity);
         }
 
-        if (!(_.has(options, 'noFilter') && options.noFilter)) {
+        if (this.filterByQueryString) {
             // Filter collection based on query string
             var qs = imagespace.parseQueryString();
 

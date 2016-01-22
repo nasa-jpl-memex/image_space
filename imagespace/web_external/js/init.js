@@ -144,6 +144,59 @@ _.extend(imagespace, {
         return imagespace.solrPrefix + file;
     },
 
+    // Returns empty string if no params in the query string
+    getQueryParams: function () {
+        var hash = Backbone.history.getHash(),
+            paramsStartIndex = hash.indexOf('/params/');
+
+        return (paramsStartIndex !== -1) ?
+            hash.substr(paramsStartIndex).replace('/params/', '') : '';
+    },
+
+    // If not passed a query string, defaults to URL after /params/
+    parseQueryString: function (queryString) {
+        qs = girder.parseQueryString(queryString || imagespace.getQueryParams());
+
+        if (_.has(qs, 'classifications')) {
+            qs.classifications = qs.classifications.split(',');
+        }
+
+        if (_.has(qs, 'page')) {
+            qs.page = parseInt(qs.page);
+        }
+
+        return qs;
+    },
+
+    createQueryString: function (obj) {
+        var pairs = _.pairs(obj),
+            first = _.first(pairs),
+            rest = _.rest(pairs);
+
+        return _.reduce(rest, function (memo, val) {
+            return memo + '&' + val[0] + '=' + encodeURIComponent(val[1]);
+        }, first[0] + '=' + encodeURIComponent(first[1]));
+    },
+
+    /**
+     * Takes an object params and merges it with the existing parameters
+     * in the URL query string and navigates there using the imagespace router.
+     * Routes aren't triggered, it is a silent navigation.
+     **/
+    updateQueryParams: function (params) {
+        var hash = Backbone.history.getHash(),
+            paramsStartIndex = hash.indexOf('/params/'),
+            qs = (paramsStartIndex !== -1) ?
+                  hash.substr(paramsStartIndex).replace('/params/', '') : '',
+            qsObj = imagespace.parseQueryString(qs),
+            hashBeforeParams = (paramsStartIndex !== -1) ?
+                                hash.substr(0, paramsStartIndex) : hash;
+
+        _.extend(qsObj, params);
+
+        imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(qsObj));
+    },
+
     oppositeCaseFilename: function (filename) {
         var parts = filename.split('/');
 

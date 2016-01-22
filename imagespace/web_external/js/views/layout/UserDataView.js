@@ -3,7 +3,7 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         girder.cancelRestRequests('fetch');
         imagespace.userData.images = new imagespace.collections.ImageCollection(null, {
             model: imagespace.models.UploadedImageModel,
-            noFilter: true
+            filterByQueryString: false
         }).on('all', function (eventName) {
             if (_.contains(['add', 'remove', 'update', 'reset', 'sort'], eventName)) {
                 this.render();
