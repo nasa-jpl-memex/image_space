@@ -6,7 +6,6 @@ imagespace.views.FrontPageView = girder.views.FrontPageView.extend({
 
     render: function () {
         this.$el.html(imagespace.templates.frontPage());
-        imagespace.headerView.render();
 
         var searchBar = new imagespace.views.SearchBarView({
             el: this.$('#search-bar'),

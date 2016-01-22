@@ -12,6 +12,13 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
         this.updateUserData();
     },
 
+    /**
+     * Updates the data from a users private folders and adds
+     * them to the userData.images collection.
+     *
+     * This needs to remain idempotent due to its use in render
+     * methods.
+     **/
     updateUserData: function (done) {
         done = (_.isFunction(done) ? done : function () {});
 
@@ -29,17 +36,17 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                 girder.restRequest({
                     path: 'item?limit=100&offset=0&sort=created&sortdir=-1&folderId=' + privateFolder._id
                 }).done(_.bind(function (items) {
+                    var models = [];
+
                     items.forEach(_.bind(function (item) {
-                        var parts, imageModel;
+                        var parts;
                         if (item.meta && item.meta.item_id) {
                             // Determine if the image is solr backed or not
                             if (item.meta.id.indexOf(imagespace.solrPrefix) === 0) {
-                                imageModel = new imagespace.models.ImageModel(item.meta);
+                                models.push(new imagespace.models.ImageModel(item.meta));
                             } else {
-                                imageModel = new imagespace.models.UploadedImageModel(item.meta);
+                                models.push(new imagespace.models.UploadedImageModel(item.meta));
                             }
-
-                            imagespace.userData.images.add(imageModel);
 
                             // Replace Girder token with current session's token if necessary
                             parts = item.meta.imageUrl.split('&token=');
@@ -48,6 +55,9 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                             }
                         }
                     }, this));
+
+                    imagespace.userData.images.set(models);
+
                     done();
                 }, this));
             } else {
