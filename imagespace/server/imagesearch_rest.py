@@ -40,21 +40,21 @@ class ImageSearch(Resource):
             result = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
                 'wt': 'json',
                 'q': 'outpaths:"%s"' % params['solr_image_id'],
-                'fl': 'id',
+                'fl': 'id,url',
                 'rows': str(AD_LIMIT)
             }, verify=False).json()
         except ValueError:
             return {
                 'numFound': 0,
-                'ids': []
+                'docs': []
             }
 
         return {
             'numFound': result['response']['numFound'],
-            'ids': [x['id'] for x in result['response']['docs']]
+            'docs': result['response']['docs']
         }
     getRelevantAds.description = Description(
-        'Retrieve the relevant ad ids from a given image'
+        'Retrieve the relevant ad ids and urls from a given image'
     ).param('solr_image_id', 'ID of the Solr document representing an image')
 
     @access.public

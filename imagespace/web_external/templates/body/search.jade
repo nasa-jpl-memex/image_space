@@ -38,3 +38,8 @@
   #im-search-results
     if !collection.length
       h1 No search results found.
+
+  if collection.supportsPagination && collection.length
+      .im-results-pagination.pull-left
+        .im-pagination-container
+        p Showing results #{startIndex + 1} - #{toIndex} of #{total}
