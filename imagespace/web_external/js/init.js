@@ -11,6 +11,10 @@ _.extend(imagespace, {
 
     events: _.clone(Backbone.Events),
 
+    /**
+     * imagespace.userData.images is a heterogeneous backbone
+     * collection consisting of ImageModels and UploadedImageModels.
+     **/
     userData: {
         images: []
     },
@@ -225,6 +229,14 @@ _.extend(imagespace, {
 });
 
 girder.router.enabled(false);
+
+imagespace.router.on('route', function (route, params) {
+    // Add tracking for google analytics if ga function exists
+    if (_.isFunction(ga)) {
+        ga('set', 'page', route + '/' + params.join('/'));
+        ga('send', 'pageview');
+    }
+});
 
 imagespace.router.route('page/:name', 'page', function (name) {
     imagespace.headerView.render();
