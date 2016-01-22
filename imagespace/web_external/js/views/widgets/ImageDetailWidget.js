@@ -65,7 +65,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
     },
 
     render: function () {
-        if (this.image.has('_relevantAds')) {
+        // If ads have already been retrieved, or it's an uploaded image with no relevant ads, render
+        if (this.image.has('_relevantAds') || this.image instanceof imagespace.models.UploadedImageModel) {
             return this._render();
         } else {
             girder.restRequest({

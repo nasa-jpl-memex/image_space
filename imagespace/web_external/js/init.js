@@ -11,6 +11,10 @@ _.extend(imagespace, {
 
     events: _.clone(Backbone.Events),
 
+    /**
+     * imagespace.userData.images is a heterogeneous backbone
+     * collection consisting of ImageModels and UploadedImageModels.
+     **/
     userData: {
         images: []
     },
