@@ -136,9 +136,6 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                     image.imageUrl = dataURLReader.result;
                     image = new imagespace.models.UploadedImageModel(image);
 
-                    imagespace.userData.images.add(image, {
-                        at: 0
-                    });
                     if (girder.currentUser) {
                         girder.restRequest({
                             path: 'folder?text=Private'
@@ -166,7 +163,8 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                                     image.set('item_id', fileObject.attributes.itemId);
                                     item._sendMetadata(image.attributes, _.bind(function () {
                                         this.render();
-                                        imagespace.userDataView.render();
+                                        // Re-fetch images from Girder which will re-render sidebar
+                                        imagespace.userDataView.updateUserData();
                                     }, this));
                                 }, this));
                             }
