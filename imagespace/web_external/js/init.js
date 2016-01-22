@@ -191,6 +191,7 @@ _.extend(imagespace, {
 
     /**
      * Takes an image model and stores it as a Girder item for the current user.
+     * Ignores images which already exist as a Girder item.
      **/
     addUserImage: function (image, done, error) {
         if (!girder.currentUser) {
@@ -210,19 +211,27 @@ _.extend(imagespace, {
                 parentId: girder.currentUser.id
             }
         }).done(function (folders) {
-            var privateFolder = _.first(folders);
+            var privateFolder = _.first(folders),
+                imageId = _.has(image, 'id') ? image.id : image.get('id');
 
             if (privateFolder) {
-                var item = new girder.models.ItemModel({
-                    name: _.has(image, 'id') ? image.id : image.get('id'),
-                    folderId: privateFolder._id
-                });
+                imagespace.userDataView.updateUserData(_.bind(function () {
+                    if (!_.contains(_.invoke(imagespace.userData.images.models, 'get', 'id'),
+                                    imageId)) {
+                        var item = new girder.models.ItemModel({
+                            name: imageId,
+                            folderId: privateFolder._id
+                        });
 
-                item.once('g:saved', function () {
-                    image.set('item_id', item.attributes._id);
-                    item._sendMetadata(image.attributes, done, error);
-                    imagespace.userData.images.add(image);
-                }).once('g:error', error).save();
+                        item.once('g:saved', function () {
+                            image.set('item_id', item.attributes._id);
+                            item._sendMetadata(image.attributes, done, error);
+                            imagespace.userData.images.add(image);
+                        }).once('g:error', error).save();
+                    } else {
+                        console.error('Item with id ' + imageId + ' already exists in your folder.');
+                    }
+                }));
             }
         });
     }
