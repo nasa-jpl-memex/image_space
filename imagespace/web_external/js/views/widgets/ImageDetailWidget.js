@@ -65,7 +65,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
     },
 
     render: function () {
-        if (this.image.has('relevantAds')) {
+        if (this.image.has('_relevantAds')) {
             return this._render();
         } else {
             girder.restRequest({
@@ -74,8 +74,11 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                     solr_image_id: this.image.get('id')
                 }
             }).done(_.bind(function (response) {
-                this.image.set('relevantAds', _.map(response.ids, function (id) {
-                    return _.last(id.split('/'));
+                this.image.set('_relevantAds', _.map(response.docs, function (doc) {
+                    return {
+                        resourcename: _.last(doc.id.split('/')),
+                        url: doc.url
+                    };
                 }));
                 this._render();
             }, this));
