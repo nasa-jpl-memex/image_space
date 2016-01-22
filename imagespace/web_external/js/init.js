@@ -249,7 +249,5 @@ imagespace.router.on('route', function (route, params) {
 
 imagespace.router.route('page/:name', 'page', function (name) {
     imagespace.headerView.render();
-    $('#g-app-body-container').html(imagespace.templates[name]({
-        imagespace: imagespace
-    }));
+    $('#g-app-body-container').html(imagespace.templates[name]());
 });

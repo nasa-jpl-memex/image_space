@@ -107,9 +107,7 @@ imagespace.views.SearchBarView = imagespace.View.extend({
     },
 
     render: function () {
-        this.$el.html(imagespace.templates.searchBarWidget(_.extend(this.settings, {
-            imagespace: imagespace
-        })));
+        this.$el.html(imagespace.templates.searchBarWidget(this.settings));
         return this;
     },
 

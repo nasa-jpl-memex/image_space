@@ -1,5 +1,21 @@
 $(function () {
 
+    /**
+     * This is a somewhat hackish way of guaranteeing all of our
+     * jade templates have access to the girder and imagespace
+     * globals.
+     **/
+    _(imagespace.templates).each(function (tmplFunc, tmplName) {
+        imagespace.templates[tmplName] = function (args) {
+            _.extend(args || {}, {
+                girder: girder,
+                imagespace: imagespace
+            });
+
+            return tmplFunc(args);
+        };
+    });
+
     girder.restRequest({
         path: 'imageprefix'
     }).done(function (result) {
