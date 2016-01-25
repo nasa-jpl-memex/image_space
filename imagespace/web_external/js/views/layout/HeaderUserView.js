@@ -21,6 +21,13 @@ imagespace.views.LayoutHeaderUserView = imagespace.View.extend({
     },
 
     initialize: function () {
+        // On change of user (login or logout), re-render the search view
+        girder.events.on('g:login', function () {
+            if (_.has(imagespace, 'searchView')) {
+                imagespace.searchView.render();
+            }
+        });
+
         girder.events.on('g:login.success', this.redisplay, this);
         girder.events.on('g:logout.success', function () {
             this.render();
