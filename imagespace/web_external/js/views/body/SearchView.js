@@ -19,6 +19,10 @@ imagespace.views.SearchView = imagespace.View.extend({
                 this.collection.params.classifications.push($(el).data('key'));
             }, this));
 
+            imagespace.updateQueryParams({
+                classifications: this.collection.params.classifications.join(',')
+            });
+
             $('.alert-info').html('Narrowing results <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
             this.collection.fetch(this.collection.params, true);
         }
@@ -28,13 +32,19 @@ imagespace.views.SearchView = imagespace.View.extend({
         girder.cancelRestRequests('fetch');
         this.$el = window.app.$('#g-app-body-container');
         this.collection = settings.collection;
-        this.collection.params.classifications = [];
         this.viewMode = localStorage.getItem('viewMode') || 'grid';
         this.collection.on('g:changed', _.bind(function () {
             this.render();
+
+            if (this.collection.supportsPagination) {
+                imagespace.updateQueryParams({
+                    page: this.collection.pageNum() + 1
+                });
+            }
+
             $('.alert-info').addClass('hidden');
         }, this));
-        this.collection.fetch(settings.collection.params || {}, true);
+        this.collection.fetch(this.collection.params || {});
     },
 
     render: function () {
@@ -73,7 +83,7 @@ imagespace.views.SearchView = imagespace.View.extend({
 
 });
 
-imagespace.router.route('search/:query', 'search', function (query) {
+imagespace.router.route('search/:query(/params/:params)', 'search', function (query, params) {
     imagespace.headerView.render({query: query});
     $('.alert-info').html('Searching <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
@@ -83,7 +93,7 @@ imagespace.router.route('search/:query', 'search', function (query) {
     });
 });
 
-imagespace.router.route('search/:url/:mode', 'search', function (url, mode) {
+imagespace.router.route('search/:url/:mode(/params/:params)', 'search', function (url, mode, params) {
     // Replace Girder token with current session's token if necessary
     var niceName = (_.has(imagespace.searches[mode], 'niceName')) ? imagespace.searches[mode].niceName : mode,
         parts = url.split('&token=');
