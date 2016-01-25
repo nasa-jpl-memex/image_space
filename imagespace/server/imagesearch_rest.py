@@ -20,7 +20,9 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
+from urlparse import urlparse
 
+import itertools
 import json
 import requests
 import os
@@ -34,7 +36,14 @@ class ImageSearch(Resource):
 
     @access.public
     def getRelevantAds(self, params):
-        AD_LIMIT = 10
+        AD_LIMIT = 20
+        def sort_documents_by_url(documents):
+            return sorted(documents, key=lambda x: x['url'])
+
+        # @todo this assumes all URLs returned from Solr will properly urlparse
+        def group_documents_by_domain(documents):
+            return itertools.groupby(sort_documents_by_url(documents),
+                                     lambda doc: urlparse(doc['url']).netloc)
 
         try:
             result = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
@@ -49,10 +58,21 @@ class ImageSearch(Resource):
                 'docs': []
             }
 
-        return {
+        response = {
             'numFound': result['response']['numFound'],
-            'docs': result['response']['docs']
+            'docs': result['response']['docs'],
+            'groupedDocs': []
         }
+
+        for (domain, documents) in group_documents_by_domain(response['docs']):
+            response['groupedDocs'].append([domain, list(documents)])
+
+        # Display the domain with the largest number of documents first
+        response['groupedDocs'] = sorted(response['groupedDocs'],
+                                         key=lambda (_, docs): len(docs),
+                                         reverse=True)
+
+        return response
     getRelevantAds.description = Description(
         'Retrieve the relevant ad ids and urls from a given image'
     ).param('solr_image_id', 'ID of the Solr document representing an image')
