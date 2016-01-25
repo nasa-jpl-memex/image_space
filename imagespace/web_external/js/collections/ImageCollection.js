@@ -3,10 +3,13 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
     pageLimit: 20,
     supportsPagination: true,
     model: imagespace.models.ImageModel,
+    filterByQueryString: true,
 
     initialize: function (models, options) {
         _.extend(this, options);
         Backbone.Collection.prototype.initialize.apply(this, [models, options]);
+        this.params = this.params || {};
+        this.params.classifications = [];
 
         // Store the ids explicitly mentioned in the query, in order
         if (_.has(this, 'params') && _.has(this.params, 'query')) {
@@ -19,6 +22,19 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
                     return false;
                 }
             }), _.identity);
+        }
+
+        if (this.filterByQueryString) {
+            // Filter collection based on query string
+            var qs = imagespace.parseQueryString();
+
+            if (_.has(qs, 'page')) {
+                this.offset = (qs.page - 1) * this.pageLimit;
+            }
+
+            if (_.has(qs, 'classifications')) {
+                this.params.classifications = qs.classifications;
+            }
         }
     },
 
