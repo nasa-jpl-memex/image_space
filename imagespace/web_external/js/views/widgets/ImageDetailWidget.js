@@ -74,11 +74,23 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
                     solr_image_id: this.image.get('id')
                 }
             }).done(_.bind(function (response) {
-                this.image.set('_relevantAds', _.map(response.docs, function (doc) {
-                    return {
-                        resourcename: _.last(doc.id.split('/')),
-                        url: doc.url
-                    };
+                this.image.set('_relevantAdInfo', {
+                    totalNumAds: response.numFound,
+                    showingNumAds: _.reduce(response.groupedDocs, function (memo, groupedDoc) {
+                        return memo + groupedDoc[1].length;
+                    }, 0)
+                });
+
+                this.image.set('_relevantAds', _.map(response.groupedDocs, function (groupedDoc) {
+                    var domain = _.first(groupedDoc),
+                        documents = _.last(groupedDoc);
+
+                    return [domain, _.map(documents, function (document) {
+                        return {
+                            resourcename: _.last(document.id.split('/')),
+                            url: document.url
+                        };
+                    })];
                 }));
                 this._render();
             }, this));
