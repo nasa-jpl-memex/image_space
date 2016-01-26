@@ -37,9 +37,18 @@
                   span !{val}
 
         if facetviewAdsUrl && image.has('_relevantAds') && image.get('_relevantAds').length
-          mixin ad_anchor(document)
-            a(href=document.url, target='_blank') !{document.url.substr(0, 35)}..
-            a(href=facetviewAdsUrl + '?query=resourcename_t_md:' + document.resourcename)  - Open in FacetView
+          mixin ad_anchor(document, domain)
+            - var displayUrl = document.url.replace(/http(s?):\/\//, '')
+
+            if domain
+              - var displayUrl = displayUrl.replace(domain, '')
+
+            if displayUrl.length > 40
+              - var displayUrl = displayUrl.substr(0, 15) + '...' + displayUrl.substr(-22)
+
+            a(href=document.url, target='_blank')= displayUrl
+            a(href=facetviewAdsUrl + '?query=resourcename_t_md:' + document.resourcename, target='_blank')
+              span(style='float:right') FacetView
 
           - var relevantAds = image.get('_relevantAds')
           - var relevantAdInfo = image.get('_relevantAdInfo')
@@ -57,13 +66,13 @@
                 - var numDocuments = documents.length
 
                 tr
-                  td(rowspan=numDocuments) #{domain} (#{numDocuments})
+                  td(rowspan=numDocuments) #{domain.replace(/^www\./, '')} (#{numDocuments})
                   td
-                    +ad_anchor(documents[0])
+                    +ad_anchor(documents[0], domain)
                 for doc in documents.slice(1)
                   tr
                     td
-                      +ad_anchor(doc)
+                      +ad_anchor(doc, domain)
         h4 Attributes
         dl.dl-horizontal.im-attributes
           for val, key in image.attributes
