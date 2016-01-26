@@ -46,7 +46,7 @@
             if displayUrl.length > 40
               - var displayUrl = displayUrl.substr(0, 15) + '...' + displayUrl.substr(-22)
 
-            a(href=document.url, target='_blank')= displayUrl
+            a(href=document.url, target='_blank', title=document.url)= displayUrl
             a(href=facetviewAdsUrl + '?query=resourcename_t_md:' + document.resourcename, target='_blank')
               span(style='float:right') FacetView
 
