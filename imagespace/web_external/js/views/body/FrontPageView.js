@@ -19,7 +19,7 @@ imagespace.views.FrontPageView = girder.views.FrontPageView.extend({
         // This is a hack, because at the time of layout instantiation I can't obtain
         // the route from Backbone. The header search bar should never be rendered (on the front page)
         // in the first place.
-        $('#header-search-bar').remove();
+        $('.im-nav').remove();
 
         $('#search-bar input.im-search').focus();
 

@@ -1,25 +1,18 @@
-if mode
-    .im-image-search-form
-        img.im-search-image.im-blur(src="#{url}")
-        ul.nav.navbar-nav
-          if image.get('_applicableSearches')
-            each key in image.get('_applicableSearches')
-              li(class=(mode === key ? 'active': ''))
-                a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal").btn.btn-link.btn-default #{imagespace.searches[key].niceName}
-          li
-            a(href='#').btn.btn-link.btn-default Clear image search
-else
-    .im-search-form.navbar-form.navbar-left(id=(dropzone) ? 'im-upload' : '')
-      if frontPage
-        h1(style='margin-left:100px') ImageSpace
-      if dropzone
-        .hide
-           input#im-files(type="file", multiple="multiple")
-      .form-group.im-search-form-group
-          input.im-search.form-control(type="text", placeholder=(loggedIn) ? "Enter a search term or drop an image..." : "Enter a search term or log in to drop an image...", value=query)
-      | &nbsp;
-      if dropzone
-        button.btn.btn-primary.im-advanced-search-button
-          i.icon-upload
-      if advancedSearch
-        a#advanced-search(href='#') Advanced Search
+if url
+  img.im-search-image.im-blur(src="#{url}")
+
+if frontPage
+  h1 ImageSpace
+
+.im-search-form(id=(dropzone) ? 'im-upload' : '')
+  if dropzone
+    .hide
+       input#im-files(type="file", multiple="multiple")
+  input.im-search.form-control(type="text", placeholder=(girder.currentUser) ? "Enter a search term or drop an image..." : "Enter a search term or log in to drop an image...", value=query)
+
+  if dropzone
+    button.btn.btn-primary.im-advanced-search-button
+      i.icon-upload
+
+  if advancedSearch
+    a#advanced-search(href='#') Advanced Search

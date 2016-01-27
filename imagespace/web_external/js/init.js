@@ -301,6 +301,8 @@ imagespace.router.on('route', function (route, params) {
 });
 
 imagespace.router.route('page/:name', 'page', function (name) {
-    imagespace.headerView.render();
+    imagespace.headerView.render({
+        activePage: window.location.hash
+    });
     $('#g-app-body-container').html(imagespace.templates[name]());
 });

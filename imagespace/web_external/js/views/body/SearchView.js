@@ -32,6 +32,9 @@ imagespace.views.SearchView = imagespace.View.extend({
         girder.cancelRestRequests('fetch');
         this.$el = window.app.$('#g-app-body-container');
         this.collection = settings.collection;
+        this.searchImage = settings.searchImage || false;
+        this.url = settings.url;
+        this.mode = settings.mode;
         this.viewMode = localStorage.getItem('viewMode') || 'grid';
         this.collection.on('g:changed', _.bind(function () {
             this.render();
@@ -49,6 +52,9 @@ imagespace.views.SearchView = imagespace.View.extend({
 
     render: function () {
         this.$el.html(imagespace.templates.search({
+            image: this.searchImage,
+            mode: this.mode,
+            url: this.url,
             viewMode: this.viewMode,
             showText: true,
             collection: this.collection,
@@ -115,13 +121,16 @@ imagespace.router.route('search/:url/:mode(/params/:params)', 'search', function
 
         imagespace.headerView.render({
             url: url,
-            mode: mode,
+            mode: mode, // @todo do these need image/mode?
             image: image
         });
         $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
-            collection: imagespace.searches[mode].search(image)
+            collection: imagespace.searches[mode].search(image),
+            searchImage: image,
+            url: url,
+            mode: mode
         });
 
         imagespace.userDataView.render();
