@@ -7,7 +7,7 @@ $(function () {
      **/
     _(imagespace.templates).each(function (tmplFunc, tmplName) {
         imagespace.templates[tmplName] = function (args) {
-            _.extend(args || {}, {
+            args = _.extend(args || {}, {
                 girder: girder,
                 imagespace: imagespace
             });

@@ -1,7 +1,6 @@
 @import 'nib'
 
 $headerHeight = 50px
-$portraitHeight = 38px
 
 .navbar
     a
@@ -22,9 +21,6 @@ $portraitHeight = 38px
 .h-current-user-text > *
     vertical-align middle
     line-height $headerHeight
-
-.h-current-user-wrapper
-    float right
 
 .h-icons-wrapper
     display inline
@@ -68,6 +64,7 @@ $portraitHeight = 38px
     width 100%
     position absolute
     padding 15px
+    padding-top 0px !important
     padding-bottom $headerHeight
 
 #wrapper.toggled #page-content-wrapper
@@ -75,32 +72,30 @@ $portraitHeight = 38px
     margin-right -250px
 
 
-@media(min-width:768px) {
-    #wrapper {
-        padding-left: 250px;
-    }
+#wrapper {
+      padding-left: 250px;
+}
 
-    #wrapper.toggled {
-        padding-left: 0;
-    }
+#wrapper.toggled {
+      padding-left: 0;
+}
 
-    #sidebar-wrapper {
-        width: 250px;
-    }
+#sidebar-wrapper {
+      width: 250px;
+}
 
-    #wrapper.toggled #sidebar-wrapper {
-        width: 0;
-    }
+#wrapper.toggled #sidebar-wrapper {
+      width: 0;
+}
 
-    #page-content-wrapper {
-        padding: 20px;
-        position: relative;
-    }
+#page-content-wrapper {
+      padding: 20px;
+      position: relative;
+}
 
-    #wrapper.toggled #page-content-wrapper {
-        position: relative;
-        margin-right: 0;
-    }
+#wrapper.toggled #page-content-wrapper {
+      position: relative;
+      margin-right: 0;
 }
 
 .im-searches
@@ -125,45 +120,24 @@ $portraitHeight = 38px
     padding-right 40px
     padding-bottom 20px
 
-input.im-search
-  width 100% !important
-
-.im-search-form
-    width 60%
-
-#g-app-body-container .im-search-form
-    width 80%
-
-.im-search-form-group
-    width 80%
-    padding-left 100px
-
-.im-image-search-form
-    float left
-
 .im-search-image
     height 50px
     float left
-    padding-left 120px
-    padding-right 50px
 
 .im-search-image:hover
     cursor pointer
 
 #im-app-main-container
-    margin 0
-    margin-top $headerHeight
+    margin 60px 0 0 0
     min-height 0
-    padding 12px 15px
 
 #g-app-body-container
     margin 0
     min-height 0
-    padding 12px 15px
 
 #advanced-search
     float right
-    margin-right 20%
+    margin-right 50px
 
 .im-image-area
     overflow-x hidden
@@ -186,21 +160,26 @@ img.im-image-detail
     margin-top 10px
 
 #search-bar
-  margin-top 10%
-  margin-left 21%
+  margin 0 auto
+  width 50%
+  padding-top 12%
+
+#search-bar input.im-search
+  display inline
+
+.im-nav > .im-search-form
+  float left
 
 .im-search-form button
   margin 2px
 
-.im-nav
-  float right
 
 .im-pagination-container > .pagination
   margin 0
 
 #advanced-search-table
   clear both
-  margin-left 38%
+  margin 0 auto
   border-spacing 8px
   border-collapse inherit
   display none
@@ -216,20 +195,6 @@ img.im-image-detail
 a.im-link
   display block
   clear both
-
-@media(max-width:1350px) {
-   .im-search-image {
-      padding-left: 0px;
-    }
-
-    .navbar-header {
-      display: none;
-    }
-
-    .h-current-user-wrapper {
-      display: none;
-    }
-}
 
 #search-controls
  height 80px
@@ -262,3 +227,72 @@ a.im-link
 
 .im-actions > a
   padding 12px
+
+.im-dropdown-nav
+  display none
+  float left
+
+.im-nav.collapsed {
+  display: none;
+}
+
+#im-upload
+  display inline
+
+.im-nav
+  float left
+
+.im-nav > #im-upload
+  padding 0 7px 0 7px
+
+.im-nav input.im-search
+  width auto
+  display inline
+  margin 8px 0px 8px 8px
+
+.im-nav button.im-advanced-search-button
+  vertical-align baseline
+
+
+@media(max-width:900px) {
+  .im-nav {
+    display: none;
+  }
+
+  .im-nav.collapsed {
+    display: block;
+  }
+}
+
+@media(min-width:1175px) {
+  .im-nav input.im-search {
+    width: 460px;
+  }
+}
+
+@media(max-width:1000px) {
+  .im-nav input.im-search {
+    width: 180px !important;
+  }
+
+  .navbar-brand {
+    display: none;
+  }
+}
+
+@media(max-width:1175px) {
+  .im-nav input.im-search {
+    width: 310px;
+  }
+}
+
+.navbar
+  margin-bottom 10px
+
+
+#g-app-body-container .nav.nav-pills
+  margin-bottom 8px
+
+
+#g-app-body-container .im-search
+    width calc(100% - 50px) // hack, this is the width minus (upload icon + padding)

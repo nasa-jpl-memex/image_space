@@ -4,6 +4,13 @@
 
 .container-fluid
   .clearfix
+  ul.nav.nav-pills
+    if image && image.get('_applicableSearches')
+      each key in image.get('_applicableSearches')
+        li(class=(mode === key ? 'active': ''), role='presentation')
+          a(href='#search/' + encodeURIComponent(url) + '/' + key)
+            | #{imagespace.searches[key].niceName}
+
   #search-controls.form-control
     if collection.supportsPagination && collection.length
       .im-results-pagination.pull-left
