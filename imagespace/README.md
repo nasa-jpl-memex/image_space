@@ -16,16 +16,6 @@ Note: Please upgrade to latest snapshot of Girder to resolve ImageSpace deployme
 
 ## Pre-requisites and Install
 
-### MongoDB
-
-1. MongoDB is one of the prerequisites for Girder. 
-  * you can install [latest MongoDB from here](http://docs.mongodb.org/master/installation/)
-
-2. Start Mongo normally on the default port.
-  ```
-  sudo service mongod start
-  ```
-
 ### <a name="imageSim"></a>Image similarity server
 
 The image similarity server requires a set of images to load and process into the index.
@@ -54,54 +44,35 @@ tangelo --port 9220
 
 2. Then [install Girder from a Git checkout](http://girder.readthedocs.org/en/latest/installation.html#install-from-git-checkout).
 
-3. Note that you also need to install [Tika-Python](http://github.com/chrismattmann/tika-python).
-You can do so by:
+   Note: After any changes to the ImageSpace code, it is necessary to rebuild it by running `grunt` from the top level      Girder directory.
+
+3. Install the ImageSpace plugin using `girder-install`
   ```bash
-  pip2.7 install tika
-  ```
+girder-install plugin -s /path/to/image_space/imagespace
+```
 
-4. [Install Grunt CLI](http://gruntjs.com/getting-started#installing-the-cli)
-
-5. To enable the imagespace plugin, first create a symbolic link to the imagespace plugin
+4. Then set the following environment variables & **source** them, whenever they change
   ```bash
-  sudo ln -s /usr/bin/nodejs /usr/bin/node
-  cd /path/to/girder
-  ln -s path/to/image_space/imagespace ./plugins/imagespace
-  cp -R girder/conf/girder.dist.cfg girder/conf/girder.local.cfg
-  ```
+  export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint_OR_local_SolrCoreURLInstance
+  export IMAGE_SPACE_SOLR_PREFIX=/server/path/to/image/dir
+  export IMAGE_SPACE_PREFIX=http://path_to_image_repository_local_or_cloud
+```
 
-6. Optional: modify the **server.socket_port** in *girder/conf/girder.local.cfg* to change the default Girder Deploy Port No(8080).
-
-7. Build the app.
-  ```
-  cd /path/to/girder
-  grunt
-  ```
-The above builds the codebase enabling us to deploy it to the Girder server. It should be noted that after 
-any changes to the imagespace code, it is necessary to rebuild it with *grunt*. 
-
-8. Then set the following environment variables & **source** them, whenever they change
-  ```bash
-  export IMAGE_SPACE_SOLR=http://your_solr_server_rest_endpoint_OR_local_SolrCoreURLInstance                    # Required for easy deploy
-  export IMAGE_SPACE_SOLR_PREFIX=/server/path/to/image/dir                                                      # Required
-  export IMAGE_SPACE_PREFIX=http://path_to_image_repository_local_or_cloud                                      # Required for easy deploy
-  ```
-
-9. Finally start the Girder server with
+5. Finally start the Girder server with
   ```bash
   python -m girder
-  ```
+```
 
 The default Girder app should be visible at [http://localhost:8080](http://localhost:8080).
 
 Register for a new account, which will be the admin account. Go to the admin console and enter the
 plugin configuration. Find the imagespace plugin and enable it. Girder should prompt you to restart
-the server (or restart manually). One restarted, again visit [http://localhost:8080](http://localhost:8080).
+the server (or restart manually). Once restarted, again visit [http://localhost:8080](http://localhost:8080).
 The application should be replaced with ImageSpace, with the full Girder app located at
 [http://localhost:8080/girder](http://localhost:8080/girder).
 
 ### Additional Plugins
-ImageSpace comes with additional plugins that may be enabled using the [Girder administration panel](http://girder.readthedocs.org/en/latest/installation.html#initial-setup). For each of these a symbolic link must be set so the plugin exists in Girder's `/plugins` directory.
+ImageSpace comes with additional plugins that may be enabled using the [Girder administration panel](http://girder.readthedocs.org/en/latest/installation.html#initial-setup). Each of these can be installed following an identical scheme as above (using girder-install).
 
 Individual plugins may require certain environment variables be set, for example the ImageSpace FLANN plugin requires `IMAGE_SPACE_FLANN_INDEX` be set to the URL of the flann_index. These plugins will warn you when starting Girder if they don't have the required environment variables to function properly.
 
