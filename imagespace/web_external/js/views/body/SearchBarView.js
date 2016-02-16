@@ -104,6 +104,8 @@ imagespace.views.SearchBarView = imagespace.View.extend({
         if (settings.dropzone) {
             _.extend(this.events, this.dropzoneEvents);
         }
+
+        girder.events.on('g:login', _.bind(this.render, this));
     },
 
     render: function () {
