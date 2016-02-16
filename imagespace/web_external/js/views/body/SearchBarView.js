@@ -163,6 +163,12 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                                         this.render();
                                         // Re-fetch images from Girder which will re-render sidebar
                                         imagespace.userDataView.updateUserData();
+
+                                        new imagespace.views.ImageDetailWidget({
+                                            el: $('#g-dialog-container'),
+                                            image: image,
+                                            parentView: null
+                                        }).render();
                                     }, this));
                                 }, this));
                             }

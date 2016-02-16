@@ -36,7 +36,8 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
 
         // If it's being displayed in a grid/list as part of results, let the user
         // scroll through modals
-        this.canScroll = this.parentView.parentView instanceof imagespace.views.SearchView;
+        this.canScroll = _.has(this, 'parentView') && _.has(this.parentView, 'parentView') &&
+            this.parentView.parentView instanceof imagespace.views.SearchView;
     },
 
     _render: function () {
