@@ -28,6 +28,7 @@ import requests
 import os
 
 DEFAULT_PAGE_SIZE = 100
+NEAR_DUPLICATES_THRESHOLD = -1500  # Maximum distance to be considered a near duplicate
 
 class SmqtkSimilaritySearch(Resource):
     def __init__(self):
@@ -55,6 +56,9 @@ class SmqtkSimilaritySearch(Resource):
         for document in documents:
             document['im_distance'] = neighbors_to_distances[solr_id_to_shas[document['id']]]
 
+        if 'near_duplicates' in params and int(params['near_duplicates']) == 1:
+            documents = [x for x in documents if x['im_distance'] <= NEAR_DUPLICATES_THRESHOLD]
+
         return {
             'numFound': len(documents),
             'docs': documents
@@ -62,4 +66,5 @@ class SmqtkSimilaritySearch(Resource):
     runImageSimilaritySearch.description = (
         Description('Performs SMQTK background search')
         .param('n', 'Number of nearest neighbors to return', default=str(DEFAULT_PAGE_SIZE))
-        .param('url', 'Publicly accessible URL of the image to search'))
+        .param('url', 'Publicly accessible URL of the image to search')
+        .param('near_duplicates', 'Set to 1 to return only near duplicates'))
