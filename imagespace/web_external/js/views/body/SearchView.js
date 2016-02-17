@@ -93,6 +93,10 @@ imagespace.router.route('search/:query(/params/:params)', 'search', function (qu
     imagespace.headerView.render({query: query});
     $('.alert-info').html('Searching <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
+    if (_.has(imagespace, 'searchView')) {
+        imagespace.searchView.destroy();
+    }
+
     imagespace.searchView = new imagespace.views.SearchView({
         collection: imagespace.getImageCollectionFromQuery(query),
         parentView: window.app
