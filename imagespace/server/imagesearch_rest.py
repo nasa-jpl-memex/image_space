@@ -102,15 +102,17 @@ class ImageSearch(Resource):
                                                 for key in classifications])
 
         try:
-            result = requests.get(base, params={
-                'wt': 'json',
-                'hl': 'true',
-                'hl.fl': '*',
-                'q': query,
-                'start': offset,
-                'rows': limit,
-                'fq': ['mainType:image']
-            }, verify=False).json()
+            query_params = {'wt': 'json',
+                            'hl': 'true',
+                            'hl.fl': '*',
+                            'q': query,
+                            'start': offset,
+                            'rows': limit}
+
+            if 'fq' in params:
+                query_params['fq'] = [params['fq']]
+
+            result = requests.get(base, params=query_params, verify=False).json()
         except ValueError:
             return []
 

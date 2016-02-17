@@ -145,7 +145,8 @@ imagespace.router.route('search/:url/:mode(/params/:params)', 'search', function
     girder.restRequest({
         path: 'imagesearch',
         data: {
-            query: 'id:"' + imagespace.urlToSolrId(url) + '" OR id:"' + imagespace.oppositeCaseFilename(imagespace.urlToSolrId(url)) + '"'
+            query: 'id:"' + imagespace.urlToSolrId(url) + '" OR id:"' + imagespace.oppositeCaseFilename(imagespace.urlToSolrId(url)) + '"',
+            fq: 'mainType:image'
         }
     }).done(function (results) {
         var q;
