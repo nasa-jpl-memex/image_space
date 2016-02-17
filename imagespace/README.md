@@ -3,7 +3,7 @@
 ImageSpace is a plugin for [Girder](https://girder.readthedocs.org/en/latest/).
 
 There are three processes involved for this app: a MongoDB server,
-an image similarity server, 
+an image similarity server,
 and a Girder web server containing the imagespace plugin.
 
 Note: Please upgrade to latest snapshot of Girder to resolve ImageSpace deployment issues
@@ -44,9 +44,9 @@ tangelo --port 9220
 
 2. Then [install Girder from a Git checkout](http://girder.readthedocs.org/en/latest/installation.html#install-from-git-checkout).
 
-   Note: After any changes to the ImageSpace code, it is necessary to rebuild it by running `grunt` from the top level      Girder directory.
+   Note: After any changes to the ImageSpace code, it is necessary to rebuild it by running `grunt` from the top level Girder directory.
 
-3. Install the ImageSpace plugin using `girder-install`
+3. Install the ImageSpace plugin using `girder-install`. Note that you need the extra `imagespace` to link to the correct subdirectory of your checkout.
   ```bash
 girder-install plugin -s /path/to/image_space/imagespace
 ```
@@ -66,13 +66,17 @@ girder-install plugin -s /path/to/image_space/imagespace
 The default Girder app should be visible at [http://localhost:8080](http://localhost:8080).
 
 Register for a new account, which will be the admin account. Go to the admin console and enter the
-plugin configuration. Find the imagespace plugin and enable it. Girder should prompt you to restart
+plugin configuration. Find the ImageSpace plugin and enable it. Girder should prompt you to restart
 the server (or restart manually). Once restarted, again visit [http://localhost:8080](http://localhost:8080).
 The application should be replaced with ImageSpace, with the full Girder app located at
 [http://localhost:8080/girder](http://localhost:8080/girder).
 
 ### Additional Plugins
-ImageSpace comes with additional plugins that may be enabled using the [Girder administration panel](http://girder.readthedocs.org/en/latest/installation.html#initial-setup). Each of these can be installed following an identical scheme as above (using girder-install).
+ImageSpace comes with additional plugins that may be enabled using the [Girder administration panel](http://girder.readthedocs.org/en/latest/installation.html#initial-setup). Each of these can be installed following an identical scheme as above (using `girder-install`). For example, to install the SMQTK similarity search plugin, run the following then enable the plugin in Girder's plugin settings.
+
+  ```bash
+  girder-install plugin -s /path/to/image_space/imagespace_smqtk
+```
 
 Individual plugins may require certain environment variables be set, for example the ImageSpace FLANN plugin requires `IMAGE_SPACE_FLANN_INDEX` be set to the URL of the flann_index. These plugins will warn you when starting Girder if they don't have the required environment variables to function properly.
 
