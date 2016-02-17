@@ -254,7 +254,7 @@ _.extend(imagespace, {
         var noop = function () {};
         done = (_.isFunction(done)) ? done : noop;
         error = (_.isFunction(error)) ? error : noop;
-        image.source_query = window.location.href;
+        image.set('source_query', window.location.href);
 
         girder.restRequest({
             path: 'folder',
