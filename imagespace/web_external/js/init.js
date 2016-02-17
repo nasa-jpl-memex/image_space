@@ -24,7 +24,7 @@ _.extend(imagespace, {
      * string corresponds to the route appended to /search/:url/ and the
      * object must contain a search function which takes an image object (model?)
      * and is expected to return a ImageCollection. Additionally it can contain
-     * a niceName property for display purposes, and a displayContext property which
+     * niceName and tooltip properties for display purposes, and a displayContext property which
      * takes an image model and determines whether or not the search should be displayed
      * in that context.
      **/
@@ -35,6 +35,7 @@ _.extend(imagespace, {
                     'make_t_md:"' + image.get('make_t_md') + '"');
             },
             niceName: 'Camera Make',
+            tooltip: 'Search by the make of the camera used to take this image',
             displayContext: function (image) {
                 return image.has('make_t_md');
             }
@@ -48,6 +49,7 @@ _.extend(imagespace, {
                     lengthKey + ':' + image.get('tiff:imagelength_l_md') + ' AND ' + widthKey + ':' + image.get('tiff:imagewidth_l_md'));
             },
             niceName: 'Size',
+            tooltip: 'Search for other images with these dimensions',
             displayContext: function (image) {
                 return image.has('tiff:imagelength_l_md') && image.has('tiff:imagewidth_l_md');
             }
@@ -66,6 +68,7 @@ _.extend(imagespace, {
                 );
             },
             niceName: 'Location',
+            tooltip: 'Search for other images taken near this one',
             displayContext: function (image) {
                 return image.has('geo:lat_d_md') && image.has('geo:long_d_md');
             }
