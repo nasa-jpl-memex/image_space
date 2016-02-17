@@ -1,0 +1,7 @@
+{
+    "name": "ImageSpace Weapons",
+    "version": "0.1.0",
+    "dependencies": [
+        "imagespace"
+    ]
+}
