@@ -17,6 +17,7 @@
 #  limitations under the License.
 ###############################################################################
 
+from girder import events
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
@@ -101,16 +102,23 @@ class ImageSearch(Resource):
             query += ' AND (%s)' % ' OR '.join(['%s:[.7 TO *]' % key
                                                 for key in classifications])
 
+        qparams = {
+            'wt': 'json',
+            'hl': 'true',
+            'hl.fl': '*',
+            'q': query,
+            'start': offset,
+            'rows': limit
+        }
+
+        # Give plugins a chance to adjust the Solr query parameters
+        event = events.trigger('imagespace.imagesearch.qparams', qparams)
+
+        for response in event.responses:
+            qparams.update(response)
+
         try:
-            result = requests.get(base, params={
-                'wt': 'json',
-                'hl': 'true',
-                'hl.fl': '*',
-                'q': query,
-                'start': offset,
-                'rows': limit,
-                'fq': ['mainType:image']
-            }, verify=False).json()
+            result = requests.get(base, params=qparams, verify=False).json()
         except ValueError:
             return []
 
