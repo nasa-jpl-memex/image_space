@@ -2,14 +2,15 @@ $(function () {
 
     /**
      * This is a somewhat hackish way of guaranteeing all of our
-     * jade templates have access to the girder and imagespace
+     * jade templates have access to the girder, imagespace, and _
      * globals.
      **/
     _(imagespace.templates).each(function (tmplFunc, tmplName) {
         imagespace.templates[tmplName] = function (args) {
             args = _.extend(args || {}, {
                 girder: girder,
-                imagespace: imagespace
+                imagespace: imagespace,
+                _: _
             });
 
             return tmplFunc(args);
