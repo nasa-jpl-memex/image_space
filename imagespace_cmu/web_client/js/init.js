@@ -16,12 +16,16 @@ girder.events.once('im:appload.after', function () {
     };
 
     imagespace.searches['cmu-background'] = cmuSearchResultCollection(
-        { niceName: 'Background' },
+        { niceName: 'Background',
+          tooltip: 'Launch CMU\'s background similarity search'
+        },
         { altUrl: 'cmu_imagebackgroundsearch' }
     );
 
     imagespace.searches['cmu-full'] = cmuSearchResultCollection(
-        { niceName: 'Similarity (CMU)' },
+        { niceName: 'Similarity (CMU)',
+          tooltip: 'Launch CMU\'s image similarity search'
+        },
         { altUrl: 'cmu_fullimagesearch' }
     );
 

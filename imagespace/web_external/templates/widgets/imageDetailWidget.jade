@@ -49,7 +49,9 @@ mixin attribute(key, val, query)
           span(style='display:block')
             | Search by
           each key in image.get('_applicableSearches')
-            a(href='#search/' + encodeURIComponent(url) + '/' + key, data-dismiss="modal") #{imagespace.searches[key].niceName}
+            a(href='#search/' + encodeURIComponent(url) + '/' + key,
+              data-dismiss="modal",
+              title=(_.has(imagespace.searches[key], 'tooltip')) ? imagespace.searches[key].tooltip : '') #{imagespace.searches[key].niceName}
       .modal-inner-content
         if image.has('highlight')
           h4 Match

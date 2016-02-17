@@ -16,7 +16,9 @@ girder.events.once('im:appload.after', function () {
     };
 
     imagespace.searches['smqtk-similarity'] = smqtkSearchResultCollection(
-        { niceName: 'Similarity (SMQTK)' },
+        { niceName: 'Similarity (SMQTK)',
+          tooltip: 'Launch Kitware\'s SMQTK image similarity search'
+        },
         { altUrl: 'smqtk_similaritysearch' }
     );
 }, this);

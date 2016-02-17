@@ -8,7 +8,8 @@
     if image && image.get('_applicableSearches')
       each key in image.get('_applicableSearches')
         li(class=(mode === key ? 'active': ''), role='presentation')
-          a(href='#search/' + encodeURIComponent(url) + '/' + key)
+          a(href='#search/' + encodeURIComponent(url) + '/' + key,
+            title=(_.has(imagespace.searches[key], 'tooltip')) ? imagespace.searches[key].tooltip : '')
             | #{imagespace.searches[key].niceName}
 
   #search-controls.form-control
