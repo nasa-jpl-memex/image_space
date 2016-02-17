@@ -8,9 +8,7 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
     initialize: function (models, options) {
         _.extend(this, options);
         Backbone.Collection.prototype.initialize.apply(this, [models, options]);
-        this.params = _.extend({
-            fq: 'mainType:image'
-        }, this.params || {});
+        this.params = this.params || {};
         this.params.classifications = [];
 
         // Store the ids explicitly mentioned in the query, in order

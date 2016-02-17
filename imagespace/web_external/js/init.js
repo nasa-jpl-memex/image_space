@@ -86,8 +86,7 @@ _.extend(imagespace, {
     getImageCollectionFromQuery: function (query) {
         return new imagespace.collections.ImageCollection(null, {
             params: {
-                query: query,
-                fq: 'mainType:image'
+                query: query
             }
         });
     },
