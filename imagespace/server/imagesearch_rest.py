@@ -113,9 +113,8 @@ class ImageSearch(Resource):
 
         # Give plugins a chance to adjust the Solr query parameters
         event = events.trigger('imagespace.imagesearch.qparams', qparams)
-
         for response in event.responses:
-            qparams.update(response)
+            qparams = response
 
         try:
             result = requests.get(base, params=qparams, verify=False).json()

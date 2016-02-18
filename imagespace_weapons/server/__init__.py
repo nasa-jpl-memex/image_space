@@ -20,9 +20,8 @@ from girder import events
 
 
 def add_maintype_to_qparams(event):
-    event.addResponse({
-        'fq': ['mainType:image']
-    })
+    event.info['fq'] = ['mainType:image']
+    event.addResponse(event.info)
 
 
 def load(info):
