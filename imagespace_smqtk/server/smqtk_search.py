@@ -47,10 +47,10 @@ class SmqtkSimilaritySearch(Resource):
                                               classifications)
 
         for document in documents:
-            document['im_distance'] = neighbors_to_distances[document['sha1sum_s_md']]
+            document['smqtk_distance'] = neighbors_to_distances[document['sha1sum_s_md']]
 
         if 'near_duplicates' in params and int(params['near_duplicates']) == 1:
-            documents = [x for x in documents if x['im_distance'] <= NEAR_DUPLICATES_THRESHOLD]
+            documents = [x for x in documents if x['smqtk_distance'] <= NEAR_DUPLICATES_THRESHOLD]
 
         return {
             'numFound': len(documents),
