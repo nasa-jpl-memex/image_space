@@ -20,8 +20,7 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
-from girder.models import getDbConnection
-from girder.plugins.imagespace import solr_documents_from_paths
+from girder.plugins.imagespace import solr_documents_from_field
 
 import json
 import requests
@@ -43,18 +42,12 @@ class SmqtkSimilaritySearch(Resource):
         params['n'] = params['n'] if 'n' in params else str(DEFAULT_PAGE_SIZE)
         smqtk_r = requests.get(self.search_url + '/n=' + params['n'] + '/' + params['url']).json()
         neighbors_to_distances = dict(zip(smqtk_r['neighbors'], smqtk_r['distances']))
-
-        db = getDbConnection().get_default_database()
-        mapped_paths = db[os.environ['IMAGE_SPACE_SMQTK_MAP_COLLECTION']].find({
-            'sha': {
-                '$in': smqtk_r['neighbors']
-            }
-        })
-        solr_id_to_shas = {os.environ['IMAGE_SPACE_SOLR_PREFIX'] + '/' + x['path']: x['sha'] for x in mapped_paths}
-        documents = solr_documents_from_paths(solr_id_to_shas.keys(), classifications)
+        documents = solr_documents_from_field('sha1sum_s_md',
+                                              neighbors_to_distances.keys(),
+                                              classifications)
 
         for document in documents:
-            document['im_distance'] = neighbors_to_distances[solr_id_to_shas[document['id']]]
+            document['im_distance'] = neighbors_to_distances[document['sha1sum_s_md']]
 
         if 'near_duplicates' in params and int(params['near_duplicates']) == 1:
             documents = [x for x in documents if x['im_distance'] <= NEAR_DUPLICATES_THRESHOLD]

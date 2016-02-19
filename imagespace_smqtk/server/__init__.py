@@ -22,8 +22,7 @@ from .smqtk_search import SmqtkSimilaritySearch
 
 
 def load(info):
-    required_env_vars = ('IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH',
-                         'IMAGE_SPACE_SMQTK_MAP_COLLECTION')
+    required_env_vars = ('IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH',)
 
     for required_var in required_env_vars:
         if required_var not in os.environ \

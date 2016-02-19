@@ -21,7 +21,7 @@ from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
 
-from girder.plugins.imagespace import solr_documents_from_paths
+from girder.plugins.imagespace import solr_documents_from_field
 
 import json
 import requests
@@ -46,7 +46,7 @@ class CmuSearch(Resource):
                       for (image, score) in cmu_images]
         cmu_scores = {image.lower(): score for image, score in cmu_images}
 
-        documents = solr_documents_from_paths([x[0] for x in cmu_images], classifications)
+        documents = solr_documents_from_field('resourcename_t_md', [x[0] for x in cmu_images], classifications)
 
         # Augment original scores from response into solr documents
         for document in documents:

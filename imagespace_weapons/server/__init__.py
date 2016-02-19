@@ -16,6 +16,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
+import os
 from girder import events
 
 
@@ -24,7 +25,18 @@ def add_maintype_to_qparams(event):
     event.addResponse(event.info)
 
 
+def uppercase_basename_for_resourcenames(event):
+    if event.info['field'] == 'resourcename_t_md':
+        event.info['values'] = [os.path.basename(x).upper() for x in
+                                event.info['values']]
+        event.addResponse(event.info)
+
+
 def load(info):
     events.bind('imagespace.imagesearch.qparams',
                 'adjust_qparams_for_maintype',
                 add_maintype_to_qparams)
+
+    events.bind('imagespace.solr_documents_from_field',
+                'upperbase_basename_for_resourcenames',
+                uppercase_basename_for_resourcenames)
