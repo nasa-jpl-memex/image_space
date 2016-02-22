@@ -26,6 +26,11 @@ def add_maintype_to_qparams(event):
 
 
 def uppercase_basename_for_resourcenames(event):
+    """
+    Certain searches were indexed before conversion of the Solr index, so they pass
+    values with lowercase resourcenames that actually correspond to the uppercase resource
+    name versions.
+    """
     if event.info['field'] == 'resourcename_t_md':
         event.info['values'] = [os.path.basename(x).upper() for x in
                                 event.info['values']]
