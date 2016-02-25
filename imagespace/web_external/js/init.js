@@ -230,7 +230,7 @@ _.extend(imagespace, {
     },
 
     // Default blur setting must be one of always, never, or hover
-    defaultBlurSetting: 'hover',
+    defaultBlurSetting: 'never',
 
     updateBlurSetting: function (val) {
         localStorage.setItem('im-blur', val);
