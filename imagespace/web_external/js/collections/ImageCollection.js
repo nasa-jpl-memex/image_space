@@ -88,7 +88,8 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
             if (list.length > this.pageLimit) {
                 // This means we have more pages to display still. Pop off
                 // the extra that we fetched.
-                list.pop();
+                // @todo This is silently removing extra results (from shas mapping to dup documents)
+                list = _.first(list, this.pageLimit);
                 this._hasMorePages = true;
             } else {
                 this._hasMorePages = false;

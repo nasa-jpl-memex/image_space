@@ -147,6 +147,19 @@ _.extend(imagespace, {
         return imagespace.solrPrefix + file;
     },
 
+    /**
+     * Returns the query type (search, refine) with any arguments it
+     * takes (these are before the params).
+     * Example: /search/shotgun/params/page=1 returns [search, 'shotgun']
+     **/
+    getQueryTypeWithArguments: function (onlyArgs) {
+        var hash = Backbone.history.getHash()
+            .replace('/params/' + imagespace.getQueryParams(), ''),
+            values = hash.split('/');
+
+        return (onlyArgs) ? _.tail(values) : values;
+    },
+
     // Returns empty string if no params in the query string
     getQueryParams: function () {
         var hash = Backbone.history.getHash(),

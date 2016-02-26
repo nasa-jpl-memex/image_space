@@ -53,6 +53,13 @@ imagespace.views.SearchView = imagespace.View.extend({
     },
 
     render: function () {
+        // This is really hacky - but otherwise we are orphaning
+        // collection.pageLimit + 1 views each re-render (every time a page changes,
+        // classifications, etc)
+        _.each(this._childViews, function (child) {
+            child.destroy();
+        });
+
         this.$el.html(imagespace.templates.search({
             image: this.searchImage,
             mode: this.mode,
@@ -87,8 +94,17 @@ imagespace.views.SearchView = imagespace.View.extend({
         }
 
         return this;
-    }
+    },
 
+    /**
+     * Child views on this collection are the pagination widget (conditionally) and
+     * the image views. To retrieve the i'th image child view, just return the i'th element
+     * and potentially add 1 if the pagination view was the first one created.
+     **/
+    getChildImageView: function (i) {
+        var offset = (Number(this.collection.supportsPagination)) + i
+        return this._childViews[offset];
+    }
 });
 
 imagespace.router.route('search/:query(/params/:params)', 'search', function (query, params) {
