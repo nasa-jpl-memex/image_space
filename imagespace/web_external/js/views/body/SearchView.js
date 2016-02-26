@@ -29,7 +29,6 @@ imagespace.views.SearchView = imagespace.View.extend({
     },
 
     initialize: function (settings) {
-        girder.cancelRestRequests('fetch');
         this.$el = window.app.$('#g-app-body-container');
         this.collection = settings.collection;
         this.searchImage = settings.searchImage || false;
