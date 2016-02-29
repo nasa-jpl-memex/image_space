@@ -163,6 +163,8 @@ girder.events.once('im:appload.after', function () {
             return;
         }
 
+        $('#smqtk-iqr-action button').append('    <i class="icon-spin5 animate-spin"></i>');
+
         girder.restRequest({
             path: 'smqtk_iqr/refine',
             type: 'PUT',
