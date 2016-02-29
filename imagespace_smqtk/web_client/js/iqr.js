@@ -26,7 +26,7 @@ girder.events.once('im:appload.after', function () {
              * Returns the IqrSessionModel representing the current IQR session (via the query string).
              * IQR is currently limited to logged in users.
              **/
-            currentIqrSession: function () {
+            findIqrSession: function () {
                 var qs = imagespace.parseQueryString(),
                     session;
 
@@ -41,14 +41,20 @@ girder.events.once('im:appload.after', function () {
                 }
 
                 return session || false;
-            }
+            },
+
+            currentIqrSession: false
         }
     };
+    imagespace.smqtk.iqr.sessions.fetch();
+    imagespace.smqtk.iqr.sessions.once('g:changed', function () {
+        imagespace.smqtk.iqr.currentIqrSession = imagespace.smqtk.iqr.findIqrSession();
+        girder.events.trigger('im:iqr-session-loaded');
+    });
 
     // @todo This route should probably be clarified, an iqr_session_id parameter is required
     imagespace.router.route('refine/:query(/params/:params)', 'refine', function (query, params) {
-        imagespace.smqtk.iqr.sessions.fetch();
-        imagespace.smqtk.iqr.sessions.once('g:changed', _.bind(function () {
+        var refineView = _.bind(function () {
             imagespace.headerView.render({query: query});
 
             if (_.has(imagespace, 'searchView')) {
@@ -58,25 +64,30 @@ girder.events.once('im:appload.after', function () {
             // @todo pass these into the constructor properly
             var coll = new imagespace.collections.IqrImageCollection();
             coll.params = coll.params || {};
-            coll.params.sid = imagespace.smqtk.iqr.currentIqrSession().get('name');
+            coll.params.sid = imagespace.smqtk.iqr.currentIqrSession.get('name');
 
             imagespace.searchView = new imagespace.views.SearchView({
                 parentView: this.parentView,
                 collection: coll
             });
             coll.fetch(coll.params || {});
-        }, this));
+        }, this);
+
+        if (!imagespace.smqtk.iqr.currentIqrSession) {
+            girder.events.once('im:iqr-session-loaded', refineView);
+        } else {
+            refineView();
+        }
     });
 
     girder.wrap(imagespace.views.SearchView, 'render', function (render) {
         render.call(this);
 
-        var currentIqrSession = imagespace.smqtk.iqr.currentIqrSession();
         this.$('.pull-right').append(girder.templates.startIqrSession({
-            currentIqrSession: currentIqrSession
+            currentIqrSession: imagespace.smqtk.iqr.currentIqrSession
         }));
 
-        if (currentIqrSession) {
+        if (imagespace.smqtk.iqr.currentIqrSession) {
             // Render annotation widgets on each image (replacing the caption utilities)
             _.each(this.$('.im-caption'), _.bind(function (captionDiv, i) {
                 var annotationWidgetView = new imagespace.views.AnnotationWidgetView({
@@ -91,6 +102,8 @@ girder.events.once('im:appload.after', function () {
                 $(captionDiv).replaceWith(annotationWidgetView.render().el);
             }, this));
         }
+
+        return this;
     });
 
     // create new iqr session, re-render search view with an iqr image collection
@@ -107,14 +120,14 @@ girder.events.once('im:appload.after', function () {
                 smqtk_iqr_session: iqrSession.get('name')
             });
 
+            imagespace.smqtk.iqr.sessions.add(iqrSession);
+            imagespace.smqtk.iqr.currentIqrSession = iqrSession;
             imagespace.searchView.render();
         }, this));
-
-        imagespace.smqtk.iqr.sessions.add(iqrSession);
     };
 
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-refine'] = function (event) {
-        var session = imagespace.smqtk.iqr.currentIqrSession();
+        var session = imagespace.smqtk.iqr.currentIqrSession;
 
         if (_.size(session.get('meta').pos_uuids) === 0 &&
             _.size(session.get('meta').neg_uuids) === 0) {
