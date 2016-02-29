@@ -129,9 +129,8 @@ girder.events.once('im:appload.after', function () {
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-refine'] = function (event) {
         var session = imagespace.smqtk.iqr.currentIqrSession;
 
-        if (_.size(session.get('meta').pos_uuids) === 0 &&
-            _.size(session.get('meta').neg_uuids) === 0) {
-            alert('Refinement requires at least 1 positive or negative example.');
+        if (_.size(session.get('meta').pos_uuids) === 0) {
+            alert('Refinement requires at least 1 positive example.');
             return;
         }
 
