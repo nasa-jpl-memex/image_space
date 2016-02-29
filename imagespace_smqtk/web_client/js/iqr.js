@@ -1,6 +1,6 @@
 /**
  * This is responsible for the IQR integration of the SMQTK ImageSpace plugin.
- * This adds 2 new events, 1 new route, and wraps an existing method:
+ * This adds 2 new events, 1 new route, and wraps 2 existing methods:
  * New events:
  * 1) Click to start a new IQR session
  *    This creates an IQR session on the server side and re-renders the search view.
@@ -13,9 +13,12 @@
  *   The refine route mimics the search route with the exception of the classification parameter
  *   having no effect and should be removed. This is in place just so the user can permalink
  *   results from a given refinement.
- * Wrapping SearchView.render:
- *   This is wrapped to replace the captions of Image results with an AnnotationWidgetView
- *   when the user is in an IQR session.
+ * Wrapped methods:
+ * 1) Wrapping SearchView.render:
+ *    This is wrapped to replace the captions of Image results with an AnnotationWidgetView
+ *    when the user is in an IQR session.
+ * 2) Wrapping LayoutHeaderView.render:
+ *    This is wrapped just to allow a notice for the user when they are in the middle of an IQR session.
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -43,13 +46,30 @@ girder.events.once('im:appload.after', function () {
                 return session || false;
             },
 
-            currentIqrSession: false
+            currentIqrSession: false,
+
+            refiningNotice: function (enable) {
+                if (enable && imagespace.smqtk.iqr.currentIqrSession !== false) {
+                    $('nav.navbar-fixed-top').append(girder.templates.iqrNotice());
+                    $('#wrapper').css('margin-top', '80px');
+                } else {
+                    $('nav.navbar-fixed-top .smqtk-iqr-notice').remove();
+                    $('#wrapper').css('margin-top', '');
+                }
+            }
         }
     };
     imagespace.smqtk.iqr.sessions.fetch();
     imagespace.smqtk.iqr.sessions.once('g:changed', function () {
         imagespace.smqtk.iqr.currentIqrSession = imagespace.smqtk.iqr.findIqrSession();
         girder.events.trigger('im:iqr-session-loaded');
+    });
+
+    imagespace.router.on('route', function (route, params) {
+        if (!_.has(imagespace.parseQueryString(), 'smqtk_iqr_session')) {
+            imagespace.smqtk.iqr.currentIqrSession = false;
+            imagespace.smqtk.iqr.refiningNotice(false);
+        }
     });
 
     // @todo This route should probably be clarified, an iqr_session_id parameter is required
@@ -78,6 +98,13 @@ girder.events.once('im:appload.after', function () {
         } else {
             refineView();
         }
+    });
+
+    girder.wrap(imagespace.views.LayoutHeaderView, 'render', function (render, settings) {
+        render.call(this, settings);
+        imagespace.smqtk.iqr.refiningNotice(true);
+
+        return this;
     });
 
     girder.wrap(imagespace.views.SearchView, 'render', function (render) {
@@ -122,6 +149,8 @@ girder.events.once('im:appload.after', function () {
 
             imagespace.smqtk.iqr.sessions.add(iqrSession);
             imagespace.smqtk.iqr.currentIqrSession = iqrSession;
+            // @todo this should be an update to the headerView render
+            imagespace.smqtk.iqr.refiningNotice(true);
             imagespace.searchView.render();
         }, this));
     };
