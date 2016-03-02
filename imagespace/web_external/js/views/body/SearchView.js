@@ -150,12 +150,14 @@ imagespace.router.route('search/:url/:mode(/params/:params)', 'search', function
         });
         $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
+        var coll = imagespace.searches[mode].search(image);
         girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
-            collection: imagespace.searches[mode].search(image),
+            collection: coll,
             searchImage: image,
             url: url,
             mode: mode
         });
+        coll.fetch(coll.params || {});
 
         imagespace.userDataView.render();
 
