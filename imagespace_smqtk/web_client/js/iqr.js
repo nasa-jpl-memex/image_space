@@ -56,11 +56,27 @@ girder.events.once('im:appload.after', function () {
 
             refiningNotice: function (enable) {
                 if (enable && imagespace.smqtk.iqr.currentIqrSession !== false) {
-                    $('nav.navbar-fixed-top').append(girder.templates.iqrNotice());
+                    if (!_.has(imagespace.smqtk.iqr, 'iqrNoticeView') || _.isUndefined(imagespace.smqtk.iqr.iqrNoticeView)) {
+                        imagespace.smqtk.iqr.iqrNoticeView = new imagespace.views.IqrNoticeView({
+                            parentView: null
+                        });
+
+                        $('nav.navbar-fixed-top').append(imagespace.smqtk.iqr.iqrNoticeView.render().el);
+                    }
+
                     $('#wrapper').css('margin-top', '80px');
+                    $('#im-classification-narrow').hide();
+                    $('#smqtk-near-duplicates').hide();
                 } else {
-                    $('nav.navbar-fixed-top .smqtk-iqr-notice').remove();
+                    if (_.has(imagespace.smqtk.iqr, 'iqrNoticeView') &&
+                        !_.isUndefined(imagespace.smqtk.iqr.iqrNoticeView)) {
+                        imagespace.smqtk.iqr.iqrNoticeView.destroy();
+                        imagespace.smqtk.iqr.iqrNoticeView = undefined;
+                    }
+
                     $('#wrapper').css('margin-top', '');
+                    $('#im-classification-narrow').show();
+                    $('#smqtk-near-duplicates').show();
                 }
             }
         }
@@ -119,16 +135,6 @@ girder.events.once('im:appload.after', function () {
         }
     });
 
-    girder.wrap(imagespace.views.LayoutHeaderView, 'render', function (render, settings) {
-        render.call(this, settings);
-
-        if (imagespace.smqtk.iqr.currentIqrSession) {
-            imagespace.smqtk.iqr.refiningNotice(true);
-        }
-
-        return this;
-    });
-
     girder.wrap(imagespace.views.SearchView, 'render', function (render) {
         render.call(this);
 
@@ -151,8 +157,7 @@ girder.events.once('im:appload.after', function () {
                 $(captionDiv).replaceWith(annotationWidgetView.render().el);
             }, this));
 
-            $('#im-classification-narrow').hide();
-            $('#smqtk-near-duplicates').hide();
+            imagespace.smqtk.iqr.refiningNotice(true);
         }
 
         return this;
@@ -174,8 +179,6 @@ girder.events.once('im:appload.after', function () {
 
             imagespace.smqtk.iqr.sessions.add(iqrSession);
             imagespace.smqtk.iqr.currentIqrSession = iqrSession;
-            // @todo this should be an update to the headerView render
-            imagespace.smqtk.iqr.refiningNotice(true);
             imagespace.searchView.render();
         }, this));
     };

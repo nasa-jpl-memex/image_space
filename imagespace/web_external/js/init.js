@@ -215,6 +215,25 @@ _.extend(imagespace, {
                                    navigateArgs || {});
     },
 
+    // Forcibly set what the query parameters should be, this allows
+    // the user to remove a specific query parameter using parseQueryString and _.omit
+    setQueryParams: function (params, navigateArgs) {
+        var hash = Backbone.history.getHash(),
+            paramsStartIndex = hash.indexOf('/params/'),
+            qs = (paramsStartIndex !== -1) ?
+                  hash.substr(paramsStartIndex).replace('/params/', '') : '',
+            qsObj = imagespace.parseQueryString(qs),
+            hashBeforeParams = (paramsStartIndex !== -1) ?
+                                hash.substr(0, paramsStartIndex) : hash;
+
+        if (_.size(params)) {
+            imagespace.router.navigate(hashBeforeParams, navigateArgs || {});
+        } else {
+            imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(params),
+                                       navigateArgs || {});
+        }
+    },
+
     oppositeCaseFilename: function (filename) {
         var parts = filename.split('/');
 
