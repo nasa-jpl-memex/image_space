@@ -65,38 +65,54 @@ girder.events.once('im:appload.after', function () {
         girder.events.trigger('im:iqr-session-loaded');
     });
 
+    /**
+     * Supplants the current imagespace.searchView with one that uses an
+     * IQR Image Collection instead.
+     **/
+    imagespace.smqtk.iqr.RefineView = _.bind(function () {
+        // If navigating to an IQR session via permalink, cancel the existing search
+        girder.cancelRestRequests('fetch');
+
+        if (_.has(imagespace, 'searchView')) {
+            imagespace.searchView.destroy();
+        }
+
+        // @todo pass these into the constructor properly
+        var coll = new imagespace.collections.IqrImageCollection();
+        coll.params = coll.params || {};
+        coll.params.sid = imagespace.smqtk.iqr.currentIqrSession.get('name');
+
+        imagespace.searchView = new imagespace.views.SearchView({
+            parentView: this.parentView,
+            collection: coll
+        });
+        coll.fetch(coll.params || {});
+    }, this);
+
+    imagespace.smqtk.iqr.createOrUpdateRefineView = function () {
+        if (imagespace.searchView.collection instanceof imagespace.collections.IqrImageCollection) {
+            imagespace.searchView.collection.fetch(imagespace.searchView.collection.params || {});
+        } else {
+            imagespace.smqtk.iqr.RefineView();
+        }
+    };
+
+    /**
+     * Anytime the page is changed, check if we're still in the middle of an
+     * IQR session. If we are then make sure to update any refinement views if necessary,
+     * otherwise clear any refinement notice that might exist from a previous session.
+     **/
     imagespace.router.on('route', function (route, params) {
-        if (!_.has(imagespace.parseQueryString(), 'smqtk_iqr_session')) {
+        if (route === 'search' && _.size(params) > 1 && params[1] &&
+            params[1].indexOf('smqtk_iqr_session') !== -1) {
+            if (!imagespace.smqtk.iqr.currentIqrSession) {
+                girder.events.once('im:iqr-session-loaded', imagespace.smqtk.iqr.createOrUpdateRefineView);
+            } else {
+                imagespace.smqtk.iqr.createOrUpdateRefineView();
+            }
+        } else if (!_.has(imagespace.parseQueryString(), 'smqtk_iqr_session')) {
             imagespace.smqtk.iqr.currentIqrSession = false;
             imagespace.smqtk.iqr.refiningNotice(false);
-        }
-    });
-
-    // @todo This route should probably be clarified, an iqr_session_id parameter is required
-    imagespace.router.route('refine/:query(/params/:params)', 'refine', function (query, params) {
-        var refineView = _.bind(function () {
-            imagespace.headerView.render({query: query});
-
-            if (_.has(imagespace, 'searchView')) {
-                imagespace.searchView.destroy();
-            }
-
-            // @todo pass these into the constructor properly
-            var coll = new imagespace.collections.IqrImageCollection();
-            coll.params = coll.params || {};
-            coll.params.sid = imagespace.smqtk.iqr.currentIqrSession.get('name');
-
-            imagespace.searchView = new imagespace.views.SearchView({
-                parentView: this.parentView,
-                collection: coll
-            });
-            coll.fetch(coll.params || {});
-        }, this);
-
-        if (!imagespace.smqtk.iqr.currentIqrSession) {
-            girder.events.once('im:iqr-session-loaded', refineView);
-        } else {
-            refineView();
         }
     });
 
@@ -175,10 +191,7 @@ girder.events.once('im:appload.after', function () {
                 neg_uuids: session.get('meta').neg_uuids
             })
         }).done(function () {
-            var searchQuery = _.first(imagespace.getQueryTypeWithArguments(true));
-            imagespace.router.navigate('refine/' + searchQuery + '/params/smqtk_iqr_session=' + session.get('name'), {
-                trigger: true
-            });
+            imagespace.smqtk.iqr.createOrUpdateRefineView();
         }).error(console.error);
     };
 });
