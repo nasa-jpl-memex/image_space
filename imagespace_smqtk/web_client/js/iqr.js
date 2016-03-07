@@ -40,6 +40,12 @@ girder.events.once('im:appload.after', function () {
 
                     if (_.isUndefined(session)) {
                         console.error('Unable to find IQR session in client side representation');
+                    } else {
+                        // @todo this should be handled properly with defaults
+                        session.set('meta', session.get('meta') || {
+                            pos_uuids: [],
+                            neg_uuids: []
+                        });
                     }
                 }
 
@@ -70,9 +76,6 @@ girder.events.once('im:appload.after', function () {
      * IQR Image Collection instead.
      **/
     imagespace.smqtk.iqr.RefineView = _.bind(function () {
-        // If navigating to an IQR session via permalink, cancel the existing search
-        girder.cancelRestRequests('fetch');
-
         if (_.has(imagespace, 'searchView')) {
             imagespace.searchView.destroy();
         }
@@ -118,7 +121,10 @@ girder.events.once('im:appload.after', function () {
 
     girder.wrap(imagespace.views.LayoutHeaderView, 'render', function (render, settings) {
         render.call(this, settings);
-        imagespace.smqtk.iqr.refiningNotice(true);
+
+        if (imagespace.smqtk.iqr.currentIqrSession) {
+            imagespace.smqtk.iqr.refiningNotice(true);
+        }
 
         return this;
     });
@@ -144,6 +150,9 @@ girder.events.once('im:appload.after', function () {
 
                 $(captionDiv).replaceWith(annotationWidgetView.render().el);
             }, this));
+
+            $('#im-classification-narrow').hide();
+            $('#smqtk-near-duplicates').hide();
         }
 
         return this;
