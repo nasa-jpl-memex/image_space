@@ -87,11 +87,6 @@ class ImageSearch(Resource):
         return self._imageSearch(params)
 
     def _imageSearch(self, params):
-        def filenameUpper(filename):
-            path = filename.replace('file:', '')
-            return 'file:%s' % os.path.join(os.path.dirname(path),
-                                            os.path.basename(path).upper())
-
         limit = params['limit'] if 'limit' in params else '100'
         query = params['query'] if 'query' in params else '*:*'
         offset = params['offset'] if 'offset' in params else '0'
@@ -124,13 +119,15 @@ class ImageSearch(Resource):
         for image in result['response']['docs']:
             image['highlight'] = result['highlighting'][image['id']]
 
-        for doc in result['response']['docs']:
-            doc['id'] = filenameUpper(doc['id'])
-
         response = {
             'numFound': result['response']['numFound'],
             'docs': result['response']['docs']
         }
+
+        # Give plugins a chance to adjust the end response of the imagesearch
+        event = events.trigger('imagespace.imagesearch.results', response)
+        for eventResponse in event.responses:
+            response = eventResponse
 
         return response
     getImageSearch.description = Description('Searches image database')
