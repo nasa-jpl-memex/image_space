@@ -16,6 +16,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
+import os
 from girder import events
 
 
@@ -24,7 +25,23 @@ def add_maintype_to_qparams(event):
     event.addResponse(event.info)
 
 
+def uppercase_result_filenames(event):
+    def filenameUpper(filename):
+        path = filename.replace('file:', '')
+        return 'file:%s' % os.path.join(os.path.dirname(path),
+                                        os.path.basename(path).upper())
+
+    for doc in event.info['docs']:
+        doc['id'] = filenameUpper(doc['id'])
+
+    event.addResponse(event.info)
+
+
 def load(info):
     events.bind('imagespace.imagesearch.qparams',
                 'adjust_qparams_for_maintype',
                 add_maintype_to_qparams)
+
+    events.bind('imagespace.imagesearch.results',
+                'uppercase_result_filenames',
+                uppercase_result_filenames)
