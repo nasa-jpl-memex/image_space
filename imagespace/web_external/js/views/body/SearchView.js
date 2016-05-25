@@ -40,9 +40,13 @@ imagespace.views.SearchView = imagespace.View.extend({
             this.render();
 
             if (this.collection.supportsPagination) {
+                /**
+                 * In the case of coercing a search to be page 1, skip adding both the unpaginated
+                 * and paginated URLs to the history (breaking the back button).
+                 **/
                 imagespace.updateQueryParams({
                     page: this.collection.pageNum() + 1
-                });
+                }, this.collection.pageNum() == 0);
             }
 
             $('.alert-info').addClass('hidden');
