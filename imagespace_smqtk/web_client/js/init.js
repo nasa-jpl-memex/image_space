@@ -8,7 +8,7 @@ girder.events.once('im:appload.after', function () {
                     },
                     supportsPagination: false,
                     comparator: function (image) {
-                        return image.get('im_distance');
+                        return image.get('smqtk_distance');
                     }
                 }, collectionArgs || {}));
             }

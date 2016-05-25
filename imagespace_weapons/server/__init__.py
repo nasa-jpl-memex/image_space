@@ -24,6 +24,17 @@ def add_maintype_to_qparams(event):
     event.info['fq'] = ['mainType:image']
     event.addResponse(event.info)
 
+def uppercase_basename_for_resourcenames(event):
+    """
+    Certain searches were indexed before conversion of the Solr index, so they pass
+    values with lowercase resourcenames that actually correspond to the uppercase resource
+    name versions.
+    """
+    if event.info['field'] == 'resourcename_t_md':
+        event.info['values'] = [os.path.basename(x).upper() for x in
+                                event.info['values']]
+        event.addResponse(event.info)
+
 
 def uppercase_result_filenames(event):
     def filenameUpper(filename):
@@ -42,6 +53,6 @@ def load(info):
                 'adjust_qparams_for_maintype',
                 add_maintype_to_qparams)
 
-    events.bind('imagespace.imagesearch.results',
-                'uppercase_result_filenames',
-                uppercase_result_filenames)
+    events.bind('imagespace.solr_documents_from_field',
+                'upperbase_basename_for_resourcenames',
+                uppercase_basename_for_resourcenames)
