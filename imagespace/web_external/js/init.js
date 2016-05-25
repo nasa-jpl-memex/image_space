@@ -186,18 +186,21 @@ _.extend(imagespace, {
      * in the URL query string and navigates there using the imagespace router.
      * Routes aren't triggered, it is a silent navigation.
      **/
-    updateQueryParams: function (params) {
+    updateQueryParams: function (params, skipHistory) {
         var hash = Backbone.history.getHash(),
             paramsStartIndex = hash.indexOf('/params/'),
             qs = (paramsStartIndex !== -1) ?
                   hash.substr(paramsStartIndex).replace('/params/', '') : '',
             qsObj = imagespace.parseQueryString(qs),
             hashBeforeParams = (paramsStartIndex !== -1) ?
-                                hash.substr(0, paramsStartIndex) : hash;
+                                hash.substr(0, paramsStartIndex) : hash,
+            replace = !!skipHistory;
 
         _.extend(qsObj, params);
 
-        imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(qsObj));
+        imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(qsObj), {
+            replace: replace
+        });
     },
 
     oppositeCaseFilename: function (filename) {
