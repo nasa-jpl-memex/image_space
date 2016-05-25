@@ -50,9 +50,9 @@ imagespace.views.LayoutUserDataView = imagespace.View.extend({
                             }
 
                             // Replace Girder token with current session's token if necessary
-                            parts = item.meta.imageUrl.split('&token=');
+                            parts = item.meta.imageUrl.split('?token=');
                             if (parts.length === 2) {
-                                imageModel.set('imageUrl', parts[0] + '&token=' + girder.cookie.find('girderToken'));
+                                models[models.length - 1].set('imageUrl', parts[0] + '?token=' + girder.cookie.find('girderToken'));
                             }
                         }
                     }, this));
