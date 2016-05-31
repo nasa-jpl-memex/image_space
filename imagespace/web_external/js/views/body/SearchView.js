@@ -110,12 +110,12 @@ imagespace.router.route('search/:query(/params/:params)', 'search', function (qu
 imagespace.router.route('search/:url/:mode(/params/:params)', 'search', function (url, mode, params) {
     // Replace Girder token with current session's token if necessary
     var niceName = (_.has(imagespace.searches[mode], 'niceName')) ? imagespace.searches[mode].niceName : mode,
-        parts = url.split('&token=');
+        parts = url.split('?token=');
 
     $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
     if (parts.length === 2) {
-        url = parts[0] + '&token=' + girder.cookie.find('girderToken');
+        url = parts[0] + '?token=' + girder.cookie.find('girderToken');
     }
 
     var performSearch = function (image) {
