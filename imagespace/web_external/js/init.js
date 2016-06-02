@@ -206,8 +206,7 @@ _.extend(imagespace, {
                   hash.substr(paramsStartIndex).replace('/params/', '') : '',
             qsObj = imagespace.parseQueryString(qs),
             hashBeforeParams = (paramsStartIndex !== -1) ?
-                                hash.substr(0, paramsStartIndex) : hash,
-            replace = !!skipHistory;
+                                hash.substr(0, paramsStartIndex) : hash;
 
         _.extend(qsObj, params);
 

@@ -45,7 +45,7 @@ imagespace.views.SearchView = imagespace.View.extend({
                  **/
                 imagespace.updateQueryParams({
                     page: this.collection.pageNum() + 1
-                }, this.collection.pageNum() == 0);
+                }, { replace: this.collection.pageNum() == 0 });
             }
 
             $('.alert-info').addClass('hidden');
