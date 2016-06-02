@@ -105,12 +105,12 @@ girder.events.once('im:appload.after', function () {
             parentView: this.parentView,
             collection: coll
         });
-        coll.fetch(coll.params || {});
+        coll.fetch(coll.params || {}, true);
     }, this);
 
     imagespace.smqtk.iqr.createOrUpdateRefineView = function () {
         if (imagespace.searchView.collection instanceof imagespace.collections.IqrImageCollection) {
-            imagespace.searchView.collection.fetch(imagespace.searchView.collection.params || {});
+            imagespace.searchView.collection.fetch(imagespace.searchView.collection.params || {}, true);
         } else {
             imagespace.smqtk.iqr.RefineView();
         }
