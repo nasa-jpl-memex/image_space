@@ -9,3 +9,5 @@ Installation of this plugin is the same as any other, documented in the [install
 ## Environment Variables
 
 `IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH` points to the SMQTK nearest neighbors service as a URL in the form http://somehost.com/nn.
+
+`IMAGE_SPACE_SMQTK_IQR_URL` points to the IQR service provided by SMQTK, this is a url in the form http://somehost.com.
