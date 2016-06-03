@@ -109,16 +109,16 @@ class CustomAppRoot(object):
         <script src="${staticRoot}/built/app.min.js"></script>
         <script src="${staticRoot}/built/plugins/gravatar/plugin.min.js">
         </script>
-        % for plugin in pluginJs:
-           % if plugin != 'imagespace':
-        <script src="${staticRoot}/built/plugins/${plugin}/plugin.min.js"></script>
-           % endif
-        % endfor
         <script src="${staticRoot}/built/plugins/imagespace/imagespace-libs.min.js">
         </script>
         <script src="${staticRoot}/built/plugins/imagespace/imagespace.min.js">
         </script>
         <script src="${staticRoot}/built/plugins/imagespace/main.min.js"></script>
+         % for plugin in pluginJs:
+           % if plugin != 'imagespace':
+        <script src="${staticRoot}/built/plugins/${plugin}/plugin.min.js"></script>
+           % endif
+        % endfor
       </body>
     </html>
     """

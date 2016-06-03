@@ -1,6 +1,5 @@
 imagespace.views.LayoutUserDataView = imagespace.View.extend({
     initialize: function (settings) {
-        girder.cancelRestRequests('fetch');
         imagespace.userData.images = new imagespace.collections.ImageCollection(null, {
             model: imagespace.models.UploadedImageModel,
             filterByQueryString: false

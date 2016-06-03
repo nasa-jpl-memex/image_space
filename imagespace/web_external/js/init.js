@@ -147,6 +147,19 @@ _.extend(imagespace, {
         return imagespace.solrPrefix + file;
     },
 
+    /**
+     * Returns the query type (search, refine) with any arguments it
+     * takes (these are before the params).
+     * Example: /search/shotgun/params/page=1 returns [search, 'shotgun']
+     **/
+    getQueryTypeWithArguments: function (onlyArgs) {
+        var hash = Backbone.history.getHash()
+            .replace('/params/' + imagespace.getQueryParams(), ''),
+            values = hash.split('/');
+
+        return (onlyArgs) ? _.tail(values) : values;
+    },
+
     // Returns empty string if no params in the query string
     getQueryParams: function () {
         var hash = Backbone.history.getHash(),
@@ -186,21 +199,38 @@ _.extend(imagespace, {
      * in the URL query string and navigates there using the imagespace router.
      * Routes aren't triggered, it is a silent navigation.
      **/
-    updateQueryParams: function (params, skipHistory) {
+    updateQueryParams: function (params, navigateArgs) {
         var hash = Backbone.history.getHash(),
             paramsStartIndex = hash.indexOf('/params/'),
             qs = (paramsStartIndex !== -1) ?
                   hash.substr(paramsStartIndex).replace('/params/', '') : '',
             qsObj = imagespace.parseQueryString(qs),
             hashBeforeParams = (paramsStartIndex !== -1) ?
-                                hash.substr(0, paramsStartIndex) : hash,
-            replace = !!skipHistory;
+                                hash.substr(0, paramsStartIndex) : hash;
 
         _.extend(qsObj, params);
 
-        imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(qsObj), {
-            replace: replace
-        });
+        imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(qsObj),
+                                   navigateArgs || {});
+    },
+
+    // Forcibly set what the query parameters should be, this allows
+    // the user to remove a specific query parameter using parseQueryString and _.omit
+    setQueryParams: function (params, navigateArgs) {
+        var hash = Backbone.history.getHash(),
+            paramsStartIndex = hash.indexOf('/params/'),
+            qs = (paramsStartIndex !== -1) ?
+                  hash.substr(paramsStartIndex).replace('/params/', '') : '',
+            qsObj = imagespace.parseQueryString(qs),
+            hashBeforeParams = (paramsStartIndex !== -1) ?
+                                hash.substr(0, paramsStartIndex) : hash;
+
+        if (_.size(params)) {
+            imagespace.router.navigate(hashBeforeParams, navigateArgs || {});
+        } else {
+            imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(params),
+                                       navigateArgs || {});
+        }
     },
 
     oppositeCaseFilename: function (filename) {

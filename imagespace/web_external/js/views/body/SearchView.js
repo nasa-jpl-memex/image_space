@@ -29,7 +29,6 @@ imagespace.views.SearchView = imagespace.View.extend({
     },
 
     initialize: function (settings) {
-        girder.cancelRestRequests('fetch');
         this.$el = window.app.$('#g-app-body-container');
         this.collection = settings.collection;
         this.searchImage = settings.searchImage || false;
@@ -46,15 +45,21 @@ imagespace.views.SearchView = imagespace.View.extend({
                  **/
                 imagespace.updateQueryParams({
                     page: this.collection.pageNum() + 1
-                }, this.collection.pageNum() == 0);
+                }, { replace: this.collection.pageNum() == 0 });
             }
 
             $('.alert-info').addClass('hidden');
         }, this));
-        this.collection.fetch(this.collection.params || {});
     },
 
     render: function () {
+        // This is really hacky - but otherwise we are orphaning
+        // collection.pageLimit + 1 views each re-render (every time a page changes,
+        // classifications, etc)
+        _.each(this._childViews, function (child) {
+            child.destroy();
+        });
+
         this.$el.html(imagespace.templates.search({
             image: this.searchImage,
             mode: this.mode,
@@ -89,8 +94,17 @@ imagespace.views.SearchView = imagespace.View.extend({
         }
 
         return this;
-    }
+    },
 
+    /**
+     * Child views on this collection are the pagination widget (conditionally) and
+     * the image views. To retrieve the i'th image child view, just return the i'th element
+     * and potentially add 1 if the pagination view was the first one created.
+     **/
+    getChildImageView: function (i) {
+        var offset = (Number(this.collection.supportsPagination)) + i
+        return this._childViews[offset];
+    }
 });
 
 imagespace.router.route('search/:query(/params/:params)', 'search', function (query, params) {
@@ -101,10 +115,12 @@ imagespace.router.route('search/:query(/params/:params)', 'search', function (qu
         imagespace.searchView.destroy();
     }
 
+    var coll = imagespace.getImageCollectionFromQuery(query);
     imagespace.searchView = new imagespace.views.SearchView({
-        collection: imagespace.getImageCollectionFromQuery(query),
+        collection: coll,
         parentView: window.app
     });
+    coll.fetch(coll.params || {});
 });
 
 imagespace.router.route('search/:url/:mode(/params/:params)', 'search', function (url, mode, params) {
@@ -134,12 +150,18 @@ imagespace.router.route('search/:url/:mode(/params/:params)', 'search', function
         });
         $('.alert-info').html('Performing ' + niceName  + ' search <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
 
-        girder.events.trigger('g:navigateTo', imagespace.views.SearchView, {
-            collection: imagespace.searches[mode].search(image),
+        if (_.has(imagespace, 'searchView')) {
+            imagespace.searchView.destroy();
+        }
+
+        var coll = imagespace.searches[mode].search(image);
+        imagespace.searchView = new imagespace.views.SearchView({
+            collection: coll,
             searchImage: image,
             url: url,
             mode: mode
         });
+        coll.fetch(coll.params || {});
 
         imagespace.userDataView.render();
 

@@ -21,7 +21,10 @@ from girder import events
 
 
 def add_maintype_to_qparams(event):
-    event.info['fq'] = ['mainType:image']
+    if 'fq' not in event.info:
+        event.info['fq'] = []
+
+    event.info['fq'].append('mainType:image')
     event.addResponse(event.info)
 
 def uppercase_basename_for_resourcenames(event):
