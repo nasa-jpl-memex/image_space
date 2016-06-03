@@ -122,8 +122,14 @@ class ImageSearch(Resource):
         except ValueError:
             return []
 
-        for image in result['response']['docs']:
-            image['highlight'] = result['highlighting'][image['id']]
+        try:
+            for image in result['response']['docs']:
+                image['highlight'] = result['highlighting'][image['id']]
+        except KeyError:
+            return {
+                'numFound': 0,
+                'docs': []
+            }
 
         response = {
             'numFound': result['response']['numFound'],
