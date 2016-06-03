@@ -25,6 +25,7 @@ from girder.utility.model_importer import ModelImporter
 from girder.api.rest import getBodyJson, getCurrentUser
 
 from girder.plugins.imagespace import solr_documents_from_field
+from girder import logger
 
 from .utils import getCreateSessionsFolder
 
@@ -103,6 +104,9 @@ class SmqtkIqr(Resource):
         # returned by IQR, sort the documents to match the confidence values.
         # Sort by confidence values first, then sha checksums second so duplicate images are grouped together
         confidenceValues = dict(resp['results'])  # Mapping of sha -> confidence values
+
+        if len(documents) < len(resp['results']):
+            logger.error('SID %s: There are SMQTK descriptors that have no corresponding Solr document(s).' % params['sid'])
 
         for document in documents:
             document['smqtk_iqr_confidence'] = confidenceValues[document['sha1sum_s_md']]
