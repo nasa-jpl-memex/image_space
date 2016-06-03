@@ -17,21 +17,8 @@
 #  limitations under the License.
 ###############################################################################
 import os
-from girder import events
 from .smqtk_search import SmqtkSimilaritySearch
 from .smqtk_iqr import SmqtkIqr
-
-
-def adjust_qparams_for_subtype(event):
-    """
-    SMQTK only works on png/jpeg/tiff as of now, so limit the results
-    to those to avoid confusion when using IQR.
-    """
-    if 'fq' not in event.info:
-        event.info['fq'] = []
-
-    event.info['fq'].append('subType:("png" OR "jpeg" OR "tiff")')
-    event.addResponse(event.info)
 
 
 def load(info):
@@ -49,7 +36,3 @@ def load(info):
 
     info['apiRoot'].smqtk_similaritysearch = SmqtkSimilaritySearch()
     info['apiRoot'].smqtk_iqr = SmqtkIqr()
-
-    events.bind('imagespace.imagesearch.qparams',
-                'adjust_qparams_for_subtype',
-                adjust_qparams_for_subtype)

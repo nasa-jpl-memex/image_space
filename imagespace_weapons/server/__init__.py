@@ -20,6 +20,17 @@ import os
 from girder import events
 
 
+def adjust_qparams_for_subtype(event):
+    """
+    SMQTK only works on png/jpeg/tiff as of now, so limit the results
+    to those to avoid confusion when using IQR.
+    """
+    if 'fq' not in event.info:
+        event.info['fq'] = []
+
+    event.info['fq'].append('subType:("png" OR "jpeg" OR "tiff")')
+    event.addResponse(event.info)
+
 def add_maintype_to_qparams(event):
     if 'fq' not in event.info:
         event.info['fq'] = []
@@ -38,7 +49,6 @@ def uppercase_basename_for_resourcenames(event):
                                 event.info['values']]
         event.addResponse(event.info)
 
-
 def uppercase_result_filenames(event):
     def filenameUpper(filename):
         path = filename.replace('file:', '')
@@ -55,6 +65,10 @@ def load(info):
     events.bind('imagespace.imagesearch.qparams',
                 'adjust_qparams_for_maintype',
                 add_maintype_to_qparams)
+
+    events.bind('imagespace.imagesearch.qparams',
+                'adjust_qparams_for_subtype',
+                adjust_qparams_for_subtype)
 
     events.bind('imagespace.solr_documents_from_field',
                 'upperbase_basename_for_resourcenames',
