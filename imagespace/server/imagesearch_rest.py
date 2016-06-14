@@ -59,11 +59,17 @@ class ImageSearch(Resource):
                 'docs': []
             }
 
-        response = {
-            'numFound': result['response']['numFound'],
-            'docs': result['response']['docs'],
-            'groupedDocs': []
-        }
+        try:
+            response = {
+                'numFound': result['response']['numFound'],
+                'docs': result['response']['docs'],
+                'groupedDocs': []
+            }
+        except KeyError:
+            return {
+                'numFound': 0,
+                'docs': []
+            }
 
         for (domain, documents) in group_documents_by_domain(response['docs']):
             response['groupedDocs'].append([domain, list(documents)])
@@ -116,8 +122,14 @@ class ImageSearch(Resource):
         except ValueError:
             return []
 
-        for image in result['response']['docs']:
-            image['highlight'] = result['highlighting'][image['id']]
+        try:
+            for image in result['response']['docs']:
+                image['highlight'] = result['highlighting'][image['id']]
+        except KeyError:
+            return {
+                'numFound': 0,
+                'docs': []
+            }
 
         response = {
             'numFound': result['response']['numFound'],

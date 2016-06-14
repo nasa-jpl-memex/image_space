@@ -140,10 +140,6 @@ _.extend(imagespace, {
         var re = new RegExp("^" + imagespace.prefix),
             file = url.replace(re, "");
 
-        if (file.length < 30) {
-            return;
-        }
-
         return imagespace.solrPrefix + file;
     },
 

@@ -154,6 +154,14 @@ def load(info):
         else:
             os.environ[var] = os.environ[var].rstrip('/')
 
+    # Absolute path to a directory of images to serve statically at /basename
+    image_dir = os.environ.get('IMAGE_SPACE_IMAGE_DIR', '')
+    if image_dir != '':
+        info['config']['/images'] = {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': image_dir
+        }
+
     # Bind our REST resources
     info['apiRoot'].imagesearch = ImageSearch()
     info['apiRoot'].imagefeatures = ImageFeatures()

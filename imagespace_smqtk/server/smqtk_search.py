@@ -37,10 +37,18 @@ class SmqtkSimilaritySearch(Resource):
 
     @access.public
     def runImageSimilaritySearch(self, params):
+        def base64FromUrl(url):
+            import base64
+            r = requests.get(url)
+            return (base64.b64encode(r.content), r.headers['Content-Type'])
+
         assert hasattr(self, 'search_url')
         classifications = json.loads(params['classifications']) if 'classifications' in params else []
         params['n'] = params['n'] if 'n' in params else str(DEFAULT_PAGE_SIZE)
-        smqtk_r = requests.get(self.search_url + '/n=' + params['n'] + '/' + params['url']).json()
+        image, _type = base64FromUrl(params['url'])
+        smqtk_r = requests.get(self.search_url + '/n=' + params['n'] + '/base64://' + image + '?content_type=' + _type)
+        assert smqtk_r.ok
+        smqtk_r = smqtk_r.json()
         neighbors_to_distances = dict(zip(smqtk_r['neighbors'], smqtk_r['distances']))
         documents = solr_documents_from_field('sha1sum_s_md',
                                               neighbors_to_distances.keys(),
@@ -59,5 +67,5 @@ class SmqtkSimilaritySearch(Resource):
     runImageSimilaritySearch.description = (
         Description('Performs SMQTK background search')
         .param('n', 'Number of nearest neighbors to return', default=str(DEFAULT_PAGE_SIZE))
-        .param('url', 'Publicly accessible URL of the image to search')
+        .param('url', 'URL of the image to search')
         .param('near_duplicates', 'Set to 1 to return only near duplicates'))

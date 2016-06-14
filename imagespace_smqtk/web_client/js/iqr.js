@@ -81,7 +81,15 @@ girder.events.once('im:appload.after', function () {
             }
         }
     };
-    imagespace.smqtk.iqr.sessions.fetch();
+
+    if (girder.currentUser !== null) {
+        imagespace.smqtk.iqr.sessions.fetch();
+    } else {
+        girder.events.on('g:login.success', function () {
+            imagespace.smqtk.iqr.sessions.fetch();
+        });
+    }
+
     imagespace.smqtk.iqr.sessions.once('g:changed', function () {
         imagespace.smqtk.iqr.currentIqrSession = imagespace.smqtk.iqr.findIqrSession();
         girder.events.trigger('im:iqr-session-loaded');
@@ -138,9 +146,11 @@ girder.events.once('im:appload.after', function () {
     girder.wrap(imagespace.views.SearchView, 'render', function (render) {
         render.call(this);
 
-        this.$('.pull-right').append(girder.templates.startIqrSession({
-            currentIqrSession: imagespace.smqtk.iqr.currentIqrSession
-        }));
+        if (girder.currentUser !== null) {
+            this.$('.pull-right').append(girder.templates.startIqrSession({
+                currentIqrSession: imagespace.smqtk.iqr.currentIqrSession
+            }));
+        }
 
         if (imagespace.smqtk.iqr.currentIqrSession) {
             // Render annotation widgets on each image (replacing the caption utilities)
