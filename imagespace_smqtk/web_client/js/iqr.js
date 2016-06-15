@@ -1,6 +1,6 @@
 /**
  * This is responsible for the IQR integration of the SMQTK ImageSpace plugin.
- * This adds 3 new events, 1 new route, and wraps 3 existing methods:
+ * This adds 4 new events, 1 new route, and wraps 3 existing methods:
  * New events:
  * 1) Click to start a new IQR session
  *    This creates an IQR session on the server side and re-renders the search view.
@@ -13,6 +13,10 @@
  *    When the user clicks this they are presented with a hierarchy widget of the directory
  *    storing their IQR sessions. On clicking an IQR session they are forced to the state that session
  *    was in when they last used it.
+ * 4) Click to save an IQR session
+ *    The notion of a "saved" IQR session is simply one that gets named by a user (see the above event).
+ *    This is due to the (unsolved) issue of when to invalidate a session. As such, the save event just
+ *    brings up the Edit Item widget for that particular IQR session item.
  * New route:
  *   The refine route mimics the search route with the exception of the classification parameter
  *   having no effect and should be removed. This is in place just so the user can permalink
@@ -27,7 +31,8 @@
  *    This is wrapped because of the Hierarchy Widget usage when loading an existing IQR session.
  *    For now, it's difficult to hook in to filter the items listed in the widget so we wrap render
  *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions that have
- *    at least 1 positive or negative UUID.
+ *    at least 1 positive or negative UUID and a name that isn't their SID (this is the indication that a user
+ *    saved the session).
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -44,7 +49,7 @@ girder.events.once('im:appload.after', function () {
 
                 if (girder.currentUser && _.has(qs, 'smqtk_iqr_session')) {
                     session = _.find(imagespace.smqtk.iqr.sessions.models, function (iqrSession) {
-                        return iqrSession.get('name') === qs.smqtk_iqr_session;
+                        return iqrSession.get('meta').sid === qs.smqtk_iqr_session;
                     });
 
                     if (_.isUndefined(session)) {
@@ -114,7 +119,7 @@ girder.events.once('im:appload.after', function () {
         // @todo pass these into the constructor properly
         var coll = new imagespace.collections.IqrImageCollection();
         coll.params = coll.params || {};
-        coll.params.sid = imagespace.smqtk.iqr.currentIqrSession.get('name');
+        coll.params.sid = imagespace.smqtk.iqr.currentIqrSession.get('meta').sid;
 
         imagespace.searchView = new imagespace.views.SearchView({
             parentView: this.parentView,
@@ -191,7 +196,7 @@ girder.events.once('im:appload.after', function () {
 
         iqrSession.save().once('g:saved', _.bind(function () {
             imagespace.updateQueryParams({
-                smqtk_iqr_session: iqrSession.get('name')
+                smqtk_iqr_session: iqrSession.get('meta').sid
             });
 
             imagespace.smqtk.iqr.sessions.add(iqrSession);
@@ -218,6 +223,7 @@ girder.events.once('im:appload.after', function () {
 
         this.collection.models = _.filter(this.collection.models, function (model) {
             return model.has('meta') &&
+                model.get('name') != model.get('meta').sid &&
                 ((_.has(model.get('meta'), 'pos_uuids') && _.size(model.get('meta').pos_uuids)) ||
                  (_.has(model.get('meta'), 'neg_uuids') && _.size(model.get('meta').neg_uuids)));
         });
@@ -231,19 +237,27 @@ girder.events.once('im:appload.after', function () {
             return;
         }
 
-        $('#smqtk-iqr-action button').append('    <i class="icon-spin5 animate-spin"></i>');
+        $('button#smqtk-iqr-refine').append('    <i class="icon-spin5 animate-spin"></i>');
 
         girder.restRequest({
             path: 'smqtk_iqr/refine',
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({
-                sid: session.get('name'),
+                sid: session.get('meta').sid,
                 pos_uuids: session.get('meta').pos_uuids,
                 neg_uuids: session.get('meta').neg_uuids
             })
         }).done(function () {
             imagespace.smqtk.iqr.createOrUpdateRefineView();
         }).error(console.error);
+    };
+
+    imagespace.views.SearchView.prototype.events['click #smqtk-iqr-save-session'] = function (event) {
+        new girder.views.EditItemWidget({
+            el: $('#g-dialog-container'),
+            item: imagespace.smqtk.iqr.currentIqrSession,
+            parentView: imagespace.searchView
+        }).render();
     };
 });

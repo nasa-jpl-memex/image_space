@@ -10,7 +10,8 @@ imagespace.views.IqrSelectSessionView = imagespace.View.extend({
                 imagespace.smqtk.iqr.currentIqrSession = new imagespace.models.IqrSessionModel(item.attributes);
 
                 imagespace.updateQueryParams({
-                    smqtk_iqr_session: item.get('name')
+                    page: 1,
+                    smqtk_iqr_session: item.get('meta').sid
                 }, { trigger: true });
 
                 $('.modal-header button[data-dismiss="modal"]').click()
