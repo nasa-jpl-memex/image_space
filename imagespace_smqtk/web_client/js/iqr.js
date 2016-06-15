@@ -82,13 +82,11 @@ girder.events.once('im:appload.after', function () {
         }
     };
 
-    if (girder.currentUser !== null) {
-        imagespace.smqtk.iqr.sessions.fetch();
-    } else {
-        girder.events.on('g:login.success', function () {
+    girder.events.on('g:appload.ready', function () {
+        if (girder.currentUser !== null) {
             imagespace.smqtk.iqr.sessions.fetch();
-        });
-    }
+        }
+    });
 
     imagespace.smqtk.iqr.sessions.once('g:changed', function () {
         imagespace.smqtk.iqr.currentIqrSession = imagespace.smqtk.iqr.findIqrSession();
