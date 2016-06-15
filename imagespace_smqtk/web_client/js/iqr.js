@@ -1,6 +1,6 @@
 /**
  * This is responsible for the IQR integration of the SMQTK ImageSpace plugin.
- * This adds 2 new events, 1 new route, and wraps 2 existing methods:
+ * This adds 3 new events, 1 new route, and wraps 3 existing methods:
  * New events:
  * 1) Click to start a new IQR session
  *    This creates an IQR session on the server side and re-renders the search view.
@@ -9,6 +9,10 @@
  *    and want to refine it will PUT to the refine endpoint and then change the URL
  *    to enter the main entrypoint (fetching the new results).
  *    In a refined state pagination will still work since the collection is now an IqrImageCollection.
+ * 3) Click to load an existing IQR session
+ *    When the user clicks this they are presented with a hierarchy widget of the directory
+ *    storing their IQR sessions. On clicking an IQR session they are forced to the state that session
+ *    was in when they last used it.
  * New route:
  *   The refine route mimics the search route with the exception of the classification parameter
  *   having no effect and should be removed. This is in place just so the user can permalink
@@ -19,6 +23,11 @@
  *    when the user is in an IQR session.
  * 2) Wrapping LayoutHeaderView.render:
  *    This is wrapped just to allow a notice for the user when they are in the middle of an IQR session.
+ * 3) Wrapping ItemListWidget.render:
+ *    This is wrapped because of the Hierarchy Widget usage when loading an existing IQR session.
+ *    For now, it's difficult to hook in to filter the items listed in the widget so we wrap render
+ *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions that have
+ *    at least 1 positive or negative UUID.
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -190,6 +199,29 @@ girder.events.once('im:appload.after', function () {
             imagespace.searchView.render();
         }, this));
     };
+
+    imagespace.views.SearchView.prototype.events['click #smqtk-iqr-load-session'] = function (event) {
+        girder.restRequest({
+            path: 'smqtk_iqr/session_folder'
+        }).done(function (resp) {
+            new imagespace.views.IqrSelectSessionView({
+                el: $("#g-dialog-container"),
+                parentView: imagespace.searchView,
+                folder: new girder.models.FolderModel(resp)
+            }).render();
+        });
+    };
+
+    // Remove IQR sessions with no data (see docs above)
+    girder.wrap(girder.views.ItemListWidget, 'render', function (render) {
+        render.call(this);
+
+        this.collection.models = _.filter(this.collection.models, function (model) {
+            return model.has('meta') &&
+                ((_.has(model.get('meta'), 'pos_uuids') && _.size(model.get('meta').pos_uuids)) ||
+                 (_.has(model.get('meta'), 'neg_uuids') && _.size(model.get('meta').neg_uuids)));
+        });
+    });
 
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-refine'] = function (event) {
         var session = imagespace.smqtk.iqr.currentIqrSession;

@@ -40,6 +40,7 @@ class SmqtkIqr(Resource):
         self.resourceName = 'smqtk_iqr'
         self.route('POST', ('session',), self.createSession)
         self.route('GET', ('session',), self.getSessions)
+        self.route('GET', ('session_folder',), self.getSessionFolder)
         self.route('PUT', ('refine',), self.refine)
         self.route('GET', ('results',), self.results)
 
@@ -50,6 +51,11 @@ class SmqtkIqr(Resource):
     def getSessions(self, params):
         sessionsFolder = getCreateSessionsFolder()
         return list(ModelImporter.model('folder').childItems(folder=sessionsFolder))
+
+    @access.user
+    @describeRoute(Description('Get session folder'))
+    def getSessionFolder(self, params):
+        return getCreateSessionsFolder()
 
     @access.user
     @describeRoute(

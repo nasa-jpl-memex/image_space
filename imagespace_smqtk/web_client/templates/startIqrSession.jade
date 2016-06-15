@@ -1,7 +1,18 @@
 #smqtk-iqr-action
   if currentIqrSession === false
-    button.btn.btn-default#smqtk-iqr-start-session(style='display:block', title='Start Interactive Query Refinement Session')
-      | Start IQR Session
+    button.btn.btn-default(data-toggle="dropdown", data-target="#smqtk-iqr-action-menu")
+      | IQR Session
+      i.icon-down-open
+    #smqtk-iqr-action-menu.dropdown
+      ul.dropdown-menu(role="menu")
+        li(role="presentation")
+          a#smqtk-iqr-start-session
+            i.icon-plus
+            | New IQR session
+        li(role="presentation")
+          a#smqtk-iqr-load-session
+            i.icon-link-ext
+            | Load existing session
   else
     button.btn.btn-default.btn-primary#smqtk-iqr-refine(style='display:block')
       | Refine
