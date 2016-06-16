@@ -9,7 +9,6 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
         _.extend(this, options);
         Backbone.Collection.prototype.initialize.apply(this, [models, options]);
         this.params = this.params || {};
-        this.params.classifications = [];
 
         // Store the ids explicitly mentioned in the query, in order
         if (_.has(this, 'params') && _.has(this.params, 'query')) {
@@ -30,10 +29,6 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
 
             if (_.has(qs, 'page')) {
                 this.offset = (qs.page - 1) * this.pageLimit;
-            }
-
-            if (_.has(qs, 'classifications')) {
-                this.params.classifications = qs.classifications;
             }
         }
     },
@@ -66,10 +61,6 @@ imagespace.collections.ImageCollection = girder.Collection.extend({
             this.offset = 0;
         } else {
             this.params = params || {};
-        }
-
-        if (_.has(this.params, 'classifications') && !_.isString(this.params.classifications)) {
-            this.params.classifications = JSON.stringify(this.params.classifications);
         }
 
         var xhr = girder.restRequest({

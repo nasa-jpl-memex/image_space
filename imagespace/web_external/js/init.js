@@ -169,10 +169,6 @@ _.extend(imagespace, {
     parseQueryString: function (queryString) {
         qs = girder.parseQueryString(queryString || imagespace.getQueryParams());
 
-        if (_.has(qs, 'classifications')) {
-            qs.classifications = qs.classifications.split(',');
-        }
-
         if (_.has(qs, 'page')) {
             qs.page = parseInt(qs.page);
         }
