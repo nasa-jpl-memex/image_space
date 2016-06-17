@@ -4,8 +4,8 @@ imagespace.views.IqrSelectSessionView = imagespace.View.extend({
         this.hierarchyView = new girder.views.HierarchyWidget({
             parentView: this,
             parentModel: this.folder,
-            showActions: false,
-            checkboxes: false,
+            showActions: true,
+            checkboxes: true,
             onItemClick: function (item) {
                 imagespace.smqtk.iqr.currentIqrSession = new imagespace.models.IqrSessionModel(item.attributes);
 
