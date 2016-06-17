@@ -1,6 +1,8 @@
 from girder.utility.model_importer import ModelImporter
-from girder.api.rest import getCurrentUser
+from girder.api.rest import getCurrentUser, filtermodel
 
+
+@filtermodel(model='folder')
 def getCreateSessionsFolder():
     user = getCurrentUser()
     folder = ModelImporter.model('folder')

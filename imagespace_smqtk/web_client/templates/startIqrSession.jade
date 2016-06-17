@@ -1,7 +1,31 @@
 #smqtk-iqr-action
   if currentIqrSession === false
-    button.btn.btn-default#smqtk-iqr-start-session(style='display:block', title='Start Interactive Query Refinement Session')
-      | Start IQR Session
+    .btn-group
+      button.btn.btn-default(id='smqtk-iqr-start-session', type='button') New IQR Session
+      button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+        span.caret
+        span.sr-only Toggle Dropdown
+      ul.dropdown-menu
+        li
+          a(id='smqtk-iqr-load-session')
+            i.icon-link-ext
+            | Load existing session
   else
-    button.btn.btn-default.btn-primary#smqtk-iqr-refine(style='display:block')
-      | Refine
+    .btn-group
+        button.btn.btn-default(id='smqtk-iqr-refine', type='button') Refine results
+        button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+          span.caret
+          span.sr-only Toggle Dropdown
+        ul.dropdown-menu
+          li
+            a(id='smqtk-iqr-save-session')
+              i.icon-hdd
+              | Save session
+          li
+            a(id='smqtk-iqr-load-session')
+              i.icon-cog
+              | Manage sessions
+          li
+            a(id='smqtk-iqr-quit-session')
+              i.icon-logout
+              | Exit session

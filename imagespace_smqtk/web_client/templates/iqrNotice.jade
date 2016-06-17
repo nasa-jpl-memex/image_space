@@ -1,3 +1,9 @@
+if sessionId != sessionName
+  - var name = '(' + sessionName + ')'
+else
+  - var name = ''
+
 .im-alert.alert.alert-warning.smqtk-iqr-notice
   | In Interactive Refinement Session
+  span  #{name}
   i.icon-cancel.smqtk-iqr-quit-session

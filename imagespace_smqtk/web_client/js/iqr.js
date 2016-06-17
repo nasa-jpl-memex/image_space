@@ -1,6 +1,6 @@
 /**
  * This is responsible for the IQR integration of the SMQTK ImageSpace plugin.
- * This adds 2 new events, 1 new route, and wraps 2 existing methods:
+ * This adds 4 new events, 1 new route, and wraps 3 existing methods:
  * New events:
  * 1) Click to start a new IQR session
  *    This creates an IQR session on the server side and re-renders the search view.
@@ -9,6 +9,14 @@
  *    and want to refine it will PUT to the refine endpoint and then change the URL
  *    to enter the main entrypoint (fetching the new results).
  *    In a refined state pagination will still work since the collection is now an IqrImageCollection.
+ * 3) Click to load an existing IQR session
+ *    When the user clicks this they are presented with a hierarchy widget of the directory
+ *    storing their IQR sessions. On clicking an IQR session they are forced to the state that session
+ *    was in when they last used it.
+ * 4) Click to save an IQR session
+ *    The notion of a "saved" IQR session is simply one that gets named by a user (see the above event).
+ *    This is due to the (unsolved) issue of when to invalidate a session. As such, the save event just
+ *    brings up the Edit Item widget for that particular IQR session item.
  * New route:
  *   The refine route mimics the search route with the exception of the classification parameter
  *   having no effect and should be removed. This is in place just so the user can permalink
@@ -19,6 +27,11 @@
  *    when the user is in an IQR session.
  * 2) Wrapping LayoutHeaderView.render:
  *    This is wrapped just to allow a notice for the user when they are in the middle of an IQR session.
+ * 3) Wrapping ItemListWidget.render:
+ *    This is wrapped because of the Hierarchy Widget usage when loading an existing IQR session.
+ *    For now, it's difficult to hook in to filter the items listed in the widget so we wrap render
+ *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions which
+ *    have a name that isn't their SID (this is the indication that a user saved the session).
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -35,7 +48,7 @@ girder.events.once('im:appload.after', function () {
 
                 if (girder.currentUser && _.has(qs, 'smqtk_iqr_session')) {
                     session = _.find(imagespace.smqtk.iqr.sessions.models, function (iqrSession) {
-                        return iqrSession.get('name') === qs.smqtk_iqr_session;
+                        return iqrSession.get('meta').sid === qs.smqtk_iqr_session;
                     });
 
                     if (_.isUndefined(session)) {
@@ -78,17 +91,26 @@ girder.events.once('im:appload.after', function () {
                     $('#im-classification-narrow').show();
                     $('#smqtk-near-duplicates').show();
                 }
+            },
+
+            quitIqrSession: function () {
+                if (_.has(imagespace.parseQueryString(), 'smqtk_iqr_session')) {
+                    imagespace.smqtk.iqr.currentIqrSession = false;
+                    imagespace.smqtk.iqr.refiningNotice(false);
+                    imagespace.setQueryParams(_.omit(imagespace.parseQueryString(),
+                                                     ['smqtk_iqr_session']), {
+                                                         trigger: true
+                                                     });
+                }
             }
         }
     };
 
-    if (girder.currentUser !== null) {
-        imagespace.smqtk.iqr.sessions.fetch();
-    } else {
-        girder.events.on('g:login.success', function () {
+    girder.events.on('g:appload.ready', function () {
+        if (girder.currentUser !== null) {
             imagespace.smqtk.iqr.sessions.fetch();
-        });
-    }
+        }
+    });
 
     imagespace.smqtk.iqr.sessions.once('g:changed', function () {
         imagespace.smqtk.iqr.currentIqrSession = imagespace.smqtk.iqr.findIqrSession();
@@ -107,7 +129,7 @@ girder.events.once('im:appload.after', function () {
         // @todo pass these into the constructor properly
         var coll = new imagespace.collections.IqrImageCollection();
         coll.params = coll.params || {};
-        coll.params.sid = imagespace.smqtk.iqr.currentIqrSession.get('name');
+        coll.params.sid = imagespace.smqtk.iqr.currentIqrSession.get('meta').sid;
 
         imagespace.searchView = new imagespace.views.SearchView({
             parentView: this.parentView,
@@ -147,12 +169,17 @@ girder.events.once('im:appload.after', function () {
         render.call(this);
 
         if (girder.currentUser !== null) {
-            this.$('.pull-right').append(girder.templates.startIqrSession({
+            this.$('#search-controls .right-search-controls').append(girder.templates.startIqrSession({
                 currentIqrSession: imagespace.smqtk.iqr.currentIqrSession
             }));
+
+            this.$('#smqtk-iqr-quit-session').on('click', imagespace.smqtk.iqr.quitIqrSession);
         }
 
         if (imagespace.smqtk.iqr.currentIqrSession) {
+            // Grid view is the only supported view for IQR, remove the view-mode controls
+            this.$('.im-view-mode').remove();
+
             // Render annotation widgets on each image (replacing the caption utilities)
             _.each(this.$('.im-caption'), _.bind(function (captionDiv, i) {
                 var annotationWidgetView = new imagespace.views.AnnotationWidgetView({
@@ -184,7 +211,7 @@ girder.events.once('im:appload.after', function () {
 
         iqrSession.save().once('g:saved', _.bind(function () {
             imagespace.updateQueryParams({
-                smqtk_iqr_session: iqrSession.get('name')
+                smqtk_iqr_session: iqrSession.get('meta').sid
             });
 
             imagespace.smqtk.iqr.sessions.add(iqrSession);
@@ -192,6 +219,30 @@ girder.events.once('im:appload.after', function () {
             imagespace.searchView.render();
         }, this));
     };
+
+    imagespace.views.SearchView.prototype.events['click #smqtk-iqr-load-session'] = function (event) {
+        girder.restRequest({
+            path: 'smqtk_iqr/session_folder'
+        }).done(function (resp) {
+            new imagespace.views.IqrSelectSessionView({
+                el: $("#g-dialog-container"),
+                parentView: imagespace.searchView,
+                folder: new girder.models.FolderModel(resp)
+            }).render();
+        });
+    };
+
+    // Remove IQR sessions with no data (see docs above)
+    girder.wrap(girder.views.ItemListWidget, 'render', function (render) {
+        render.call(this);
+
+        this.collection.models = _.filter(this.collection.models, function (model) {
+            return model.has('meta') &&
+                model.get('name') != model.get('meta').sid
+        });
+
+        return this;
+    });
 
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-refine'] = function (event) {
         var session = imagespace.smqtk.iqr.currentIqrSession;
@@ -201,19 +252,27 @@ girder.events.once('im:appload.after', function () {
             return;
         }
 
-        $('#smqtk-iqr-action button').append('    <i class="icon-spin5 animate-spin"></i>');
+        $('button#smqtk-iqr-refine').append('    <i class="icon-spin5 animate-spin"></i>');
 
         girder.restRequest({
             path: 'smqtk_iqr/refine',
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({
-                sid: session.get('name'),
+                sid: session.get('meta').sid,
                 pos_uuids: session.get('meta').pos_uuids,
                 neg_uuids: session.get('meta').neg_uuids
             })
         }).done(function () {
             imagespace.smqtk.iqr.createOrUpdateRefineView();
         }).error(console.error);
+    };
+
+    imagespace.views.SearchView.prototype.events['click #smqtk-iqr-save-session'] = function (event) {
+        new girder.views.EditItemWidget({
+            el: $('#g-dialog-container'),
+            item: imagespace.smqtk.iqr.currentIqrSession,
+            parentView: imagespace.searchView
+        }).render();
     };
 });

@@ -25,8 +25,8 @@ imagespace.models.IqrSessionModel = girder.models.ItemModel.extend({
     },
 
     addPositiveUuid: function (uuid, done) {
-        var pos_uuids = this.get('meta').pos_uuids,
-            neg_uuids = this.get('meta').neg_uuids;
+        var pos_uuids = this.get('meta').pos_uuids || [],
+            neg_uuids = this.get('meta').neg_uuids || [];
 
         this.get('meta').pos_uuids = _.union(pos_uuids, [uuid]);
         this.get('meta').neg_uuids = _.difference(neg_uuids, [uuid]);
@@ -35,15 +35,15 @@ imagespace.models.IqrSessionModel = girder.models.ItemModel.extend({
     },
 
     removePositiveUuid: function (uuid, done) {
-        var pos_uuids = this.get('meta').pos_uuids;
+        var pos_uuids = this.get('meta').pos_uuids || [];
 
         this.get('meta').pos_uuids = _.difference(pos_uuids, [uuid]);
         this._sendMetadata(this.get('meta'), done);
     },
 
     addNegativeUuid: function (uuid, done) {
-        var pos_uuids = this.get('meta').pos_uuids,
-            neg_uuids = this.get('meta').neg_uuids;
+        var pos_uuids = this.get('meta').pos_uuids || [],
+            neg_uuids = this.get('meta').neg_uuids || [];
 
         this.get('meta').pos_uuids = _.difference(pos_uuids, [uuid]);
         this.get('meta').neg_uuids = _.union(neg_uuids, [uuid]);
@@ -52,7 +52,7 @@ imagespace.models.IqrSessionModel = girder.models.ItemModel.extend({
     },
 
     removeNegativeUuid: function (uuid, done) {
-        var neg_uuids = this.get('meta').neg_uuids;
+        var neg_uuids = this.get('meta').neg_uuids || [];
 
         this.get('meta').neg_uuids = _.difference(neg_uuids, [uuid]);
         this._sendMetadata(this.get('meta'), done);

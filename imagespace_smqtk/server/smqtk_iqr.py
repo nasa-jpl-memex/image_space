@@ -19,8 +19,8 @@
 
 from girder.api import access
 from girder.api.describe import Description, describeRoute
-from girder.api.rest import Resource
-
+from girder.api.rest import Resource, filtermodel, loadmodel
+from girder.constants import AccessType, TokenScope
 from girder.utility.model_importer import ModelImporter
 from girder.api.rest import getBodyJson, getCurrentUser
 
@@ -40,6 +40,8 @@ class SmqtkIqr(Resource):
         self.resourceName = 'smqtk_iqr'
         self.route('POST', ('session',), self.createSession)
         self.route('GET', ('session',), self.getSessions)
+        self.route('PUT', ('session', ':id'), self.updateSession)
+        self.route('GET', ('session_folder',), self.getSessionFolder)
         self.route('PUT', ('refine',), self.refine)
         self.route('GET', ('results',), self.results)
 
@@ -52,18 +54,47 @@ class SmqtkIqr(Resource):
         return list(ModelImporter.model('folder').childItems(folder=sessionsFolder))
 
     @access.user
+    @describeRoute(Description('Get session folder'))
+    def getSessionFolder(self, params):
+        return getCreateSessionsFolder()
+
+    @access.user
     @describeRoute(
         Description('Create an IQR session, return the Girder Item representing that session')
     )
     def createSession(self, params):
         sessionsFolder = getCreateSessionsFolder()
         sessionId = requests.post(self.search_url + '/session').json()['sid']
-        return ModelImporter.model('item').createItem(name=sessionId,
+        item = ModelImporter.model('item').createItem(name=sessionId,
                                                       creator=getCurrentUser(),
                                                       folder=sessionsFolder)
+        ModelImporter.model('item').setMetadata(item, {
+            'sid': sessionId
+        })
+
+        return item
         # create sessions folder in private directory if not existing
         # post to init_session, get sid back
         # create item named sid in sessions folder
+
+    @access.user(scope=TokenScope.DATA_WRITE)
+    @loadmodel(model='item', level=AccessType.WRITE)
+    @filtermodel(model='item')
+    @describeRoute(
+        Description('Update a session item')
+        .responseClass('Item')
+        .param('id', 'The ID of the item.', paramType='path')
+        .param('name', 'Name for the item.', required=False)
+        .param('description', 'Description for the item.', required=False)
+        .errorResponse('ID was invalid.')
+        .errorResponse('Write access was denied for the item or folder.', 403))
+    def updateSession(self, item, params):
+        item['name'] = params.get('name', item['name']).strip()
+        item['description'] = params.get(
+            'description', item['description']).strip()
+
+        self.model('item').updateItem(item)
+        return item
 
     @access.user
     @describeRoute(

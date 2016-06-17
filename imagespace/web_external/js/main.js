@@ -28,8 +28,14 @@ $(function () {
         imagespace.events.trigger('g:appload.before');
         window.app = new imagespace.App({
             el: 'body',
-            parentView: null
+            parentView: null,
+            start: false
         });
+
+        window.app.start().then(function () {
+            girder.events.trigger('g:appload.ready');
+        });
+
         imagespace.events.trigger('g:appload.after');
         girder.events.trigger('im:appload.after');
     });
