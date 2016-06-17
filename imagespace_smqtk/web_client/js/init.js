@@ -35,6 +35,8 @@ girder.events.once('im:appload.after', function () {
                                   this.collection.params.near_duplicates === 1)
             }));
         }
+
+        return this;
     });
 
     /**

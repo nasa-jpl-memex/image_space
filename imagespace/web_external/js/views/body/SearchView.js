@@ -10,21 +10,6 @@ imagespace.views.SearchView = imagespace.View.extend({
             localStorage.setItem('viewMode', 'grid');
             this.viewMode = 'grid';
             this.render();
-        },
-
-        'change #im-classification-narrow input': function (event) {
-            this.collection.params.classifications = [];
-
-            $('#im-classification-narrow input:checked').map(_.bind(function (i, el) {
-                this.collection.params.classifications.push($(el).data('key'));
-            }, this));
-
-            imagespace.updateQueryParams({
-                classifications: this.collection.params.classifications.join(',')
-            });
-
-            $('.alert-info').html('Narrowing results <i class="icon-spin5 animate-spin"></i>').removeClass('hidden');
-            this.collection.fetch(this.collection.params, true);
         }
     },
 
@@ -54,8 +39,7 @@ imagespace.views.SearchView = imagespace.View.extend({
 
     render: function () {
         // This is really hacky - but otherwise we are orphaning
-        // collection.pageLimit + 1 views each re-render (every time a page changes,
-        // classifications, etc)
+        // collection.pageLimit + 1 views each re-render (every time a page changes)
         _.each(this._childViews, function (child) {
             child.destroy();
         });
@@ -66,8 +50,7 @@ imagespace.views.SearchView = imagespace.View.extend({
             url: this.url,
             viewMode: this.viewMode,
             showText: true,
-            collection: this.collection,
-            classifications: this.collection.params.classifications
+            collection: this.collection
         }));
 
         if (this.collection.supportsPagination) {
