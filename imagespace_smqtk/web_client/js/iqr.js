@@ -92,6 +92,17 @@ girder.events.once('im:appload.after', function () {
                     $('#im-classification-narrow').show();
                     $('#smqtk-near-duplicates').show();
                 }
+            },
+
+            quitIqrSession: function () {
+                if (_.has(imagespace.parseQueryString(), 'smqtk_iqr_session')) {
+                    imagespace.smqtk.iqr.currentIqrSession = false;
+                    imagespace.smqtk.iqr.refiningNotice(false);
+                    imagespace.setQueryParams(_.omit(imagespace.parseQueryString(),
+                                                     ['smqtk_iqr_session']), {
+                                                         trigger: true
+                                                     });
+                }
             }
         }
     };
@@ -159,12 +170,17 @@ girder.events.once('im:appload.after', function () {
         render.call(this);
 
         if (girder.currentUser !== null) {
-            this.$('.pull-right').append(girder.templates.startIqrSession({
+            this.$('#search-controls .right-search-controls').append(girder.templates.startIqrSession({
                 currentIqrSession: imagespace.smqtk.iqr.currentIqrSession
             }));
+
+            this.$('#smqtk-iqr-quit-session').on('click', imagespace.smqtk.iqr.quitIqrSession);
         }
 
         if (imagespace.smqtk.iqr.currentIqrSession) {
+            // Grid view is the only supported view for IQR, remove the view-mode controls
+            this.$('.im-view-mode').remove();
+
             // Render annotation widgets on each image (replacing the caption utilities)
             _.each(this.$('.im-caption'), _.bind(function (captionDiv, i) {
                 var annotationWidgetView = new imagespace.views.AnnotationWidgetView({
@@ -227,6 +243,8 @@ girder.events.once('im:appload.after', function () {
                 ((_.has(model.get('meta'), 'pos_uuids') && _.size(model.get('meta').pos_uuids)) ||
                  (_.has(model.get('meta'), 'neg_uuids') && _.size(model.get('meta').neg_uuids)));
         });
+
+        return this;
     });
 
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-refine'] = function (event) {

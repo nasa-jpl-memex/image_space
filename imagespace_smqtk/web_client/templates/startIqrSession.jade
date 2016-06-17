@@ -1,20 +1,31 @@
 #smqtk-iqr-action
   if currentIqrSession === false
-    button.btn.btn-default(data-toggle="dropdown", data-target="#smqtk-iqr-action-menu")
-      | IQR Session
-      i.icon-down-open
-    #smqtk-iqr-action-menu.dropdown
-      ul.dropdown-menu(role="menu")
-        li(role="presentation")
-          a#smqtk-iqr-start-session
-            i.icon-plus
-            | New IQR session
-        li(role="presentation")
-          a#smqtk-iqr-load-session
+    .btn-group
+      button.btn.btn-default(id='smqtk-iqr-start-session', type='button') New IQR Session
+      button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+        span.caret
+        span.sr-only Toggle Dropdown
+      ul.dropdown-menu
+        li
+          a(id='smqtk-iqr-load-session')
             i.icon-link-ext
             | Load existing session
   else
-    button.btn.btn-default.btn-primary#smqtk-iqr-refine()
-      | Refine
-    button.btn.btn-default.btn-primary#smqtk-iqr-save-session(style='float:right')
-      | Save
+    .btn-group
+        button.btn.btn-default(id='smqtk-iqr-refine', type='button') Refine results
+        button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+          span.caret
+          span.sr-only Toggle Dropdown
+        ul.dropdown-menu
+          li
+            a(id='smqtk-iqr-save-session')
+              i.icon-hdd
+              | Save session
+          li
+            a(id='smqtk-iqr-load-session')
+              i.icon-cog
+              | Manage sessions
+          li
+            a(id='smqtk-iqr-quit-session')
+              i.icon-logout
+              | Exit session

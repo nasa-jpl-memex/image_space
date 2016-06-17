@@ -7,6 +7,7 @@ imagespace.views.IqrSelectSessionView = imagespace.View.extend({
             showActions: true,
             checkboxes: true,
             onItemClick: function (item) {
+                imagespace.smqtk.iqr.refiningNotice(false);
                 imagespace.smqtk.iqr.currentIqrSession = new imagespace.models.IqrSessionModel(item.attributes);
 
                 imagespace.updateQueryParams({
@@ -14,7 +15,7 @@ imagespace.views.IqrSelectSessionView = imagespace.View.extend({
                     smqtk_iqr_session: item.get('meta').sid
                 }, { trigger: true });
 
-                $('.modal-header button[data-dismiss="modal"]').click()
+                $('.modal-header button[data-dismiss="modal"]').click();
             }
         });
         return this;
