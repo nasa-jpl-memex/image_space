@@ -30,9 +30,8 @@
  * 3) Wrapping ItemListWidget.render:
  *    This is wrapped because of the Hierarchy Widget usage when loading an existing IQR session.
  *    For now, it's difficult to hook in to filter the items listed in the widget so we wrap render
- *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions that have
- *    at least 1 positive or negative UUID and a name that isn't their SID (this is the indication that a user
- *    saved the session).
+ *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions which
+ *    have a name that isn't their SID (this is the indication that a user saved the session).
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -239,9 +238,7 @@ girder.events.once('im:appload.after', function () {
 
         this.collection.models = _.filter(this.collection.models, function (model) {
             return model.has('meta') &&
-                model.get('name') != model.get('meta').sid &&
-                ((_.has(model.get('meta'), 'pos_uuids') && _.size(model.get('meta').pos_uuids)) ||
-                 (_.has(model.get('meta'), 'neg_uuids') && _.size(model.get('meta').neg_uuids)));
+                model.get('name') != model.get('meta').sid
         });
 
         return this;
