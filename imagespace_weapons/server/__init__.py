@@ -16,8 +16,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
+import itertools
 import os
+import requests
+
 from girder import events
+from girder.api import access
+from girder.api.describe import Description
+from girder.api.rest import Resource
+from urlparse import urlparse
 
 
 def adjust_qparams_for_subtype(event):
@@ -61,6 +68,61 @@ def uppercase_result_filenames(event):
     event.addResponse(event.info)
 
 
+class WeaponsSearch(Resource):
+    def __init__(self):
+        self.resourceName = 'weaponssearch'
+        self.route('GET', ('relevant_ads',), self.getRelevantAds)
+
+    @access.public
+    def getRelevantAds(self, params):
+        AD_LIMIT = 20
+        def sort_documents_by_url(documents):
+            return sorted(documents, key=lambda x: x['url'])
+
+        # @todo this assumes all URLs returned from Solr will properly urlparse
+        def group_documents_by_domain(documents):
+            return itertools.groupby(sort_documents_by_url(documents),
+                                     lambda doc: urlparse(doc['url']).netloc)
+
+        try:
+            result = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
+                'wt': 'json',
+                'q': 'outpaths:"%s"' % params['solr_image_id'],
+                'fl': 'id,url',
+                'rows': str(AD_LIMIT)
+            }, verify=False).json()
+        except ValueError:
+            return {
+                'numFound': 0,
+                'docs': []
+            }
+
+        try:
+            response = {
+                'numFound': result['response']['numFound'],
+                'docs': result['response']['docs'],
+                'groupedDocs': []
+            }
+        except KeyError:
+            return {
+                'numFound': 0,
+                'docs': []
+            }
+
+        for (domain, documents) in group_documents_by_domain(response['docs']):
+            response['groupedDocs'].append([domain, list(documents)])
+
+        # Display the domain with the largest number of documents first
+        response['groupedDocs'] = sorted(response['groupedDocs'],
+                                         key=lambda (_, docs): len(docs),
+                                         reverse=True)
+
+        return response
+    getRelevantAds.description = Description(
+        'Retrieve the relevant ad ids and urls from a given image'
+    ).param('solr_image_id', 'ID of the Solr document representing an image')
+
+
 def load(info):
     events.bind('imagespace.imagesearch.qparams',
                 'adjust_qparams_for_maintype',
@@ -73,3 +135,5 @@ def load(info):
     events.bind('imagespace.solr_documents_from_field',
                 'upperbase_basename_for_resourcenames',
                 uppercase_basename_for_resourcenames)
+
+    info['apiRoot'].weaponssearch = WeaponsSearch()
