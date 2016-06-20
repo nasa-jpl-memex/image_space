@@ -48,4 +48,46 @@ girder.events.once('im:appload.after', function () {
             }
         }
     });
+
+    girder.wrap(imagespace.views.ImageDetailWidget, 'render', function (render) {
+        var _this = this;
+
+        function _render() {
+            var ret = render.call(_this);
+            return ret;
+        }
+
+        // If ads have already been retrieved, or it's an uploaded image with no relevant ads, render
+        if (this.image.has('_relevantAds') || this.image instanceof imagespace.models.UploadedImageModel) {
+            return _render();
+        } else {
+            girder.restRequest({
+                path: '/weaponssearch/relevant_ads',
+                data: {
+                    solr_image_id: this.image.get('id')
+                }
+            }).done(_.bind(function (response) {
+                this.image.set('_relevantAdInfo', {
+                    totalNumAds: response.numFound,
+                    showingNumAds: _.reduce(response.groupedDocs, function (memo, groupedDoc) {
+                        return memo + groupedDoc[1].length;
+                    }, 0)
+                });
+
+                this.image.set('_relevantAds', _.map(response.groupedDocs, function (groupedDoc) {
+                    var domain = _.first(groupedDoc),
+                        documents = _.last(groupedDoc);
+
+                    return [domain, _.map(documents, function (document) {
+                        return {
+                            resourcename: _.last(document.id.split('/')),
+                            url: document.url
+                        };
+                    })];
+                }));
+                return _render();
+            }, this));
+        }
+    });
+
 });

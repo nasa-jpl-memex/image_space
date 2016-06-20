@@ -40,8 +40,9 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             this.parentView.parentView instanceof imagespace.views.SearchView;
     },
 
-    _render: function () {
-        var modal = this.$el.html(imagespace.templates.imageDetailWidget({
+    render: function () {
+        // These are stored on the widget for plugins to have access to
+        this.imageDetailViewArgs = {
             title: this.title,
             image: this.image,
             query: $('.im-search').val(),
@@ -50,7 +51,10 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
             hasPrev: this.canScroll && this.parentView.$el.prev().length,
             hasNext: this.canScroll && this.parentView.$el.next().length,
             facetviewAdsUrl: imagespace.facetviewAdsUrl
-        })).girderModal(this);
+        };
+
+        var modal = this.$el.html(
+            imagespace.templates.imageDetailWidget(this.imageDetailViewArgs)).girderModal(this);
 
         $('.modal-body').css('height', $(window).height() * 0.8);
         $('.modal-body').css('overflow', 'auto');
@@ -62,41 +66,5 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
         modal.trigger($.Event('ready.girder.modal', {relatedTarget: modal}));
 
         return this;
-    },
-
-    render: function () {
-        // If ads have already been retrieved, or it's an uploaded image with no relevant ads, render
-        if (this.image.has('_relevantAds') || this.image instanceof imagespace.models.UploadedImageModel) {
-            return this._render();
-        } else {
-            girder.restRequest({
-                path: '/imagesearch/relevant_ads',
-                data: {
-                    solr_image_id: this.image.get('id')
-                }
-            }).done(_.bind(function (response) {
-                this.image.set('_relevantAdInfo', {
-                    totalNumAds: response.numFound,
-                    showingNumAds: _.reduce(response.groupedDocs, function (memo, groupedDoc) {
-                        return memo + groupedDoc[1].length;
-                    }, 0)
-                });
-
-                this.image.set('_relevantAds', _.map(response.groupedDocs, function (groupedDoc) {
-                    var domain = _.first(groupedDoc),
-                        documents = _.last(groupedDoc);
-
-                    return [domain, _.map(documents, function (document) {
-                        return {
-                            resourcename: _.last(document.id.split('/')),
-                            url: document.url
-                        };
-                    })];
-                }));
-                this._render();
-            }, this));
-
-            return this;
-        }
     }
 });
