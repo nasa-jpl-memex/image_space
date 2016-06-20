@@ -54,6 +54,7 @@ girder.events.once('im:appload.after', function () {
 
         function _render() {
             var ret = render.call(_this);
+            this.$('.modal-inner-content .match-result').after(girder.templates.relevantAds(_this.imageDetailViewArgs));
             return ret;
         }
 
