@@ -1,0 +1,26 @@
+version: "2"
+services:
+  imagespace-mongo:
+    image: mongo:3.0
+    networks:
+      - imagespace-network
+  imagespace-solr:
+    image: solr:6.0
+    networks:
+      - imagespace-network
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - imagespace
+  imagespace-girder:
+    image: kitware/image_space:latest
+    networks:
+      - imagespace-network
+    depends_on:
+      - imagespace-mongo
+      - imagespace-solr
+    entrypoint: /imagespace-entrypoint.sh --database mongodb://imagespace-mongo/girder
+
+networks:
+  imagespace-network:
+    driver: bridge
