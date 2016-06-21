@@ -181,9 +181,13 @@ _.extend(imagespace, {
             first = _.first(pairs),
             rest = _.rest(pairs);
 
-        return _.reduce(rest, function (memo, val) {
-            return memo + '&' + val[0] + '=' + encodeURIComponent(val[1]);
-        }, first[0] + '=' + encodeURIComponent(first[1]));
+        if (_.size(obj) === 0) {
+            return '';
+        } else {
+            return _.reduce(rest, function (memo, val) {
+                return memo + '&' + val[0] + '=' + encodeURIComponent(val[1]);
+            }, first[0] + '=' + encodeURIComponent(first[1]));
+        }
     },
 
     /**
@@ -220,8 +224,14 @@ _.extend(imagespace, {
         if (_.size(params)) {
             imagespace.router.navigate(hashBeforeParams, navigateArgs || {});
         } else {
-            imagespace.router.navigate(hashBeforeParams + '/params/' + imagespace.createQueryString(params),
-                                       navigateArgs || {});
+            var newParams = imagespace.createQueryString(params);
+
+            // If there are no new params, we can leave the /params/ off
+            if (newParams) {
+                newParams = '/params/' + newParams;
+            }
+
+            imagespace.router.navigate(hashBeforeParams + newParams, navigateArgs || {});
         }
     },
 
