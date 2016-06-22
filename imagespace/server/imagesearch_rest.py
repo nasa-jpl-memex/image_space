@@ -21,10 +21,12 @@ from girder import events
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
+from .settings import ImageSpaceSetting
 
 import json
 import requests
-import os
+
+setting = ImageSpaceSetting()
 
 
 class ImageSearch(Resource):
@@ -45,7 +47,7 @@ class ImageSearch(Resource):
         query = params['query'] if 'query' in params else '*:*'
         offset = params['offset'] if 'offset' in params else '0'
         classifications = json.loads(params['classifications']) if 'classifications' in params else []
-        base = os.environ['IMAGE_SPACE_SOLR'] + '/select'
+        base = setting.get('IMAGE_SPACE_SOLR') + '/select'
 
         if classifications:
             query += ' AND (%s)' % ' OR '.join(['%s:[.7 TO *]' % key

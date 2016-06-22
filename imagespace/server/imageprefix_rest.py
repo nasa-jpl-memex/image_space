@@ -20,8 +20,7 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
-
-import os
+from .settings import ImageSpaceSetting
 
 
 class ImagePrefix(Resource):
@@ -31,11 +30,13 @@ class ImagePrefix(Resource):
 
     @access.public
     def getImagePrefix(self, params):
+        setting = ImageSpaceSetting()
+
         return {
-            'prefix': os.environ['IMAGE_SPACE_PREFIX'],
-            'solrPrefix': os.environ['IMAGE_SPACE_SOLR_PREFIX'],
-            'stolenCameraPrefix': os.environ['IMAGE_SPACE_STOLEN_CAMERA'] if 'IMAGE_SPACE_STOLEN_CAMERA' in os.environ else 'http://www.stolencamerafinder.com/search',
-            'facetviewAdsUrl': os.environ.get('IMAGE_SPACE_FACETVIEW_ADS_URL', False),
-            'localBasicAuth': os.environ.get('IMAGE_SPACE_LOCAL_BASIC_AUTH', False)
+            'prefix': setting.get('IMAGE_SPACE_PREFIX'),
+            'solrPrefix': setting.get('IMAGE_SPACE_SOLR_PREFIX'),
+            'stolenCameraPrefix': setting.get('IMAGE_SPACE_STOLEN_CAMERA') or 'http://www.stolencamerafinder.com/search',
+            'facetviewAdsUrl': setting.get('IMAGE_SPACE_FACETVIEW_ADS_URL'),
+            'localBasicAuth': setting.get('IMAGE_SPACE_LOCAL_BASIC_AUTH')
         }
     getImagePrefix.description = Description('Returns image URL prefix')
