@@ -16,6 +16,8 @@ services:
     image: kitware/image_space:latest
     networks:
       - imagespace-network
+    ports:
+      - "8989:8080"
     depends_on:
       - imagespace-mongo
       - imagespace-solr
