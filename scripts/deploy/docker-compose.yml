@@ -21,6 +21,8 @@ services:
     depends_on:
       - imagespace-mongo
       - imagespace-solr
+    volumes:
+      - ${IMAGE_DIR}:/images
     entrypoint: /imagespace-entrypoint.sh --database mongodb://imagespace-mongo/girder
 
 networks:
