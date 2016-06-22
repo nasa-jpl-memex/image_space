@@ -22,6 +22,8 @@ from girder.api.describe import Description
 from girder.api.rest import Resource
 from girder.plugins.imagespace import solr_documents_from_field
 
+from .settings import SmqtkSetting
+
 import json
 import requests
 import os
@@ -31,7 +33,8 @@ NEAR_DUPLICATES_THRESHOLD = -1500  # Maximum distance to be considered a near du
 
 class SmqtkSimilaritySearch(Resource):
     def __init__(self):
-        self.search_url = os.environ['IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH']
+        setting = SmqtkSetting()
+        self.search_url = setting.get('IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH')
         self.resourceName = 'smqtk_similaritysearch'
         self.route('GET', (), self.runImageSimilaritySearch)
 

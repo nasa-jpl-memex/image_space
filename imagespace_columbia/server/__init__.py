@@ -16,19 +16,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
-import os
-
 from .columbia_imagecontentsearch import ColumbiaImageContentSearch
+from .settings import ColumbiaSetting
 
 
 def load(info):
-    index = 'IMAGE_SPACE_COLUMBIA_INDEX'
-    if index not in os.environ \
-       or os.environ[index] == '':
-        raise Exception(
-            'Imagespace Columbia will not function without the %s '
-            'environment variable.' % index)
-    else:
-        os.environ[index] = os.environ[index].rstrip('/')
+    columbiaSetting = ColumbiaSetting()
+
+    for setting in columbiaSetting.requiredSettings:
+        columbiaSetting.get(setting)
 
     info['apiRoot'].columbia_imagecontentsearch = ColumbiaImageContentSearch()

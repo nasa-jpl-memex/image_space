@@ -16,19 +16,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
-import os
-
 from .flann_imagecontentsearch import FlannImageContentSearch
+from .settings import FlannSetting
 
 
 def load(info):
-    index = 'IMAGE_SPACE_FLANN_INDEX'
-    if index not in os.environ \
-       or os.environ[index] == '':
-        raise Exception(
-            'Imagespace Flann will not function without the %s environment '
-            'variable.' % index)
-    else:
-        os.environ[index] = os.environ[index].rstrip('/')
+    flannSetting = FlannSetting()
+
+    for setting in flannSetting.requiredSettings:
+        flannSetting.get(setting)
 
     info['apiRoot'].flann_imagecontentsearch = FlannImageContentSearch()

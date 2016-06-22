@@ -24,8 +24,11 @@ from girder import events
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
+from girder.plugins.imagespace.settings import ImageSpaceSetting
 from urlparse import urlparse
 
+
+setting = ImageSpaceSetting()
 
 def adjust_qparams_for_subtype(event):
     """
@@ -85,7 +88,7 @@ class WeaponsSearch(Resource):
                                      lambda doc: urlparse(doc['url']).netloc)
 
         try:
-            result = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select', params={
+            result = requests.get(setting.get('IMAGE_SPACE_SOLR') + '/select', params={
                 'wt': 'json',
                 'q': 'outpaths:"%s"' % params['solr_image_id'],
                 'fl': 'id,url',

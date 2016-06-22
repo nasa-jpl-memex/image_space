@@ -27,6 +27,7 @@ from girder.api.rest import getBodyJson, getCurrentUser
 from girder.plugins.imagespace import solr_documents_from_field
 from girder import logger
 
+from .settings import SmqtkSetting
 from .utils import getCreateSessionsFolder
 
 import json
@@ -36,7 +37,8 @@ import os
 
 class SmqtkIqr(Resource):
     def __init__(self):
-        self.search_url = os.environ['IMAGE_SPACE_SMQTK_IQR_URL']
+        setting = SmqtkSetting()
+        self.search_url = setting.get('IMAGE_SPACE_SMQTK_IQR_URL')
         self.resourceName = 'smqtk_iqr'
         self.route('POST', ('session',), self.createSession)
         self.route('GET', ('session',), self.getSessions)
