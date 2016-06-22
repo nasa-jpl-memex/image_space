@@ -28,6 +28,9 @@ from .imagefeatures_rest import ImageFeatures
 from .imagepivot_rest import ImagePivot
 from .imagesearch_rest import ImageSearch
 from .imageprefix_rest import ImagePrefix
+from .settings import ImageSpaceSetting
+
+imagespaceSetting = ImageSpaceSetting()
 
 
 class CustomAppRoot(object):
@@ -143,20 +146,13 @@ class CustomAppRoot(object):
 
 
 def load(info):
-    required_env_vars = ('IMAGE_SPACE_SOLR',
-                         'IMAGE_SPACE_PREFIX',
-                         'IMAGE_SPACE_SOLR_PREFIX')
-
-    for var in required_env_vars:
-        if var not in os.environ or os.environ[var] == '':
-            raise Exception('Imagespace will not function without the %s '
-                            'environment variable.' % var)
-        else:
-            os.environ[var] = os.environ[var].rstrip('/')
+    for setting in ImageSpaceSetting.requiredSettings:
+        imagespaceSetting.get(setting)
 
     # Absolute path to a directory of images to serve statically at /basename
-    image_dir = os.environ.get('IMAGE_SPACE_IMAGE_DIR', '')
-    if image_dir != '':
+    image_dir = imagespaceSetting.get('IMAGE_SPACE_IMAGE_DIR')
+
+    if image_dir:
         info['config']['/images'] = {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': image_dir
@@ -225,7 +221,7 @@ def solr_documents_from_field(field, values, classifications=None):
             'value': ' '.join(values_chunk)
         })
 
-        r = requests.get(os.environ['IMAGE_SPACE_SOLR'] + '/select',
+        r = requests.get(imagespaceSetting.get('IMAGE_SPACE_SOLR') + '/select',
                          params=qparams,
                          verify=False)
 
