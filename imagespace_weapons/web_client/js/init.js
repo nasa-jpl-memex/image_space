@@ -35,8 +35,8 @@ girder.events.once('im:appload.after', function () {
         fetch.call(this, params, reset);
     });
 
-    girder.wrap(imagespace.collections.ImageCollection, 'initialize', function (initialize) {
-        initialize.call(this);
+    girder.wrap(imagespace.collections.ImageCollection, 'initialize', function (initialize, models, options) {
+        initialize.call(this, models, options);
 
         this.params.classifications = [];
 
