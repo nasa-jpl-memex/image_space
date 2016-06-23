@@ -19,20 +19,13 @@
 import os
 from .smqtk_search import SmqtkSimilaritySearch
 from .smqtk_iqr import SmqtkIqr
-
+from .settings import SmqtkSetting
 
 def load(info):
-    required_env_vars = ('IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH',
-                         'IMAGE_SPACE_SMQTK_IQR_URL',)
+    smqtkSetting = SmqtkSetting()
 
-    for required_var in required_env_vars:
-        if required_var not in os.environ \
-           or os.environ[required_var] == '':
-            raise Exception(
-                'Imagespace SMQTK will not function without the %s environment '
-                'variable.' % required_var)
-        else:
-            os.environ[required_var] = os.environ[required_var].rstrip('/')
+    for setting in smqtkSetting.requiredSettings:
+        smqtkSetting.get(setting)
 
     info['apiRoot'].smqtk_similaritysearch = SmqtkSimilaritySearch()
     info['apiRoot'].smqtk_iqr = SmqtkIqr()

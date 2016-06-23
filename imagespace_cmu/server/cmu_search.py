@@ -20,12 +20,14 @@
 from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
-
 from girder.plugins.imagespace import solr_documents_from_field
+
+from .settings import CmuSetting
 
 import json
 import requests
-import os
+
+setting = CmuSetting()
 
 
 class CmuSearch(Resource):
@@ -41,8 +43,8 @@ class CmuSearch(Resource):
                                    },
                                    verify=False).json()
 
-        cmu_images = [[image.replace(os.environ['IMAGE_SPACE_CMU_PREFIX'],
-                                     os.environ['IMAGE_SPACE_SOLR_PREFIX']), score]
+        cmu_images = [[image.replace(setting.get('IMAGE_SPACE_CMU_PREFIX'),
+                                     setting.get('IMAGE_SPACE_SOLR_PREFIX')), score]
                       for (image, score) in cmu_images]
         cmu_scores = {image.lower(): score for image, score in cmu_images}
 
@@ -60,7 +62,7 @@ class CmuSearch(Resource):
 
 class CmuImageBackgroundSearch(CmuSearch):
     def __init__(self):
-        self.search_url = os.environ['IMAGE_SPACE_CMU_BACKGROUND_SEARCH']
+        self.search_url = setting.get('IMAGE_SPACE_CMU_BACKGROUND_SEARCH')
         self.resourceName = 'cmu_imagebackgroundsearch'
         self.route('GET', (), self.getImageBackgroundSearch)
 
@@ -74,7 +76,7 @@ class CmuImageBackgroundSearch(CmuSearch):
 
 class CmuFullImageSearch(CmuSearch):
     def __init__(self):
-        self.search_url = os.environ['IMAGE_SPACE_CMU_FULL_IMAGE_SEARCH']
+        self.search_url = setting.get('IMAGE_SPACE_CMU_FULL_IMAGE_SEARCH')
         self.resourceName = 'cmu_fullimagesearch'
         self.route('GET', (), self.getFullImageSearch)
 

@@ -22,8 +22,9 @@ from girder.api.describe import Description
 from girder.api.rest import Resource
 from girder import logger
 
+from .settings import ColumbiaSetting
+
 import requests
-import os
 
 
 class ColumbiaImageContentSearch(Resource):
@@ -39,15 +40,16 @@ class ColumbiaImageContentSearch(Resource):
         .param('url', 'Publicly accessible URL of the image to search'))
 
     def _imageContentSearch(self, params):
+        setting = ColumbiaSetting()
         limit = params['limit'] if 'limit' in params else '100'
 
         logger.info(
             'Using COLUMBIA INDEX at ' +
-            os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] +
+            setting.get('IMAGE_SPACE_COLUMBIA_INDEX') +
             '?url=' + params['url'] +
             '&num=' + str(limit))
         return [{'id': d} for d in requests.get(
-            os.environ['IMAGE_SPACE_COLUMBIA_INDEX'] +
+            setting.get('IMAGE_SPACE_COLUMBIA_INDEX') +
             '?url=' + params['url'] +
             '&num=' + str(limit),
             verify=False

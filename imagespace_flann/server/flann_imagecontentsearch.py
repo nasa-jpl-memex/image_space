@@ -21,12 +21,11 @@ from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
 from girder import logger
-
 from girder.plugins.imagespace import ImageFeatures
+from .settings import FlannSetting
 
 import json
 import requests
-import os
 
 
 class FlannImageContentSearch(Resource):
@@ -46,6 +45,7 @@ class FlannImageContentSearch(Resource):
         .param('histogram', 'Color histogram to use', required=False))
 
     def _imageContentSearch(self, params):
+        setting = FlannSetting()
         limit = params['limit'] if 'limit' in params else '100'
 
         if 'histogram' not in params:
@@ -55,8 +55,8 @@ class FlannImageContentSearch(Resource):
 
         logger.info(
             'Using FLANN INDEX at ' +
-            os.environ['IMAGE_SPACE_FLANN_INDEX'])
+            setting.get('IMAGE_SPACE_FLANN_INDEX'))
         return requests.get(
-            os.environ['IMAGE_SPACE_FLANN_INDEX'] +
+            setting.get('IMAGE_SPACE_FLANN_INDEX') +
             '?query=' + params['histogram'] +
             '&k=' + str(limit)).json()

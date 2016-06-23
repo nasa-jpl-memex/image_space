@@ -21,9 +21,10 @@ from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
 
+from .settings import GeorgetownSetting
+
 import json
 import requests
-import os
 
 
 class GeorgetownImageDomainDynamicsSearch(Resource):
@@ -39,6 +40,7 @@ class GeorgetownImageDomainDynamicsSearch(Resource):
         .param('url', 'Publicly accessible URL of the image to search'))
 
     def _imageDomainDynamicsSearch(self, params):
+        setting = GeorgetownSetting()
         # , comes before
         filename = params['url'].split('/')[-2] + "/" + params['url'].split('/')[-1]
 
@@ -47,7 +49,7 @@ class GeorgetownImageDomainDynamicsSearch(Resource):
         # use Solr Response returned to reRank Images based on "chosen metadata fields"
         # display reRanked images
 
-        req1 = requests.get(os.environ["IMAGE_SPACE_SOLR"] + "/select?q=" +filename+"&wt=json&rows=100")
+        req1 = requests.get(setting.get("IMAGE_SPACE_SOLR") + "/select?q=" +filename+"&wt=json&rows=100")
 
         justJson = req1.json()["response"]["docs"]
 
@@ -60,4 +62,4 @@ class GeorgetownImageDomainDynamicsSearch(Resource):
                  "fields": json.dumps(list(union_feature_names)),
                  "results": json.dumps(req1.json())}
 
-        return requests.post(os.environ['IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'], data=jdata).json()["response"]["docs"]
+        return requests.post(setting.get('IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'), data=jdata).json()["response"]["docs"]

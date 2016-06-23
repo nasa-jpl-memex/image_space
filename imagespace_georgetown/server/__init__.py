@@ -16,21 +16,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
-import os
-
 from .georgetown_imagedomaindynamicssearch import \
     GeorgetownImageDomainDynamicsSearch
+from .settings import GeorgetownSetting
 
 
 def load(info):
-    index = 'IMAGE_SPACE_GEORGETOWN_DOMAIN_DYNAMICS_SEARCH'
-    if index not in os.environ \
-       or os.environ[index] == '':
-        raise Exception(
-            'Imagespace Georgetown will not function without the %s '
-            'environment variable.' % index)
-    else:
-        os.environ[index] = os.environ[index].rstrip('/')
+    georgetownSetting = GeorgetownSetting()
+
+    for setting in georgetownSetting.requiredSettings:
+        georgetownSetting.get(setting)
 
     info['apiRoot'].georgetown_imagedomaindynamicssearch \
         = GeorgetownImageDomainDynamicsSearch()
