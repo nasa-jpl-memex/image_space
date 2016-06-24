@@ -1,6 +1,8 @@
 from girder.utility.model_importer import ModelImporter
 from girder.api.rest import getCurrentUser, filtermodel
 
+import base64
+import requests
 
 @filtermodel(model='folder')
 def getCreateSessionsFolder():
@@ -16,3 +18,8 @@ def getCreateSessionsFolder():
                                              }))[0]
 
     return folder.createFolder(privateFolder, 'iqr_sessions', reuseExisting=True)
+
+
+def base64FromUrl(url):
+    r = requests.get(url)
+    return (base64.b64encode(r.content), r.headers['Content-Type'])
