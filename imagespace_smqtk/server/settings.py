@@ -2,9 +2,8 @@ from girder.models.setting import Setting
 from girder.plugins.imagespace.settings import ImageSpaceSetting
 
 class SmqtkSetting(ImageSpaceSetting):
-    requiredSettings = ('IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH',
-                        'IMAGE_SPACE_SMQTK_IQR_URL',
-                        'IMAGE_SPACE_SMQTK_NNSS_URL')
+    requiredSettings = ('IMAGE_SPACE_SMQTK_NNSS_URL',
+                        'IMAGE_SPACE_SMQTK_IQR_URL')
 
     def validateImageSpaceSmqtkSimilaritySearch(self, doc):
         return doc.rstrip('/')
