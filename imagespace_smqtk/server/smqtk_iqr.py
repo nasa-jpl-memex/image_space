@@ -32,7 +32,6 @@ from .utils import getCreateSessionsFolder
 
 import json
 import requests
-import os
 
 
 class SmqtkIqr(Resource):
@@ -105,8 +104,9 @@ class SmqtkIqr(Resource):
                paramType='body')
     )
     def refine(self, params):
-        params = getBodyJson()
+        return self._refine(getBodyJson())
 
+    def _refine(self, params):
         # Sessions in SMQTK expire, but stay around in Girder
         # Force creation of a session with this id each time
         requests.post(self.search_url + '/session', data={'sid': params['sid']})
@@ -127,8 +127,25 @@ class SmqtkIqr(Resource):
         .param('limit', 'How many records to pull')
     )
     def results(self, params):
+        def sid_exists(sid):
+            """
+            Determine if a session ID already exists in SMQTK.
+            This currently creates the session if it doesn't already exist.
+            """
+            return not requests.post(self.search_url + '/session', data={'sid': params['sid']}).ok
+
         offset = int(params['offset'] if 'offset' in params else 0)
         limit = int(params['limit'] if 'limit' in params else 20)
+
+        if not sid_exists(params['sid']):
+            # Get pos/neg uuids from current session
+            session = self.model('item').findOne({'meta.sid': params['sid']})
+
+            if session:
+                self._refine({
+                    'sid': params['sid'],
+                    'pos_uuids': session['meta']['pos_uuids'],
+                    'neg_uuids': session['meta']['neg_uuids']})
 
         resp = requests.get(self.search_url + '/get_results', params={
             'sid': params['sid'],
