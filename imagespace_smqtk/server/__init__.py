@@ -16,9 +16,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
-import os
 from .smqtk_search import SmqtkSimilaritySearch
 from .smqtk_iqr import SmqtkIqr
+from .smqtk import Smqtk
 from .settings import SmqtkSetting
 
 def load(info):
@@ -29,3 +29,4 @@ def load(info):
 
     info['apiRoot'].smqtk_similaritysearch = SmqtkSimilaritySearch()
     info['apiRoot'].smqtk_iqr = SmqtkIqr()
+    info['apiRoot'].smqtk = Smqtk()

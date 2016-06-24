@@ -23,10 +23,10 @@ from girder.api.rest import Resource
 from girder.plugins.imagespace import solr_documents_from_field
 
 from .settings import SmqtkSetting
+from .utils import base64FromUrl
 
 import json
 import requests
-import os
 
 DEFAULT_PAGE_SIZE = 100
 NEAR_DUPLICATES_THRESHOLD = -1500  # Maximum distance to be considered a near duplicate
@@ -34,17 +34,12 @@ NEAR_DUPLICATES_THRESHOLD = -1500  # Maximum distance to be considered a near du
 class SmqtkSimilaritySearch(Resource):
     def __init__(self):
         setting = SmqtkSetting()
-        self.search_url = setting.get('IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH')
+        self.search_url = setting.get('IMAGE_SPACE_SMQTK_NNSS_URL') + '/nn'
         self.resourceName = 'smqtk_similaritysearch'
         self.route('GET', (), self.runImageSimilaritySearch)
 
     @access.public
     def runImageSimilaritySearch(self, params):
-        def base64FromUrl(url):
-            import base64
-            r = requests.get(url)
-            return (base64.b64encode(r.content), r.headers['Content-Type'])
-
         assert hasattr(self, 'search_url')
         classifications = json.loads(params['classifications']) if 'classifications' in params else []
         params['n'] = params['n'] if 'n' in params else str(DEFAULT_PAGE_SIZE)

@@ -68,4 +68,16 @@ girder.events.once('im:appload.after', function () {
             }
         }
     });
+
+    // Compute descriptor on upload of image
+    girder.events.on('im:image-upload-finalized', function (image) {
+        // An error will display if the computation fails, and it will be logged server side
+        girder.restRequest({
+            path: '/smqtk/compute',
+            type: 'POST',
+            data: {
+                url: image.get('imageUrl')
+            }
+        });
+    });
 }, this);
