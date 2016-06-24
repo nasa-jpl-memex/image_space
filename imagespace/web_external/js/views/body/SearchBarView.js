@@ -171,6 +171,10 @@ imagespace.views.SearchBarView = imagespace.View.extend({
                                             image: image,
                                             parentView: null
                                         }).render();
+
+                                        // Trigger an event when an image is successfully uploaded
+                                        // (pass the event the UploadedImageModel instance)
+                                        girder.events.trigger('im:image-upload-finalized', image);
                                     }, this));
                                 }, this));
                             }
