@@ -106,6 +106,11 @@ class SmqtkIqr(Resource):
     )
     def refine(self, params):
         params = getBodyJson()
+
+        # Sessions in SMQTK expire, but stay around in Girder
+        # Force creation of a session with this id each time
+        requests.post(self.search_url + '/session', data={'sid': params['sid']})
+
         r = requests.put(self.search_url + '/refine', data={
             'sid': params['sid'],
             'pos_uuids': json.dumps(params['pos_uuids']),
