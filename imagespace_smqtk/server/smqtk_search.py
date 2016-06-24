@@ -34,7 +34,7 @@ NEAR_DUPLICATES_THRESHOLD = -1500  # Maximum distance to be considered a near du
 class SmqtkSimilaritySearch(Resource):
     def __init__(self):
         setting = SmqtkSetting()
-        self.search_url = setting.get('IMAGE_SPACE_SMQTK_SIMILARITY_SEARCH') + '/nn'
+        self.search_url = setting.get('IMAGE_SPACE_SMQTK_NNSS_URL') + '/nn'
         self.resourceName = 'smqtk_similaritysearch'
         self.route('GET', (), self.runImageSimilaritySearch)
 
