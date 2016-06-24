@@ -1,6 +1,7 @@
 from girder.models.setting import Setting
+from girder.plugins.imagespace.settings import ImageSpaceSetting
 
-class CmuSetting(Setting):
+class CmuSetting(ImageSpaceSetting):
     requiredSettings = ('IMAGE_SPACE_CMU_PREFIX',
                         'IMAGE_SPACE_CMU_BACKGROUND_SEARCH',
                         'IMAGE_SPACE_CMU_FULL_IMAGE_SEARCH')
