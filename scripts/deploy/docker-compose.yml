@@ -27,7 +27,7 @@ services:
       - solr-precreate
       - imagespace
   imagespace-girder:
-    image: kitware/image_space:latest
+    image: memexexplorer/image_space
     networks:
       - imagespace-network
     ports:
