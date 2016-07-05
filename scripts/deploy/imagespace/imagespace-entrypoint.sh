@@ -15,6 +15,11 @@
 # limitations under the License.
 set -e
 
+# Wait for Mongo to be listening, this assumes the mongo container will
+# be imagespace-mongo rather than what's passed to Girder
+# @todo this will only work in the context of docker-compose
+until nc -z imagespace-mongo 27017; do sleep 1; done;
+
 # Start up Girder in the background
 (python -m girder "$@" > entrypoint.log 2>&1) &
 
