@@ -1,6 +1,6 @@
 /**
  * This is responsible for the IQR integration of the SMQTK ImageSpace plugin.
- * This adds 4 new events, 1 new route, and wraps 3 existing methods:
+ * This adds 4 new events, 1 new route, and wraps 4 existing methods:
  * New events:
  * 1) Click to start a new IQR session
  *    This creates an IQR session on the server side and re-renders the search view.
@@ -32,6 +32,7 @@
  *    For now, it's difficult to hook in to filter the items listed in the widget so we wrap render
  *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions which
  *    have a name that isn't their SID (this is the indication that a user saved the session).
+ * 4) Wrapping girder.views.EditItemWidget - for aesthetics.
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -240,6 +241,19 @@ girder.events.once('im:appload.after', function () {
             return model.has('meta') &&
                 model.get('name') != model.get('meta').sid
         });
+
+        return this;
+    });
+
+    girder.wrap(girder.views.EditItemWidget, 'render', function (render) {
+        render.call(this);
+
+        // Pretend the IQR session id doesn't exist for purposes of naming
+        if ($('#g-name').val() == imagespace.smqtk.iqr.currentIqrSession.get('meta').sid) {
+            $('#g-name').val('');
+        }
+
+        $('#g-name').focus();
 
         return this;
     });
