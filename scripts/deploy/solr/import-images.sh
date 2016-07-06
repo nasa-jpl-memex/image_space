@@ -39,13 +39,15 @@ docker exec -it "$CONTAINER_NAME" \
 # Export UUIDs to a data file
 TMP_FILE=$(mktemp)
 DATA_FILE=$(mktemp)
-find "$IMAGE_DIR" -type f -print0 | xargs -0 --max-procs=0 sha1sum > "$TMP_FILE"
+NUM_CORES=`python -c 'import multiprocessing as mp; print(mp.cpu_count())'`
+echo "cpucount: $NUM_CORES"
+find "$IMAGE_DIR" -type f -print0 | xargs -0 -P $NUM_CORES sha1sum > "$TMP_FILE"
 echo "sha1sum_s_md,id" > "$DATA_FILE"
 awk '{ printf("%s,%s\n", $1, $2); }' "$TMP_FILE" >> "$DATA_FILE"
 
 # Replace top level image dir with /images
 # i.e. the image is $IMAGE_DIR/foo/bar/baz.png -> /images/foo/bar/baz.png
-sed -i "s|$IMAGE_DIR|/images|g" "$DATA_FILE"
+sed -i '' "s|$IMAGE_DIR|/images|g" "$DATA_FILE"
 
 # Copy the generated data csv into the container
 docker cp "$DATA_FILE" "$CONTAINER_NAME:/opt/solr/solr-data-file.csv"
