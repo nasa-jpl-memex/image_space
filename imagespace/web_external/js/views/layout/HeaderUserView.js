@@ -28,7 +28,7 @@ imagespace.views.LayoutHeaderUserView = imagespace.View.extend({
             }
         });
 
-        girder.events.on('g:login.success', this.redisplay, this);
+        girder.events.on('g:login', this.redisplay, this);
         girder.events.on('g:logout.success', function () {
             this.render();
 
