@@ -283,10 +283,30 @@ girder.events.once('im:appload.after', function () {
     };
 
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-save-session'] = function (event) {
-        new girder.views.EditItemWidget({
+        var editItemWidget = new girder.views.EditItemWidget({
             el: $('#g-dialog-container'),
             item: imagespace.smqtk.iqr.currentIqrSession,
             parentView: imagespace.searchView
-        }).render();
+        });
+
+        /**
+         * Since Girder calls .off on the item it removes all events listening
+         * on it (i.e. our change event).
+         * We're forcibly overriding it to only call .off on g:saved and g:error,
+         * so our change event remains intact.
+         **/
+        editItemWidget.updateItem = function (fields) {
+            this.item.set(fields);
+            this.item.off('g:saved').on('g:saved', function () {
+                this.$el.modal('hide');
+                this.trigger('g:saved', this.item);
+            }, this).off('g:error').on('g:error', function (err) {
+                this.$('.g-validation-failed-message').text(err.responseJSON.message);
+                this.$('button.g-save-item').removeClass('disabled');
+                this.$('#g-' + err.responseJSON.field).focus();
+            }, this).save();
+        };
+
+        editItemWidget.render();
     };
 });
