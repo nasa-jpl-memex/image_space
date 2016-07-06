@@ -36,18 +36,20 @@ docker exec -it "$CONTAINER_NAME" \
        -H 'Content-Type: application/json;charset=utf-8' \
        --data '{"add-field":{"stored":"true","indexed":"true","name":"sha1sum_s_md","type":"string"}}' > /dev/null
 
-# Export UUIDs to a data file
-TMP_FILE=$(mktemp)
+# Export UUIDs to a CSV file
 DATA_FILE=$(mktemp)
-NUM_CORES=`python -c 'import multiprocessing as mp; print(mp.cpu_count())'`
-echo "cpucount: $NUM_CORES"
-find "$IMAGE_DIR" -type f -print0 | xargs -0 -P $NUM_CORES sha1sum > "$TMP_FILE"
-echo "sha1sum_s_md,id" > "$DATA_FILE"
-awk '{ printf("%s,%s\n", $1, $2); }' "$TMP_FILE" >> "$DATA_FILE"
+NUM_CORES=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')
 
-# Replace top level image dir with /images
+# Format the CSV and replace top level image dir with /images
 # i.e. the image is $IMAGE_DIR/foo/bar/baz.png -> /images/foo/bar/baz.png
-sed -i '' "s|$IMAGE_DIR|/images|g" "$DATA_FILE"
+find "$IMAGE_DIR" -type f -print0 | xargs -0 -P $NUM_CORES sha1sum | awk -v IMAGE_DIR="$IMAGE_DIR" '
+    BEGIN {
+        printf("sha1sum_s_md,id\n");
+    }
+    {
+        sub(IMAGE_DIR, "/images", $2);
+        printf("%s,%s\n", $1, $2);
+    }' > "$DATA_FILE"
 
 # Copy the generated data csv into the container
 docker cp "$DATA_FILE" "$CONTAINER_NAME:/opt/solr/solr-data-file.csv"
