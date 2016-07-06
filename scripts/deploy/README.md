@@ -19,5 +19,7 @@ From the solr directory, run:
 ./import-images.sh SOLR-CONTAINER-NAME imagespace /my/image-dir
 ```
 
+Note: On Mac you will need `sha1sum` for importing images, which can be installed with `brew install md5sha1sum`.
+
 Navigating to [http://localhost:8989](http://localhost:8989) should result in a basic installation
 of ImageSpace.
