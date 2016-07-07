@@ -58,6 +58,8 @@ class SmqtkSimilaritySearch(Resource):
         if 'near_duplicates' in params and int(params['near_duplicates']) == 1:
             documents = [x for x in documents if x['smqtk_distance'] <= NEAR_DUPLICATES_THRESHOLD]
 
+        documents = sorted(documents, key=lambda x: x['smqtk_distance'])
+
         return {
             'numFound': len(documents),
             'docs': documents
