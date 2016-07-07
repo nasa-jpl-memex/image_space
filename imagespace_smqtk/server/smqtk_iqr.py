@@ -153,7 +153,11 @@ class SmqtkIqr(Resource):
             'j': offset + limit
         }).json() # @todo handle errors
 
-        documents = solr_documents_from_field('sha1sum_s_md', [sha for (sha, _) in resp['results']])
+        try:
+            documents = solr_documents_from_field('sha1sum_s_md', [sha for (sha, _) in resp['results']])
+        except KeyError:
+            return { 'numFound': 0, 'docs': [] }
+
 
         # The documents from Solr (since shas map to >= 1 document) may not be in the order of confidence
         # returned by IQR, sort the documents to match the confidence values.
