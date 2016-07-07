@@ -1,6 +1,6 @@
 /**
  * This is responsible for the IQR integration of the SMQTK ImageSpace plugin.
- * This adds 4 new events, 1 new route, and wraps 3 existing methods:
+ * This adds 4 new events, 1 new route, and wraps 4 existing methods:
  * New events:
  * 1) Click to start a new IQR session
  *    This creates an IQR session on the server side and re-renders the search view.
@@ -32,6 +32,7 @@
  *    For now, it's difficult to hook in to filter the items listed in the widget so we wrap render
  *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions which
  *    have a name that isn't their SID (this is the indication that a user saved the session).
+ * 4) Wrapping girder.views.EditItemWidget - for aesthetics.
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -244,6 +245,19 @@ girder.events.once('im:appload.after', function () {
         return this;
     });
 
+    girder.wrap(girder.views.EditItemWidget, 'render', function (render) {
+        render.call(this);
+
+        // Pretend the IQR session id doesn't exist for purposes of naming
+        if ($('#g-name').val() == imagespace.smqtk.iqr.currentIqrSession.get('meta').sid) {
+            $('#g-name').val('');
+        }
+
+        $('#g-name').focus();
+
+        return this;
+    });
+
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-refine'] = function (event) {
         var session = imagespace.smqtk.iqr.currentIqrSession;
 
@@ -269,10 +283,30 @@ girder.events.once('im:appload.after', function () {
     };
 
     imagespace.views.SearchView.prototype.events['click #smqtk-iqr-save-session'] = function (event) {
-        new girder.views.EditItemWidget({
+        var editItemWidget = new girder.views.EditItemWidget({
             el: $('#g-dialog-container'),
             item: imagespace.smqtk.iqr.currentIqrSession,
             parentView: imagespace.searchView
-        }).render();
+        });
+
+        /**
+         * Since Girder calls .off on the item it removes all events listening
+         * on it (i.e. our change event).
+         * We're forcibly overriding it to only call .off on g:saved and g:error,
+         * so our change event remains intact.
+         **/
+        editItemWidget.updateItem = function (fields) {
+            this.item.set(fields);
+            this.item.off('g:saved').on('g:saved', function () {
+                this.$el.modal('hide');
+                this.trigger('g:saved', this.item);
+            }, this).off('g:error').on('g:error', function (err) {
+                this.$('.g-validation-failed-message').text(err.responseJSON.message);
+                this.$('button.g-save-item').removeClass('disabled');
+                this.$('#g-' + err.responseJSON.field).focus();
+            }, this).save();
+        };
+
+        editItemWidget.render();
     };
 });
