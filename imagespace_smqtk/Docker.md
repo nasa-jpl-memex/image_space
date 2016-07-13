@@ -38,6 +38,7 @@ Girder needs to know where it can reach SMQTK services, execute these commands o
 docker exec -it MONGO_CONTAINER_NAME mongo girder --eval 'db.setting.update({key: "core.plugins_enabled"}, {$push: {value: "imagespace_smqtk"}})'
 docker exec -it MONGO_CONTAINER_NAME mongo girder --eval 'db.setting.insert({key: "IMAGE_SPACE_SMQTK_NNSS_URL", value: "http://smqtk-services:12345"})'
 docker exec -it MONGO_CONTAINER_NAME mongo girder --eval 'db.setting.insert({key: "IMAGE_SPACE_SMQTK_IQR_URL", value: "http://smqtk-services:12346"})'
+docker exec -it MONGO_CONTAINER_NAME mongo girder --eval 'db.setting.insert({key: "IMAGE_SPACE_DEFAULT_SIMILARITY_SEARCH", value: "smqtk-similarity"})'
 ```
 
 After setting these, Girder needs to be restarted, this can be done with:

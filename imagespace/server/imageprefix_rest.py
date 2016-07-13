@@ -37,6 +37,7 @@ class ImagePrefix(Resource):
             'solrPrefix': setting.get('IMAGE_SPACE_SOLR_PREFIX'),
             'stolenCameraPrefix': setting.get('IMAGE_SPACE_STOLEN_CAMERA') or 'http://www.stolencamerafinder.com/search',
             'facetviewAdsUrl': setting.get('IMAGE_SPACE_FACETVIEW_ADS_URL'),
-            'localBasicAuth': setting.get('IMAGE_SPACE_LOCAL_BASIC_AUTH')
+            'localBasicAuth': setting.get('IMAGE_SPACE_LOCAL_BASIC_AUTH'),
+            'defaultSimilaritySearch': setting.get('IMAGE_SPACE_DEFAULT_SIMILARITY_SEARCH')
         }
     getImagePrefix.description = Description('Returns image URL prefix')
