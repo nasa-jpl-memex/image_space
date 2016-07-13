@@ -22,6 +22,7 @@ from girder.api.describe import Description
 from girder.api.rest import Resource
 
 import cherrypy
+import hashlib
 import requests
 from tika import parser
 
@@ -57,7 +58,7 @@ class ImageFeatures(Resource):
 
         if cv2_available:
             file_bytes = np.asarray(bytearray(data), dtype=np.uint8)
-            image = cv2.imdecode(file_bytes, flags=cv2.CV_LOAD_IMAGE_UNCHANGED);
+            image = cv2.imdecode(file_bytes, flags=cv2.CV_LOAD_IMAGE_UNCHANGED)
 
             if image is not None:
                 if len(image.shape) < 3 or image.shape[2] == 1:
@@ -67,6 +68,8 @@ class ImageFeatures(Resource):
                 v = v.flatten()
                 hist = v / sum(v)
                 tika['histogram'] = hist.tolist()
+
+        tika['sha1sum_s_md'] = hashlib.sha1(bytearray(data)).hexdigest()
 
         return tika
     getImageFeatures.description = (Description('Extracts image features')

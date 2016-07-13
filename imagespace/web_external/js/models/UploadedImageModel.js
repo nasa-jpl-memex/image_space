@@ -24,7 +24,7 @@ imagespace.models.UploadedImageModel = imagespace.models.ImageModel.extend({
         return _.any([
             field.indexOf('_') === 0,
             _.contains(this.core_fields, field),
-            _.contains(['imageUrl', 'histogram', 'item_id', 'fields_mapped'], field)
+            _.contains(['imageUrl', 'histogram', 'item_id', 'fields_mapped', 'sha1sum_s_md'], field)
         ]);
     },
 

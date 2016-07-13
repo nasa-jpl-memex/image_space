@@ -1,6 +1,6 @@
 /**
  * This is responsible for the IQR integration of the SMQTK ImageSpace plugin.
- * This adds 4 new events, 1 new route, and wraps 4 existing methods:
+ * This adds 4 new events, 1 new route, and wraps 5 existing methods:
  * New events:
  * 1) Click to start a new IQR session
  *    This creates an IQR session on the server side and re-renders the search view.
@@ -33,6 +33,8 @@
  *    and remove the items we don't want (hacky). Specifically, we only want to show IQR sessions which
  *    have a name that isn't their SID (this is the indication that a user saved the session).
  * 4) Wrapping girder.views.EditItemWidget - for aesthetics.
+ * 5) Wrapping LayoutUserDataView:
+ *    This is wrapped for the same reason as #1, now user data can be used for annotating IQR sessions.
  **/
 girder.events.once('im:appload.after', function () {
     imagespace.smqtk = imagespace.smqtk || {
@@ -102,6 +104,7 @@ girder.events.once('im:appload.after', function () {
                                                      ['smqtk_iqr_session']), {
                                                          trigger: true
                                                      });
+                    imagespace.userDataView.render();
                 }
             }
         }
@@ -123,6 +126,7 @@ girder.events.once('im:appload.after', function () {
      * IQR Image Collection instead.
      **/
     imagespace.smqtk.iqr.RefineView = _.bind(function () {
+        imagespace.userDataView.render();
         if (_.has(imagespace, 'searchView')) {
             imagespace.searchView.destroy();
         }
@@ -163,7 +167,27 @@ girder.events.once('im:appload.after', function () {
         } else if (!_.has(imagespace.parseQueryString(), 'smqtk_iqr_session')) {
             imagespace.smqtk.iqr.currentIqrSession = false;
             imagespace.smqtk.iqr.refiningNotice(false);
+            imagespace.userDataView.render();
         }
+    });
+
+    girder.wrap(imagespace.views.LayoutUserDataView, 'render', function (render) {
+        render.call(this);
+
+        if (imagespace.smqtk.iqr.currentIqrSession) {
+            // Render annotation widgets on each image (replacing the caption utilities)
+            _.each(this.$('.im-caption'), _.bind(function (captionDiv, i) {
+                var annotationWidgetView = new imagespace.views.AnnotationWidgetView({
+                    parentView: this._childViews[i]
+                });
+
+                $(captionDiv).replaceWith(annotationWidgetView.render().el);
+            }, this));
+
+            imagespace.smqtk.iqr.refiningNotice(true);
+        }
+
+        return this;
     });
 
     girder.wrap(imagespace.views.SearchView, 'render', function (render) {
@@ -217,6 +241,7 @@ girder.events.once('im:appload.after', function () {
 
             imagespace.smqtk.iqr.sessions.add(iqrSession);
             imagespace.smqtk.iqr.currentIqrSession = iqrSession;
+            imagespace.userDataView.render();
             imagespace.searchView.render();
         }, this));
     };
