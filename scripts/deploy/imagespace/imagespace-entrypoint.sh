@@ -32,5 +32,8 @@ python /bootstrap-imagespace.py
 # Tear down Girder
 kill $(pgrep -f girder)
 
+# Host on port 8989
+sed -i 's/8080/8989/' /girder/girder/conf/girder.local.cfg
+
 # Start Girder for the container process
 python -m girder "$@"

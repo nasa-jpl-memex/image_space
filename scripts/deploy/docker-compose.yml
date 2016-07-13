@@ -31,7 +31,7 @@ services:
     networks:
       - imagespace-network
     ports:
-      - "8989:8080"
+      - "8989:8989"
     depends_on:
       - imagespace-mongo
       - imagespace-solr
