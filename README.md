@@ -6,6 +6,12 @@ from images. It allows histogram and D3-based visual search, free text search an
 performs image similarity metrics using computer vision techniques and metadata-techniques (e.g., 
 [Jaccard Similarity](http://github.com/chrismattmann/tika-img-similarity)).
 
+Quickstart
+==========
+ImageSpace can be spun up quickly by means of Docker containers, see the [ImageSpace Quickstart](https://github.com/memex-explorer/image_space/blob/master/scripts/deploy/README.md).
+
+Image Similarity through [SMQTK](https://github.com/Kitware/SMQTK) can be made available by following the [ImageSpace SMQTK Quickstart](https://github.com/memex-explorer/image_space/blob/master/imagespace_smqtk/Docker.md).
+
 Installation
 ============
 See the [installation README](https://github.com/memex-explorer/image_space/tree/master/imagespace) for
