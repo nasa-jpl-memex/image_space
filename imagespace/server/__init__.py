@@ -173,9 +173,6 @@ def load(info):
 def solr_documents_from_field(field, values, classifications=None):
     """Given a field, and a list of values, return list of relevant solr documents.
 
-    This performs several requests, each of size CHUNK_SIZE to avoid sending
-    too much data (HTTP 413).
-
     Additionally it can take an iterable of classifications which will be
     searched for through Solr.
 
@@ -183,8 +180,36 @@ def solr_documents_from_field(field, values, classifications=None):
     :param classifications: List of classifications to search by
     :returns: List of solr documents
     """
-    CHUNK_SIZE = 20
-    documents = []
+    def paged_request(params):
+        """
+        Takes a params dictionary and manages paging.
+
+        Uses POST so very large request bodies can be sent to Solr.
+
+        Returns a list of all documents.
+        """
+        documents = []
+
+        # Adjust paging params
+        params['start'] = 0
+        params['rows'] = 1000
+
+        numFound = None
+        numRetrieved = None
+        while numRetrieved is None or numRetrieved < numFound:
+            r = requests.post(imagespaceSetting.get('IMAGE_SPACE_SOLR') + '/select',
+                              data=params,
+                              verify=False).json()
+
+            numFound = r['response']['numFound']
+            numRetrieved = len(r['response']['docs']) if numRetrieved is None \
+                           else numRetrieved + len(r['response']['docs'])
+            documents += r['response']['docs']
+
+            # Setup offset for next request
+            params['start'] = numRetrieved
+
+        return documents
 
     event = events.trigger('imagespace.solr_documents_from_field', info={
         'field': field,
@@ -194,37 +219,27 @@ def solr_documents_from_field(field, values, classifications=None):
         field = response['field']
         values = response['values']
 
-    for i in xrange(0, len(values), CHUNK_SIZE):
-        values_chunk = values[i:i + CHUNK_SIZE]
+    if classifications:
+        q = ' OR '.join(['%s:[.7 TO *]' % key
+                         for key in classifications])
+    else:
+        q = '*:*'
 
-        if classifications:
-            q = ' OR '.join(['%s:[.7 TO *]' % key
-                             for key in classifications])
-        else:
-            q = '*:*'
+    qparams = {
+        'wt': 'json',
+        'q': q
+    }
 
-        qparams = {
-            'wt': 'json',
-            'q': q,
-            'rows': str(CHUNK_SIZE)
-        }
+    # Give plugins a chance to adjust the Solr query parameters
+    event = events.trigger('imagespace.imagesearch.qparams', qparams)
+    for response in event.responses:
+        qparams = response
 
-        # Give plugins a chance to adjust the Solr query parameters
-        event = events.trigger('imagespace.imagesearch.qparams', qparams)
-        for response in event.responses:
-            qparams = response
+    # Filter by field
+    qparams['fq'] = qparams['fq'] if 'fq' in qparams else []
+    qparams['fq'].append('%(field)s:(%(value)s)' % {
+        'field': field,
+        'value': ' '.join(values)
+    })
 
-        # Filter by field
-        qparams['fq'] = qparams['fq'] if 'fq' in qparams else []
-        qparams['fq'].append('%(field)s:(%(value)s)' % {
-            'field': field,
-            'value': ' '.join(values_chunk)
-        })
-
-        r = requests.get(imagespaceSetting.get('IMAGE_SPACE_SOLR') + '/select',
-                         params=qparams,
-                         verify=False)
-
-        documents += r.json()['response']['docs']
-
-    return documents
+    return paged_request(qparams)

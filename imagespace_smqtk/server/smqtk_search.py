@@ -28,7 +28,7 @@ from .utils import base64FromUrl
 import json
 import requests
 
-DEFAULT_PAGE_SIZE = 100
+DEFAULT_PAGE_SIZE = 20
 NEAR_DUPLICATES_THRESHOLD = -1500  # Maximum distance to be considered a near duplicate
 
 class SmqtkSimilaritySearch(Resource):
@@ -58,7 +58,7 @@ class SmqtkSimilaritySearch(Resource):
         if 'near_duplicates' in params and int(params['near_duplicates']) == 1:
             documents = [x for x in documents if x['smqtk_distance'] <= NEAR_DUPLICATES_THRESHOLD]
 
-        documents = sorted(documents, key=lambda x: x['smqtk_distance'])
+        documents = sorted(documents, key=lambda x: x['smqtk_distance'])[:int(params['n'])]
 
         return {
             'numFound': len(documents),
