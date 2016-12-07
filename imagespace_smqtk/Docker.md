@@ -27,8 +27,8 @@ chmod u+x smqtk_services.run_images.sh
 ./smqtk_services.run_images.sh --docker-network DOCKER_NETWORK --images IMAGE_DIR
 ```
 
-This should show the descriptors being generated and end with a message from Werkzeug stating that the web server is running.
-
+Descriptor generation should be kicked off, and tailing the logs of the smqtk-services container will show the progress and end with
+a message from Werkzeug stating that the web server is running.
 
 Configuration
 =============
