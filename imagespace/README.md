@@ -7,7 +7,6 @@ an image similarity server,
 and a Girder web server containing the imagespace plugin.
 
 Note: Please upgrade to latest snapshot of Girder to resolve ImageSpace deployment issues
-
 - Comprehensive Deploy
   * Follow below steps
 - Easy Deploy, skips local indexing of documents
