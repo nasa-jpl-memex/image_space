@@ -4,7 +4,7 @@ include imageResultMixin
     .im-image-area.col-xs-6.col-md-3
         .im-details(im-id=image.get('id'))
             .im-thumbnail
-                img.im-image-thumbnail.im-blur(src=image.get('imageUrl'))
+                video.thumbnail.im-blur(src=image.get('imageUrl')  controls muted)
     .col-xs-6.col-md-9
         h4= image.get('id')
         if image.has('tiff:imagelength_l_md') && image.has('tiff:imagewidth_l_md')

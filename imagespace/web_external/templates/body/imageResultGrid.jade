@@ -3,7 +3,7 @@ include imageResultMixin
 .im-image-area.col-xs-6.col-md-3
     .im-details(im-id=image.get('id'))
         .im-thumbnail
-            img.im-image-thumbnail.im-blur(src=image.get('imageUrl'))
+            video.thumbnail.im-blur(src=image.get('imageUrl')  controls muted)
     .im-caption
         .im-caption-content.hidden
             +imageResult(image, similaritySearch)

@@ -1,7 +1,7 @@
 .im-image-area
     .im-details(im-id=image.get('id'))
         .im-thumbnail
-            img.im-image-thumbnail.im-blur(src=image.get('imageUrl'))
+            video.thumbnail.im-blur(src=image.get('imageUrl')  controls muted)
     .im-caption
         .im-caption-content.hidden
             .im-remove.btn.btn-link.btn-lg(im-id=image.get('id'), title="Delete")
