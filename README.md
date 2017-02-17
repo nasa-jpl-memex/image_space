@@ -28,11 +28,11 @@ Send them to [Chris A. Mattmann](mailto:chris.a.mattmann@jpl.nasa.gov).
 
 Authors
 =======
-Jeff Baumes, Kitware  
-Chris Mattmann, JPL
-Dan LaManna, Kitware
-Harshavardhan Manjunatha, USC
-Lewis John McGibbney, JPL
+* Jeff Baumes, Kitware  
+* Chris Mattmann, JPL
+* Dan LaManna, Kitware
+* Harshavardhan Manjunatha, USC
+* Lewis John McGibbney, JPL
 
 License
 ===
