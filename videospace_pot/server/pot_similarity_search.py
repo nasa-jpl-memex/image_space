@@ -60,8 +60,8 @@ class PoTImageSimilaritySearch(Resource):
           
         ## add matrix with it's transpose to fill lower half  
         self.data = np.triu(self.data).T + np.triu(self.data)  
-        ## Diagonal is also added to itself hence resetting it to 1 
-        np.fill_diagonal(self.data, 1)
+        ## Setting diagonal to 0 so video is not evaluated against itself 
+        np.fill_diagonal(self.data, 0)
 
 
     @access.public
@@ -99,8 +99,8 @@ class PoTImageSimilaritySearch(Resource):
         
         #sort with similar index
         sim_score_sort, videos_sorted = (list(x) for x in zip(*sorted(zip(sim_score_sort, videos_sorted))))
-        
-        results = videos_sorted[0:limit]
+        # Pick videos from last 
+        results = videos_sorted[-limit:]
         
         return {
                 'numFound': len(results),
