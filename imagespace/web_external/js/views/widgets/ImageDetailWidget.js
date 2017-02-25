@@ -32,7 +32,7 @@ imagespace.views.ImageDetailWidget = imagespace.View.extend({
 
     initialize: function (settings) {
         this.image = settings.image || null;
-        this.title = settings.title || 'Image details';
+        this.title = settings.title || 'Video details';
 
         // If it's being displayed in a grid/list as part of results, let the user
         // scroll through modals
