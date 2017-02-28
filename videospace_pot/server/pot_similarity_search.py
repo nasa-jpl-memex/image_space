@@ -39,6 +39,7 @@ class PoTImageSimilaritySearch(Resource):
         setting = PoTSetting()
         
         path_to_sim_mat = setting.get(setting.MATRIX_LOC_PROP)
+        self.SOLR_ID_PREFIX = setting.get("IMAGE_SPACE_SOLR_PREFIX") + "/"
         
         print "Loading similarity matrix", path_to_sim_mat
         # List of all videos
@@ -104,6 +105,6 @@ class PoTImageSimilaritySearch(Resource):
         
         return {
                 'numFound': len(results),
-                'docs': solr_documents_from_field("id", ["data/" + res_video_name for res_video_name in results ])
+                'docs': solr_documents_from_field("id", [self.SOLR_ID_PREFIX + res_video_name for res_video_name in results ])
             }
 
