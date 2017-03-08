@@ -6,7 +6,7 @@ include imageResultMixin
             .im-thumbnail
                 video.thumbnail.im-blur(src=image.get('imageUrl')  controls muted)
     .col-xs-6.col-md-9
-        h4= image.get('id')
+        h4= image.get('url')
         if image.has('tiff:imagelength_l_md') && image.has('tiff:imagewidth_l_md')
           div
             b Size:

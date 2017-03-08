@@ -5,5 +5,7 @@ include imageResultMixin
         .im-thumbnail
             video.thumbnail.im-blur(src=image.get('imageUrl')  controls muted)
     .im-caption
+        .im-pad-left
+            span=image.get('domain') + " - " + image.get('Duration') 
         .im-caption-content.hidden
             +imageResult(image, similaritySearch)
