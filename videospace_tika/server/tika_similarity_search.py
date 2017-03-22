@@ -21,9 +21,9 @@ from girder.api import access
 from girder.api.describe import Description
 from girder.api.rest import Resource
 from girder import logger
-from girder.plugins.imagespace import ImageFeatures
+from girder.plugins.videospace import ImageFeatures
 from .settings import TikaSimSetting
-from girder.plugins.imagespace import solr_documents_from_field
+from girder.plugins.videospace import solr_documents_from_field
 
 import json
 import requests

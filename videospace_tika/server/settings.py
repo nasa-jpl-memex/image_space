@@ -18,7 +18,7 @@
 ###############################################################################
 
 from girder.models.setting import Setting
-from girder.plugins.imagespace.settings import ImageSpaceSetting
+from girder.plugins.videospace.settings import ImageSpaceSetting
 
 class TikaSimSetting(ImageSpaceSetting):
 

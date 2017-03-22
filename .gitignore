@@ -1,3 +1,9 @@
 *.pyc
 .htaccess
 *.pickle
+
+.project
+
+.pydevproject
+
+*.prefs
