@@ -19,7 +19,7 @@ instructions.
 
 Credits
 =======
-ImageSpace is developed by the [JPL-Kitware-Continuum](http://memex.jpl.nasa.gov/) team funded
+ImageSpace is developed by the [JPL-Kitware](http://memex.jpl.nasa.gov/) team funded
 through the [DARPA Memex](http://www.darpa.mil/newsevents/releases/2014/02/09.aspx) program.
 
 Questions, comments?
@@ -28,8 +28,11 @@ Send them to [Chris A. Mattmann](mailto:chris.a.mattmann@jpl.nasa.gov).
 
 Authors
 =======
-Jeff Baumes, Kitware  
-Chris Mattmann, JPL
+* Jeff Baumes, Kitware  
+* Chris Mattmann, JPL
+* Dan LaManna, Kitware
+* Harshavardhan Manjunatha, USC
+* Lewis John McGibbney, JPL
 
 License
 ===

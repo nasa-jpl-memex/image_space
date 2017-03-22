@@ -6,7 +6,9 @@ There are three processes involved for this app: a MongoDB server,
 an image similarity server,
 and a Girder web server containing the imagespace plugin.
 
-Note: Please upgrade to latest snapshot of Girder to resolve ImageSpace deployment issues
+Note: Please upgrade to latest snapshot of Girder to resolve ImageSpace deployment issues. 
+
+
 - Comprehensive Deploy
   * Follow below steps
 - Easy Deploy, skips local indexing of documents
@@ -40,8 +42,11 @@ tangelo --port 9220
 ### Girder with imagespace plugin
 
 1. First ensure you have the proper [Girder_prerequisites](http://girder.readthedocs.org/en/latest/prerequisites.html),
+ - To build on MacOS you will need Xcode if you don't have it already. https://developer.apple.com/xcode/
+ - Check if `xcode-select -p` is pointing to Xcode app Developer directory else point xcode-select to the Xcode app Developer directory using the following command: `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
+ - Use latest version of node 6.x 
 
-2. Then [install Girder from a Git checkout](http://girder.readthedocs.org/en/latest/installation.html#install-from-git-checkout).
+2. Then [install Girder from a Git checkout](http://girder.readthedocs.org/en/latest/installation.html#install-from-git-checkout). As of now ImageSpace hasn't been upgraded to work with Girder 2.x, so you'll have to use the latest tag from 1.x: https://github.com/girder/girder/tree/v1.7.0
 
    Note: After any changes to the ImageSpace code, it is necessary to rebuild it by running `grunt` from the top level Girder directory.
 
