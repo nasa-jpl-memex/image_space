@@ -1,0 +1,40 @@
+- var startIndex = (collection.pageNum() * collection.pageLimit)
+- var toIndex = startIndex + collection.length
+- var total = collection.numFound
+
+.container-fluid
+  .clearfix
+  ul.nav.nav-pills
+    if image && image.get('_applicableSearches')
+      each key in image.get('_applicableSearches')
+        li(class=(mode === key ? 'active': ''), role='presentation')
+          a(href='#search/' + encodeURIComponent(url) + '/' + key,
+            title=(_.has(imagespace.searches[key], 'tooltip')) ? imagespace.searches[key].tooltip : '')
+            | #{imagespace.searches[key].niceName}
+
+  #search-controls.form-control
+    if collection.supportsPagination && collection.length
+      .im-results-pagination.pull-left
+        .im-pagination-container
+        p Showing results #{startIndex + 1} - #{toIndex} of #{total}
+
+    .right-search-controls.pull-right
+      .im-view-mode
+        .btn-group(data-toggle="buttons")
+          label.btn.btn-default(class=(viewMode === 'grid' ? 'active' : ''))
+            input.im-view-grid(type="radio", name="options", autocomplete="off", checked=(viewMode === 'grid' ? 'true' : null))
+            i.icon-th
+            | &nbsp;Grid
+          label.btn.btn-default(class=(viewMode === 'list' ? 'active' : ''))
+            input.im-view-list(type="radio", name="options", autocomplete="off", checked=(viewMode === 'list' ? 'true' : null))
+            i.icon-th-list
+            | &nbsp;List
+
+  #im-search-results
+    if !collection.length
+      h1 No search results found.
+
+  if collection.supportsPagination && collection.length
+      .im-results-pagination.pull-left
+        .im-pagination-container
+        p Showing results #{startIndex + 1} - #{toIndex} of #{total}

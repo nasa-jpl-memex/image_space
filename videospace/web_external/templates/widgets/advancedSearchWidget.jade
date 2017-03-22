@@ -1,0 +1,25 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+      h4.modal-title
+        | Advanced Search Tips
+    .modal-body
+      table.table-hover
+        thead
+          tr
+           th Searching for..
+           th finds..
+        tbody
+          tr
+            td
+              a(href='#search/shotgun') shotgun
+            td images with shotgun in the image or attributes
+          tr
+            td
+              a(href='#search/make_t_md:CANON') make_t_md:CANON
+            td images taken by Canon Cameras
+          tr
+            td
+              a(href='#search/tiff\\:imagelength_l_md:400') tiff\:imagelength_l_md:400
+            td images with a height of 400px

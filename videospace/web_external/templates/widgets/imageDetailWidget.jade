@@ -41,7 +41,7 @@ mixin attribute(key, val, query)
             i.icon-right-open.next-image(title='Next image')
 
         a.im-link(href="#{url}", target="_blank")
-          img.im-image-detail.im-blur(src="#{url}")
+          video.detail.im-blur(src="#{url}" controls muted)
 
 
       if image.get('_applicableSearches')

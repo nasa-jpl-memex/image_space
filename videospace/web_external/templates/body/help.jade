@@ -1,0 +1,105 @@
+.container-fluid
+    .col-md-6
+        h4 Overview
+        p.
+            ImageSpace is a DARPA Memex application for browsing large image
+            collections based on image content (e.g. extracted text from the image,
+            image content similarity) or metadata (e.g. EXIF camera identifier,
+            image encoding).
+        p.
+            Return to these instructions
+            at any time by clicking the ImageSpace text in the upper left.
+
+        h4 Viewing images
+        p.
+            Images are never blurred by default. Blurring may be desirable in other domains, and as such the
+            behavior can be altered on the <a href="#page/settings">settings page</a>.
+
+        h4 Starting with text search
+        p.
+            Type search terms (phone number, email address, etc.) in the search box above and press Enter
+            to search the text content of images and image attributes.
+
+        h4 Starting with an image
+        p.
+           Note: For a complete set of supported image types see Tika's page on <a href="http://tika.apache.org/1.11/formats.html#Image_formats">supported document formats</a>. While
+           those images can be analysed, only the following are officially supported via ImageSpace: JPEG, GIF, PNG, SVG, and BMP.
+           Certain searches may only support a subset of such image types, for example SMQTK supports PNG, JPEG, and TIFF images.
+        p.
+            First, ensure you are logged in, or register for an account.
+        p.
+            Use the "Browse or drop image" button to the left to drag-and-drop an
+            image or browse your computer for an image to upload.
+            All uploaded images appear in the left panel and will reappear
+            on subsequent login.
+        p.
+            Click the search icon <span class="icon-search"></span> below
+            your image on the left to start an image similarity search.
+            This will bring your image to the top bar and show other
+            options for searching by that image. Some of the following
+            options will appear based on attributes of the image.
+        ul
+            li.
+                Click "Similarity (CMU)" to launch CMU's image similarity search across all images.
+            li.
+                Click "Background" to launch CMU's background similarity
+                search. Images are matched on the image background
+                (outdoor scene, room decor, etc.) and not on the foreground.
+            li.
+                Click "Make" to display images from the same make of Camera. This may or may not be available
+                for all images.
+            li.
+                Click "Location" to display nearby images. This is only
+                available for images with geospatial coordinates embedded
+                in the image attributes.
+            li.
+                Click "Size" to search for images with the same dimensions.
+
+        h4 Saving images
+        p.
+            In addition to uploading new images, you may
+            use the <span class="icon-floppy"></span> to save an image from
+            search results to the left panel. The search in which the saved image
+            appeared in is saved to the <b>source_query</b> field in the
+            image details.
+
+        h4 Image details
+        p.
+            Click the <span class="icon-info"></span> under an image to show
+            the image details.
+        p.
+            The image details window displays all properties of the image
+            that have been extracted through the Apache Tika metadata parser.
+            These properties vary from image to image, though some, such as
+            width and height, are universal. Click the "Search"
+            link after the attribute to start a new search for all
+            images matching that property value. Click the "Sub-search"
+            link to narrow the current search by that property value.
+        p.
+            Images retrieved from particular ads are mentioned underneath the
+            "Ads" heading with links to view the ad in <a href="http://imagecat.dyndns.org/weapons/facetview/ads">FacetView</a>.
+        h4 Advanced
+        p.
+            You may perform advanced attribute searches directly in Solr/Lucene format, see
+            <a href="http://lucene.apache.org/core/4_0_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Overview" target="_blank">Lucene's query syntax</a>
+            for details. Some examples include:
+        ul
+            li Basic text search across all fields including text within images: <a href="#search/shotgun">shotgun</a>
+            li Search for images taken by a specific make of camera: <a href="#search/make_t_md:CANON">make_t_md:CANON</a>
+            li Search by image size: <a href="#search/tiff\:imagelength_l_md:400">tiff\:imagelength_l_md:400</a>
+        p.
+            The back button on your browser will move you to a prior search.
+            Copy the content of the web address bar to save or share a
+            search.
+
+        h4 Limitations
+        p.
+            This app will function best on latest Chrome, Firefox, and Safari.
+            Internet Explorer has not been tested.
+
+        h4 Credits
+        p.
+            This app was developed for the JPL / Kitware / Continuum Memex
+            team using Apache Tika, SolrCell, Girder, and Tangelo.
+        p.
+            Similarity searches are provided by CMU and Kitware (SMQTK). Background search is provided by CMU, and weapon classification is provided by Kitware.

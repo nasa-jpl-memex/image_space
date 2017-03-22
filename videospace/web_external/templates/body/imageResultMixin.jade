@@ -1,0 +1,9 @@
+mixin imageResult(image, searchable)
+  if girder.currentUser
+    .im-add-user-data.btn.btn-link.btn-md(im-id=image.get('id'), title="Save")
+      i.icon-floppy
+  if searchable
+    .im-find-similar.btn.btn-link.btn-md(im-id=image.get('id'), title="Find similar images")
+      i.icon-search
+  .im-details.btn.btn-link.btn-md(im-id=image.get('id'), title="Details")
+    i.icon-info

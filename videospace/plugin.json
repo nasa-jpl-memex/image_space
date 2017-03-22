@@ -1,0 +1,11 @@
+{
+    "name": "ImageSpace application",
+    "description": "Image exploration and query interface",
+    "version": "0.1.0",
+    "grunt": {
+        "file": "Gruntfile.js",
+        "defaultTargets": [
+            "imagespace"
+        ]
+    }
+}
