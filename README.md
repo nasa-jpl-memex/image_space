@@ -33,6 +33,7 @@ Authors
 * Dan LaManna, Kitware
 * Harshavardhan Manjunatha, USC
 * Lewis John McGibbney, JPL
+* Madhav Sharan, JPL & USC
 
 License
 ===
