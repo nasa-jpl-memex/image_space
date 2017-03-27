@@ -1,0 +1,80 @@
+- var system = ['_version_', 'meta', 'x_parsed_by']
+- var hidden = ['highlight', 'histogram', '_applicableSearches']
+- var excludeFromSearch = ['source_query']
+- var url = image.get('imageUrl')
+
+mixin attribute(key, val, query)
+  dt
+    b= key
+  dd.im-attribute
+    if (val !== undefined && val !== null && typeof val[0] === 'string' && val[0].startsWith('http'))
+      a(href=val[0], target='_blank')= val[0]
+    else if (val !== undefined && val !== null && typeof val === 'string' && val.startsWith('http'))
+      a(href=val, target='_blank')= val
+    else
+      span= val
+    if excludeFromSearch.indexOf(key) === -1
+      span.im-search-operations.hidden
+        | &nbsp;-&nbsp;
+        a.im-search-mod(im-search='#{key}:"#{val}"', title='Start new search for images matching this attribute')
+          | Search
+        | &nbsp;-&nbsp;
+        a.im-search-mod(im-search='#{query} AND #{key}:"#{val}"', title='Narrow search to images matching this attribute')
+          | Sub-search
+        if key == 'camera_serial_number'
+          | &nbsp;-&nbsp;
+          a(href='#{stolenCameraPrefix}?serial=#{val}&searchType=MANUAL', target='_blank')
+            | Search stolencamerafinder.com
+
+
+.modal-dialog
+  .modal-content
+    .modal-header
+      button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+      h4.modal-title= title
+    .modal-body
+      .image-container
+        .scroll-controls
+          if canScroll && hasPrev
+            i.icon-left-open.prev-image(title='Previous image')
+          if canScroll && hasNext
+            i.icon-right-open.next-image(title='Next image')
+
+        a.im-link(href="#{url}", target="_blank")
+          video.detail.im-blur(src="#{url}" controls muted)
+
+
+      if image.get('_applicableSearches')
+        .im-actions
+          span(style='display:block')
+            | Search by
+          each key in image.get('_applicableSearches')
+            a(href='#search/' + encodeURIComponent(url) + '/' + key,
+              data-dismiss="modal",
+              title=(_.has(imagespace.searches[key], 'tooltip')) ? imagespace.searches[key].tooltip : '') #{imagespace.searches[key].niceName}
+      .modal-inner-content
+        .match-result
+          if image.has('highlight')
+            h4 Match
+            dl.dl-horizontal
+              for val, key in image.get('highlight')
+                if system.indexOf(key) === -1 && hidden.indexOf(key) === -1
+                  dt
+                    b= key
+                  dd
+                    span !{val}
+
+        h4 Attributes
+        dl.dl-horizontal.im-attributes
+          for val, key in image.attributes
+            if system.indexOf(key) === -1 && hidden.indexOf(key) === -1 && key.indexOf('_') !== 0
+              +attribute(key, val, query)
+        h4
+          a(data-toggle="collapse", href="#im-system-attributes") System Attributes
+        .collapse#im-system-attributes
+          dl.dl-horizontal.im-attributes
+            for key in system
+              +attribute(key, image.get(key), query)
+    .modal-footer
+      a.btn.btn-small.btn-default(data-dismiss="modal")
+        | Close

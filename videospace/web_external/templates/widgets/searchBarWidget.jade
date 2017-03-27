@@ -1,0 +1,18 @@
+if url
+  video.im-search-image.im-blur(src="#{url}")
+
+if frontPage
+  h1 VideoSpace
+
+.im-search-form(id=(dropzone) ? 'im-upload' : '')
+  if dropzone
+    .hide
+       input#im-files(type="file", multiple="multiple")
+  input.im-search.form-control(type="text", placeholder=(girder.currentUser) ? "Enter a search term ..." : "Enter a search term ...", value=query)
+
+  if dropzone
+    button.btn.btn-primary.im-advanced-search-button
+      i.icon-upload
+
+  if advancedSearch
+    a#advanced-search(href='#') Advanced Search

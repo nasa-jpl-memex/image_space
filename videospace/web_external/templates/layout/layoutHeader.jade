@@ -1,0 +1,26 @@
+mixin pageAnchor(href, label)
+  li(class=(href === activePage) ? 'active' : '')
+    a(href=href).btn.btn-link.btn-default= label
+
+nav.navbar.navbar-inverse.navbar-fixed-top
+  .container-fluid
+    // Brand and toggle get grouped for better mobile display
+    .navbar-header
+      button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='#') VideoSpace
+      .im-nav.collapsed
+
+    .im-nav
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      ul.nav.navbar-nav.navbar-right
+        +pageAnchor('#page/help', 'Help')
+        +pageAnchor('#page/about', 'About')
+        +pageAnchor('#page/settings', 'Settings')
+        li.h-current-user-wrapper
+
+   .im-alert.alert.alert-info.hidden
+   .im-alert.alert.alert-success.hidden

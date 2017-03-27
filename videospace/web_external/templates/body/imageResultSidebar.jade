@@ -1,0 +1,13 @@
+.im-image-area
+    .im-details(im-id=image.get('id'))
+        .im-thumbnail
+            video.thumbnail.im-blur(src=image.get('imageUrl')  controls muted)
+    .im-caption
+        .im-caption-content.hidden
+            .im-remove.btn.btn-link.btn-lg(im-id=image.get('id'), title="Delete")
+                i.icon-trash
+            if defaultSimilaritySearch
+              .im-find-similar.btn.btn-link.btn-lg(im-id=image.get('id'), title="Find similar images")
+                  i.icon-search
+            .im-details.btn.btn-link.btn-lg(im-id=image.get('id'), title="Details")
+                i.icon-info

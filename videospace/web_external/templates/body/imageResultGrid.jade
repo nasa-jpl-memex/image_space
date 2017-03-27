@@ -1,0 +1,13 @@
+include imageResultMixin
+
+.im-image-area.col-xs-6.col-md-3
+    .im-details(im-id=image.get('id'))
+        .im-thumbnail
+            video.thumbnail.im-blur(src=image.get('imageUrl')  controls muted) 
+        .col-xs-9.no-pad.font-sm
+            span=image.get('domain') 
+        .col-xs-3.no-pad.font-sm
+            span=image.get('Duration')
+    .im-caption
+        .im-caption-content.hidden
+            +imageResult(image, similaritySearch)

@@ -1,0 +1,316 @@
+@import 'nib'
+
+$headerHeight = 50px
+
+.navbar
+    a
+        color rgb(180, 180, 180)
+
+    a:hover
+        color white
+
+.h-user-link
+    font-size 14px
+
+.h-login-link-wrapper
+    font-size 14px
+
+.h-user-link-wrapper
+    display inline-block
+
+.h-current-user-wrapper
+    padding 15px 15px
+
+.h-current-user-text > *
+    vertical-align middle
+
+.h-icons-wrapper
+    display inline
+    line-height $headerHeight
+    font-size 21px
+
+#wrapper
+    padding-left 0
+    -webkit-transition all 0.5s ease
+    -moz-transition all 0.5s ease
+    -o-transition all 0.5s ease
+    transition all 0.5s ease
+
+#wrapper.toggled
+    padding-left 250px
+
+#sidebar-wrapper
+    display none
+    z-index 1000
+    position fixed
+    left 250px
+    width 0
+    height 100%
+    margin-left -250px
+    overflow-y auto
+    // background #fff
+    -webkit-transition all 0.5s ease
+    -moz-transition all 0.5s ease
+    -o-transition all 0.5s ease
+    transition all 0.5s ease
+    border-right 1px solid #e6e6e6
+
+#im-app-user-data-container
+    padding 15px
+    padding-bottom $headerHeight
+
+#wrapper.toggled #sidebar-wrapper
+    width 250px
+
+#page-content-wrapper
+    width 100%
+    position absolute
+    padding 15px
+    padding-top 0px !important
+    padding-bottom $headerHeight
+
+#wrapper.toggled #page-content-wrapper
+    position absolute
+    margin-right -250px
+
+
+#wrapper {
+      padding-left: 250px;
+}
+
+#wrapper.toggled {
+      padding-left: 0;
+}
+
+#sidebar-wrapper {
+      width: 250px;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+      width: 0;
+}
+
+#page-content-wrapper {
+      padding: 20px;
+      position: relative;
+}
+
+#wrapper.toggled #page-content-wrapper {
+      position: relative;
+      margin-right: 0;
+}
+
+.im-searches
+    padding-top 5px
+    padding-bottom 20px
+
+.im-brand
+    padding-top 14px
+    padding-bottom 10px
+    padding-right 20px
+    font-size 20px
+    float left
+
+.im-pad-left
+    padding-left 10px
+
+.im-alert
+    margin-bottom -1px
+    border-radius 0px
+
+.im-view-mode
+    padding-right 40px
+
+.im-search-image
+    height 50px
+    float left
+
+.im-search-image:hover
+    cursor pointer
+
+#im-app-main-container
+    margin 60px 0 0 0
+    min-height 0
+
+#g-app-body-container
+    margin 0
+    min-height 0
+
+#advanced-search
+    float right
+    margin-right 50px
+
+.im-image-area
+    overflow-x hidden
+
+.im-actions
+    padding-top 30px
+
+img.im-image-thumbnail
+    height 100px
+
+img.im-image-detail
+    max-height 100%
+    max-width 100%
+    display block
+    margin 0 auto
+
+.im-caption
+    height 70px
+    overflow hidden
+    margin-top 10px
+
+#search-bar
+  margin 0 auto
+  width 50%
+  padding-top 12%
+
+#search-bar input.im-search
+  display inline
+
+.im-nav > .im-search-form
+  float left
+
+.im-search-form button
+  margin 2px
+
+
+.im-pagination-container > .pagination
+  margin 0
+
+#advanced-search-table
+  clear both
+  margin 0 auto
+  border-spacing 8px
+  border-collapse inherit
+  display none
+
+.prev-image
+  float left
+  cursor pointer
+
+.next-image
+  float right
+  cursor pointer
+
+a.im-link
+  display block
+  clear both
+
+#search-controls
+ height 80px
+ padding 10px
+ margin-bottom 15px
+
+#search-controls p
+  margin-top 6px
+  margin-bottom 8px
+
+#search-controls input
+  margin 0
+
+#search-controls label
+  font-weight normal
+  margin 0
+  padding-left 3px
+
+.im-results-pagination
+  width auto
+  padding-right 15px
+  clear both
+
+.im-details
+  display inline-block
+  padding 6px 12px
+  margin-bottom 0
+  vertical-align middle
+  cursor pointer
+
+.im-actions > a
+  padding 12px
+
+.im-dropdown-nav
+  display none
+  float left
+
+.im-nav.collapsed {
+  display: none;
+}
+
+#im-upload
+  display inline
+
+.im-nav
+  float left
+
+.im-nav > #im-upload
+  padding 0 7px 0 7px
+
+.im-nav input.im-search
+  width auto
+  display inline
+  margin 8px 0px 8px 8px
+
+.im-nav button.im-advanced-search-button
+  vertical-align baseline
+
+
+@media(max-width:900px) {
+  .im-nav {
+    display: none;
+  }
+
+  .im-nav.collapsed {
+    display: block;
+  }
+}
+
+@media(min-width:1175px) {
+  .im-nav input.im-search {
+    width: 460px;
+  }
+}
+
+@media(max-width:1000px) {
+  .im-nav input.im-search {
+    width: 180px !important;
+  }
+
+  .navbar-brand {
+    display: none;
+  }
+}
+
+@media(max-width:1175px) {
+  .im-nav input.im-search {
+    width: 310px;
+  }
+}
+
+.navbar
+  margin-bottom 10px
+
+
+#g-app-body-container .nav.nav-pills
+  margin-bottom 8px
+
+
+#g-app-body-container .im-search
+    width calc(100% - 50px) // hack, this is the width minus (upload icon + padding)
+
+video.thumbnail
+    height 100px
+
+video.detail
+    max-height 100%
+    max-width 100%
+    display block
+    margin 0 auto
+
+.no-pad {
+    padding-right:0;
+    padding-left:0;
+}
+
+.font-sm
+    font-size 10px
