@@ -26,6 +26,7 @@ from girder.plugins.videospace import solr_documents_from_field
 
 import json
 import requests
+import urllib
 
 import numpy as np
 
@@ -79,7 +80,8 @@ class PoTImageSimilaritySearch(Resource):
         limit = params['limit'] if 'limit' in params else '100'
         limit = int(limit)
         
-        video_url = params["url"].split("/")
+        video_url = urllib.unquote(urllib.unquote(params["url"]))
+        video_url = video_url.split("/")
         video_name = video_url[-1]
         
         if video_name not in self.videos_to_idx:
