@@ -20,10 +20,8 @@ SMQTK Docker Setup
 ==================
 This step often takes longest, as SMQTK needs to compute descriptors for every image in your `IMAGE_DIR` before it can start serving requests.
 
-Download, chmod, and run the bootstrapping script:
+Run the bootstrapping script:
 ```
-wget https://raw.githubusercontent.com/Kitware/SMQTK/master/docker/smqtk_services.run_images.sh
-chmod u+x smqtk_services.run_images.sh
 ./smqtk_services.run_images.sh --docker-network DOCKER_NETWORK --images IMAGE_DIR
 ```
 
