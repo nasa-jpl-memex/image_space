@@ -20,7 +20,7 @@
 # - Directory of images to mount for serving (at IMAGE_SPACE_IMAGE_DIR)
 # - Solr instance with URL to core as IMAGE_SPACE_SOLR
 # - Mongo instances for Girder database
-FROM girder/girder:latest
+FROM girder/girder:v1.7.1
 MAINTAINER https://github.com/memex-explorer/image_space
 
 EXPOSE 8080
