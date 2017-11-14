@@ -1,4 +1,4 @@
-# VidoSpace Server
+# VideoSpace Server
 
 VideoSpace is a plugin for exploring a video data set. Installation instructions are same as ImageSpace - https://github.com/memex-explorer/image_space/blob/master/imagespace/README.md
 
