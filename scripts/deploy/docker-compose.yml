@@ -16,6 +16,7 @@ version: "2"
 services:
   imagespace-mongo:
     image: mongo:3.0
+    command: --smallfiles
     networks:
       - imagespace-network
   imagespace-solr:
