@@ -51,6 +51,10 @@ else:
 
     pickle.dump(image_map, open('image_map.pickle', 'wb'))
     pickle.dump(image_files, open('image_files.pickle', 'wb'))
+    #NOTE: This is under the assumption that the user does not pre compute the pickle files before starting the flann index #server
+    # exporting the environment variables so they are not computed every time the flann index is hit.
+    os.environ['IMAGE_SPACE_IMAGE_FILES'] = 'image_files.pickle'
+    os.environ['IMAGE_SPACE_IMAGE_MAP'] = 'image_map.pickle'
 
 def run(query, k=10, mode='bruteforce'):
     if query.startswith('['):
