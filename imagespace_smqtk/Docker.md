@@ -25,6 +25,12 @@ Run the bootstrapping script:
 ./smqtk_services.run_images.sh --docker-network DOCKER_NETWORK --images IMAGE_DIR
 ```
 
+For instance if the network is `deploy_imagespace-network`, and images were at `/data/images` you'd run:
+
+```
+./smqtk_services.run_images.sh --docker-network deploy_imagespace-network --images /data/images
+```
+
 Descriptor generation should be kicked off, and tailing the logs of the smqtk-services container will show the progress and end with
 a message from Werkzeug stating that the web server is running.
 
