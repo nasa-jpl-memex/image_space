@@ -16,6 +16,7 @@ version: "2"
 services:
   imagespace-mongo:
     image: mongo:3.0
+    command: "--smallfiles"
     networks:
       - imagespace-network
   imagespace-solr:
@@ -38,6 +39,20 @@ services:
     volumes:
       - ${IMAGE_DIR}:/images
     entrypoint: /imagespace-entrypoint.sh --database mongodb://imagespace-mongo/girder
+  imagespace-imagecat:
+    image: nasajplmemex/imagecat
+    networks:
+      - imagespace-network
+    entrypoint:
+      - /deploy/entrypoint_imagecatdev.sh
+    ports:
+      - "8088:8080"
+      - "8081"
+      - "8888"
+      - "8000"
+      - "9241"
+    volumes:
+      - ${IMAGE_DIR}:/images
 
 networks:
   imagespace-network:

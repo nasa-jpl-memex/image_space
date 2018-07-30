@@ -32,7 +32,8 @@ RUN girder-install plugin -s image_space/imagespace*
 
 RUN npm install --only=prod --unsafe-perm
 
-ENV IMAGE_SPACE_SOLR=http://imagespace-solr:8983/solr/imagespace
+#ENV IMAGE_SPACE_SOLR=http://imagespace-solr:8983/solr/imagespace
+ENV IMAGE_SPACE_SOLR=http://imagespace-imagecat:8081/solr/imagecatdev
 ENV IMAGE_SPACE_SOLR_PREFIX=/images
 ENV IMAGE_SPACE_PREFIX=http://localhost:8989/images
 ENV IMAGE_SPACE_IMAGE_DIR=/images
