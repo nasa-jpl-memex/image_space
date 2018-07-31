@@ -7,16 +7,22 @@ imagespace.views.AnnotationWidgetView = imagespace.View.extend({
                 done = _.bind(this.render, this);
 
             if (button.hasClass('smqtk-iqr-positive')) {
+                var sha1sum_s_md = null;
+                if (_.isArray(this.image.get('sha1sum_s_md'))){
+                    sha1sum_s_md = this.image.get('sha1sum_s_md')[0];
+                }
+                else sha1sum_s_md = tihs.image.get('sha1sum_s_md');
+ 
                 if (this.isIqrPositive()) {
-                    imagespace.smqtk.iqr.currentIqrSession.removePositiveUuid(this.image.get('sha1sum_s_md'), done);
+                    imagespace.smqtk.iqr.currentIqrSession.removePositiveUuid(sha1sum_s_md, done);
                 } else {
-                    imagespace.smqtk.iqr.currentIqrSession.addPositiveUuid(this.image.get('sha1sum_s_md'), done);
+                    imagespace.smqtk.iqr.currentIqrSession.addPositiveUuid(sha1sum_s_md, done);
                 }
             } else if (button.hasClass('smqtk-iqr-negative')) {
                 if (this.isIqrNegative()) {
-                    imagespace.smqtk.iqr.currentIqrSession.removeNegativeUuid(this.image.get('sha1sum_s_md'), done);
+                    imagespace.smqtk.iqr.currentIqrSession.removeNegativeUuid(sha1sum_s_md, done);
                 } else {
-                    imagespace.smqtk.iqr.currentIqrSession.addNegativeUuid(this.image.get('sha1sum_s_md'), done);
+                    imagespace.smqtk.iqr.currentIqrSession.addNegativeUuid(sha1sum_s_md, done);
                 }
             }
         }
@@ -27,13 +33,23 @@ imagespace.views.AnnotationWidgetView = imagespace.View.extend({
     },
 
     isIqrPositive: function () {
+                var sha1sum_s_md = null;
+                if (_.isArray(this.image.get('sha1sum_s_md'))){
+                    sha1sum_s_md = this.image.get('sha1sum_s_md')[0];
+                }
+                else sha1sum_s_md = tihs.image.get('sha1sum_s_md');     
         return (imagespace.smqtk.iqr.currentIqrSession.has('meta') &&
-                _.contains(imagespace.smqtk.iqr.currentIqrSession.get('meta').pos_uuids, this.image.get('sha1sum_s_md')));
+                _.contains(imagespace.smqtk.iqr.currentIqrSession.get('meta').pos_uuids, sha1sum_s_md));
     },
 
     isIqrNegative: function () {
+                var sha1sum_s_md = null;
+                if (_.isArray(this.image.get('sha1sum_s_md'))){
+                    sha1sum_s_md = this.image.get('sha1sum_s_md')[0];
+                }
+                else sha1sum_s_md = tihs.image.get('sha1sum_s_md');
         return (imagespace.smqtk.iqr.currentIqrSession.has('meta') &&
-                _.contains(imagespace.smqtk.iqr.currentIqrSession.get('meta').neg_uuids, this.image.get('sha1sum_s_md')));
+                _.contains(imagespace.smqtk.iqr.currentIqrSession.get('meta').neg_uuids, sha1sum_s_md));
     },
 
     render: function () {

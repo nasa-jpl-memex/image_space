@@ -53,7 +53,11 @@ class SmqtkSimilaritySearch(Resource):
                                               classifications)
 
         for document in documents:
-            document['smqtk_distance'] = neighbors_to_distances[document['sha1sum_s_md']]
+            val = None
+            if isinstance(document['sha1sum_s_md'],list):
+                document['smqtk_distance'] = neighbors_to_distances[document['sha1sum_s_md'][0]]
+            else:
+                document['smqtk_distance'] = neighbors_to_distances[document['sha1sum_s_md']]                
 
         if 'near_duplicates' in params and int(params['near_duplicates']) == 1:
             documents = [x for x in documents if x['smqtk_distance'] <= NEAR_DUPLICATES_THRESHOLD]

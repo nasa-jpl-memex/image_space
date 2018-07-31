@@ -168,12 +168,15 @@ class SmqtkIqr(Resource):
             logger.error('SID %s: There are SMQTK descriptors that have no corresponding Solr document(s).' % params['sid'])
 
         for document in documents:
-            document['smqtk_iqr_confidence'] = confidenceValues[document['sha1sum_s_md']]
+            if isinstance(document['sha1sum_s_md'], list):
+                document['smqtk_iqr_confidence'] = confidenceValues[document['sha1sum_s_md'][0]]
+            else:
+                document['smqtk_iqr_confidence'] = confidenceValues[document['sha1sum_s_md']]
 
         return {
             'numFound': resp['total_results'],
             'docs': sorted(documents,
                            key=lambda x: (x['smqtk_iqr_confidence'],
-                                          x['sha1sum_s_md']),
+                                          x['sha1sum_s_md'][0] if isinstance(x['sha1sum_s_md'],list) else x['sha1sum_s_md']),
                            reverse=True)
         }
