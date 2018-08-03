@@ -37,7 +37,7 @@ imagespace.views.AnnotationWidgetView = imagespace.View.extend({
                 if (_.isArray(this.image.get('sha1sum_s_md'))){
                     sha1sum_s_md = this.image.get('sha1sum_s_md')[0];
                 }
-                else sha1sum_s_md = tihs.image.get('sha1sum_s_md');     
+                else sha1sum_s_md = this.image.get('sha1sum_s_md');     
         return (imagespace.smqtk.iqr.currentIqrSession.has('meta') &&
                 _.contains(imagespace.smqtk.iqr.currentIqrSession.get('meta').pos_uuids, sha1sum_s_md));
     },
