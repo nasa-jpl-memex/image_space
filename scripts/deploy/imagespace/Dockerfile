@@ -21,7 +21,7 @@
 # - Solr instance with URL to core as IMAGE_SPACE_SOLR
 # - Mongo instances for Girder database
 FROM girder/girder:v1.7.1
-MAINTAINER https://github.com/memex-explorer/image_space
+MAINTAINER Chris Mattmann <chris.a.mattmann@jpl.nasa.gov>
 
 EXPOSE 8080
 
