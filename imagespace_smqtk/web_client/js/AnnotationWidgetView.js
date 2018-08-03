@@ -6,13 +6,13 @@ imagespace.views.AnnotationWidgetView = imagespace.View.extend({
             var button = $(e.currentTarget),
                 done = _.bind(this.render, this);
 
+	    var sha1sum_s_md = null;
+	    if (_.isArray(this.image.get('sha1sum_s_md'))){
+		sha1sum_s_md = this.image.get('sha1sum_s_md')[0];
+	    }
+	    else sha1sum_s_md = tihs.image.get('sha1sum_s_md');
+
             if (button.hasClass('smqtk-iqr-positive')) {
-                var sha1sum_s_md = null;
-                if (_.isArray(this.image.get('sha1sum_s_md'))){
-                    sha1sum_s_md = this.image.get('sha1sum_s_md')[0];
-                }
-                else sha1sum_s_md = tihs.image.get('sha1sum_s_md');
- 
                 if (this.isIqrPositive()) {
                     imagespace.smqtk.iqr.currentIqrSession.removePositiveUuid(sha1sum_s_md, done);
                 } else {
