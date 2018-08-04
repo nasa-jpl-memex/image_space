@@ -8,13 +8,13 @@ performs image similarity metrics using computer vision techniques and metadata-
 
 Quickstart
 ==========
-ImageSpace can be spun up quickly by means of Docker containers, see the [ImageSpace Quickstart](https://github.com/memex-explorer/image_space/blob/master/scripts/deploy/README.md).
+ImageSpace can be spun up quickly by means of Docker containers, see the [ImageSpace Quickstart](https://github.com/nasa-jpl-memex/image_space/wiki/Quick-Start-Guide-with-ImageCat).
 
-Image Similarity through [SMQTK](https://github.com/Kitware/SMQTK) can be made available by following the [ImageSpace SMQTK Quickstart](https://github.com/memex-explorer/image_space/blob/master/imagespace_smqtk/Docker.md).
+Image Similarity through [SMQTK](https://github.com/Kitware/SMQTK) can be made available by following the [ImageSpace SMQTK Quickstart](https://github.com/nasa-jpl-memex/image_space/blob/master/imagespace_smqtk/Docker.md).
 
 Installation
 ============
-See the [installation README](https://github.com/memex-explorer/image_space/tree/master/imagespace) for
+See the [installation README](https://github.com/nasa-jpl-memex/image_space/tree/master/imagespace) for
 instructions.
 
 Credits
