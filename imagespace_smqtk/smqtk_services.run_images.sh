@@ -68,7 +68,7 @@ fi
 # Start and Initialize PostgreSQL container
 #
 echo "Starting up PostgreSQL docker"
-docker run -d --name "${DOCKER_POSTGRES}" --net=${DOCKER_NETWORK} postgres
+docker run --name ${DOCKER_POSTGRES} --net=${DOCKER_NETWORK}  -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres 
 
 # Wait until PSQL instance is up and running by poking psql
 echo "Waiting for a responsive database"
@@ -84,7 +84,7 @@ unset q trigger
 
 # Create new tables in DB, pulling init scripts from SMQTK container
 echo "Creating required tables"
-docker exec -i ${DOCKER_POSTGRES} psql postgres postgres 1>/dev/null <<-EOSQL
+docker exec -i ${DOCKER_POSTGRES} psql postgres postgres 2>/dev/null <<-EOSQL
     $(docker run --rm --entrypoint bash kitware/smqtk \
         -c "cat \
             /smqtk/install/etc/smqtk/postgres/descriptor_element/example_table_init.sql \
@@ -101,7 +101,8 @@ echo "Starting SMQTK Services docker"
 mkdir -p smqtk_logs
 docker run -d --name ${DOCKER_SMQTK} \
     --net="${DOCKER_NETWORK}" \
-    -v "${IMAGE_DIR}":/data \
+    -e PGPASSWORD=mysecretpassword\
+    -v ${IMAGE_DIR}:/data \
     -v $PWD/smqtk_logs:/logs \
     -p 12345:12345 \
     -p 12346:12346 \
