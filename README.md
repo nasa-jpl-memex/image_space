@@ -10,7 +10,7 @@ Quickstart
 ==========
 ImageSpace can be spun up quickly by means of Docker containers, see the [ImageSpace Quickstart](https://github.com/nasa-jpl-memex/image_space/wiki/Quick-Start-Guide-with-ImageCat).
 
-Image Similarity through [SMQTK](https://github.com/Kitware/SMQTK) can be made available by following the [ImageSpace SMQTK Quickstart](https://github.com/nasa-jpl-memex/image_space/blob/master/imagespace_smqtk/Docker.md).
+Image Similarity through [SMQTK](https://github.com/nasa-jpl-memex/SMQTK) can be made available by following the [ImageSpace SMQTK Quickstart](https://github.com/nasa-jpl-memex/image_space/blob/master/imagespace_smqtk/Docker.md).
 
 Installation
 ============
