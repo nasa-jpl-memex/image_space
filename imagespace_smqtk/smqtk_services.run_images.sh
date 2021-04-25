@@ -105,4 +105,4 @@ docker run -d --name ${DOCKER_SMQTK} \
     -v $PWD/smqtk_logs:/logs \
     -p 12345:12345 \
     -p 12346:12346 \
-    kitware/smqtk -b
+    nasajplmemex/smqtk -b
