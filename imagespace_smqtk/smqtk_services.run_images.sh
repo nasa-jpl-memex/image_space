@@ -68,7 +68,8 @@ fi
 # Start and Initialize PostgreSQL container
 #
 echo "Starting up PostgreSQL docker"
-docker run -d --name "${DOCKER_POSTGRES}" --net=${DOCKER_NETWORK} postgres
+export POSTGRES_VERSION=9.5.10
+docker run -d --name "${DOCKER_POSTGRES}" --net=${DOCKER_NETWORK} postgres:"${POSTGRES_VERSION}"
 
 # Wait until PSQL instance is up and running by poking psql
 echo "Waiting for a responsive database"
@@ -85,7 +86,7 @@ unset q trigger
 # Create new tables in DB, pulling init scripts from SMQTK container
 echo "Creating required tables"
 docker exec -i ${DOCKER_POSTGRES} psql postgres postgres 1>/dev/null <<-EOSQL
-    $(docker run --rm --entrypoint bash kitware/smqtk \
+    $(docker run --rm --entrypoint bash nasajplmemex/smqtk \
         -c "cat \
             /smqtk/install/etc/smqtk/postgres/descriptor_element/example_table_init.sql \
             /smqtk/install/etc/smqtk/postgres/descriptor_index/example_table_init.sql")
